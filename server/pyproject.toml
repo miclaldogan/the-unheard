@@ -1,0 +1,53 @@
+[project]
+name = "unheard"
+version = "0.1.0"
+description = "THE UNHEARD server: ingest, DSP, storage and API for a machine that learns to hear."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn[standard]>=0.30,<1",
+    "pydantic>=2.8,<3",
+    "pydantic-settings>=2.4,<3",
+    "python-multipart>=0.0.9",
+    "numpy>=2.0,<3",
+    "scipy>=1.14,<2",
+    "soundfile>=0.12,<1",
+]
+
+[project.scripts]
+unheard = "unheard.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "httpx>=0.27",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["unheard"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["error::RuntimeWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["B008"]  # FastAPI Depends()/File() in defaults is the framework idiom
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true

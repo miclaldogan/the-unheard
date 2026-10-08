@@ -1,8 +1,27 @@
+# data and generated audio
 data/
+*.wav
+*.webm
+*.m4a
+*.ogg
+*.flac
+*.mp3
+*.npz
+
+# python
 .venv/
 __pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# node
 node_modules/
 dist/
-*.wav
-*.pyc
+web/certs/
+
+# env / secrets
 .env
+*.pem
+*.key
