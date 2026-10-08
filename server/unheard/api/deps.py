@@ -13,6 +13,8 @@ from unheard.errors import NotFound, Unauthorized
 from unheard.ingest.decode import Decoder
 from unheard.ingest.service import IngestService
 from unheard.jobs.worker import JobWorker
+from unheard.memory.service import MemoryService
+from unheard.models.manager import ModelManager
 from unheard.storage.blobs import BlobStore
 from unheard.storage.db import Database
 from unheard.storage.ids import is_valid_id
@@ -26,6 +28,8 @@ class Services:
     decoder: Decoder
     ingest: IngestService
     worker: JobWorker
+    models: ModelManager
+    memory: MemoryService
 
     @classmethod
     def build(cls, settings: Settings) -> Services:
@@ -37,13 +41,27 @@ class Services:
             timeout_s=settings.ffmpeg_timeout_s,
         )
         ingest = IngestService(settings, db, blobs, decoder)
-        worker = JobWorker(
-            db, blobs, poll_s=settings.worker_poll_s, max_attempts=settings.max_job_attempts
+        models = ModelManager(
+            model_name=settings.model_name,
+            device=settings.device,
+            allow_download=settings.allow_model_download,
+            threads=settings.torch_threads,
         )
-        return cls(settings, db, blobs, decoder, ingest, worker)
+        memory = MemoryService(settings, db)
+        worker = JobWorker(
+            db,
+            blobs,
+            poll_s=settings.worker_poll_s,
+            max_attempts=settings.max_job_attempts,
+            models=models,
+            memory=memory,
+            auto_infer=settings.auto_infer and models.enabled,
+        )
+        return cls(settings, db, blobs, decoder, ingest, worker, models, memory)
 
     def close(self) -> None:
         self.worker.stop()
+        self.models.unload()
         self.db.close()
 
 

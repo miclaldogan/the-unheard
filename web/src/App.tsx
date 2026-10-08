@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ApiError, api } from './api/client';
-import type { Health, RecordingSummary } from './api/types';
+import type { Health, MemoryOverview, ModelStatus, Neighbour, RecordingSummary } from './api/types';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { Archive } from './components/Archive';
+import { HearingPanel } from './components/HearingPanel';
+import { MemoryPanel } from './components/MemoryPanel';
 import { RecordingPanel } from './components/RecordingPanel';
 
 const DEFAULT_LIMITS = { min_duration_s: 3, max_duration_s: 30 };
@@ -12,17 +14,25 @@ export default function App() {
   const [healthError, setHealthError] = useState<string | null>(null);
   const [items, setItems] = useState<RecordingSummary[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [model, setModel] = useState<ModelStatus | null>(null);
+  const [memory, setMemory] = useState<MemoryOverview | null>(null);
+  const [neighbours, setNeighbours] = useState<Neighbour[]>([]);
+  const [version, setVersion] = useState(0);
 
   const refresh = useCallback(async () => {
     try {
-      const [l, h] = await Promise.all([api.list(), api.health()]);
+      const [l, h, m, mem] = await Promise.all([api.list(), api.health(), api.model().catch(() => null), api.memory().catch(() => null)]);
       setItems(l.items);
       setHealth(h);
+      setModel(m);
+      setMemory(mem);
       setHealthError(null);
     } catch (e) {
       setHealthError(e instanceof ApiError ? `${e.code}: ${e.message}` : String(e));
     }
   }, []);
+  const onMemoryChanged = useCallback(() => { setVersion((v) => v + 1); void refresh(); }, [refresh]);
+  const onNeighbours = useCallback((n: Neighbour[]) => { setNeighbours(n); setVersion((v) => v + 1); }, []);
 
   useEffect(() => {
     void refresh();
@@ -52,7 +62,7 @@ export default function App() {
       <header className="masthead">
         <div>
           <h1>THE <span>UNHEARD</span></h1>
-          <div className="sub">acoustic field instrument · M1 audio foundation · no recognition yet</div>
+          <div className="sub">acoustic field instrument · M2: ears (CLAP) + personal memory · no music yet</div>
         </div>
         <div className="health" aria-label="server status">
           {health ? (
@@ -60,7 +70,7 @@ export default function App() {
               <span className="ok">server ok</span>
               <span>dsp v{health.dsp_version}</span>
               <span>{health.decoder.ffmpeg_available ? 'ffmpeg' : 'wav/flac only'}</span>
-              <span>inference: {health.inference}, model {health.model_loaded ? 'loaded' : 'none'}</span>
+              <span>ears: {model ? `${model.status}${model.model_id ? ` · ${model.model_id.split('/')[1] ?? model.model_id}` : ''} · ${model.device}` : '…'}</span>
               <span>{health.recordings} stored</span>
             </>
           ) : (
@@ -70,15 +80,19 @@ export default function App() {
       </header>
 
       <main className="grid">
-        <RecordingPanel limits={limits} onProcessed={(id) => { setSelected(id); void refresh(); }} onArchiveChanged={() => void refresh()} />
-        <div style={{ display: 'grid', gap: 18, minWidth: 0 }}>
-          <AnalysisPanel recordingId={selected} />
+        <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>
+          <RecordingPanel limits={limits} onProcessed={(id) => { setSelected(id); void refresh(); }} onArchiveChanged={() => void refresh()} />
+          <MemoryPanel memory={memory} neighbours={neighbours} onSelect={setSelected} />
+        </div>
+        <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>
+          <HearingPanel recordingId={selected} onMemoryChanged={onMemoryChanged} onNeighbours={onNeighbours} />
+          <AnalysisPanel recordingId={selected} version={version} />
           <Archive items={items} selected={selected} onSelect={setSelected} onChanged={onDeletedOrChanged} />
         </div>
       </main>
 
       <footer className="footer">
-        Recordings never leave this machine. ECHO-0 does not recognise or learn sounds yet; that arrives with the M2 audio model. · <a href="/api/docs">API</a>
+        Recordings never leave this machine. ECHO-0's ears are a local open-weight model (LAION-CLAP); its memory is only your labelled recordings. Nothing is fine-tuned. · <a href="/api/docs">API</a>
       </footer>
     </div>
   );

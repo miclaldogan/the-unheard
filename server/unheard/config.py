@@ -49,6 +49,29 @@ class Settings(BaseSettings):
     ffprobe_bin: str = "ffprobe"
     ffmpeg_timeout_s: float = 30.0
 
+    # Audio model (M2). "none" disables inference; recordings still get DSP features.
+    model_name: str = "laion/clap-htsat-unfused"
+    device: str = Field(default="cpu", description="'cpu' or 'cuda' (needs a CUDA torch build)")
+    allow_model_download: bool = Field(
+        default=False,
+        description="Permit downloading weights from the Hugging Face Hub at runtime. "
+        "Off by default: fetch once with `uv run unheard fetch-model`.",
+    )
+    torch_threads: int | None = None
+    auto_infer: bool = Field(default=True, description="Queue model inference after DSP")
+    # Memory / fusion (empirical; see docs/M2-REPORT.md)
+    fusion_k: int = 7
+    fusion_t_mem: float = 0.07
+    fusion_kappa: float = 3.0
+    fusion_t_base: float = 0.05
+    fusion_tau_novel: float = 0.55
+    fusion_tau_margin: float = 0.60
+    fusion_tau_entropy: float = 0.25
+    fusion_tau_memory_strong: float = 0.75
+    max_label_name_len: int = 48
+    max_labels_per_annotation: int = 6
+    max_descriptors: int = 10
+
     # Processing
     worker_enabled: bool = True
     worker_poll_s: float = 0.25

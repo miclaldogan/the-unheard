@@ -19,7 +19,21 @@ def main(argv: list[str] | None = None) -> int:
     )
     serve.add_argument("--reload", action="store_true")
     serve.add_argument("--log-level", default="info")
+    fetch = sub.add_parser(
+        "fetch-model", help="download the audio model weights once (explicit network use)"
+    )
+    fetch.add_argument("--name", default=None)
     args = parser.parse_args(argv)
+
+    if args.cmd == "fetch-model":
+        from huggingface_hub import snapshot_download
+
+        from unheard.config import get_settings
+
+        name = args.name or get_settings().model_name
+        path = snapshot_download(name, allow_patterns=["*.json", "*.txt", "*.bin", "*.safetensors"])
+        print(f"{name} cached at {path}")
+        return 0
 
     if args.cmd == "serve":
         import uvicorn

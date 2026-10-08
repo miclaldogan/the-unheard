@@ -8,31 +8,37 @@ world; its memory, atlas, artwork and music are built from your recordings.
 
 ## Status
 
-**M1 — audio foundation: implemented.** A real microphone → upload → validation → decoding →
-canonical PCM → DSP features → SQLite/files → API → browser visualisation pipeline works end
-to end with real audio. See [`docs/M1-REPORT.md`](docs/M1-REPORT.md) for what was tested.
+**M2 — ECHO-0 hears, is taught, and remembers: implemented.** On top of the M1 audio
+foundation, every recording is now analysed by a real open-weight audio model
+(**LAION-CLAP**, run locally on the CPU), ranked against a 39-label environmental vocabulary
+plus your own names, and re-ranked by a personal acoustic memory built from your
+confirmations and corrections. See [`docs/M2-REPORT.md`](docs/M2-REPORT.md) for measured
+results (held-out ESC-50 evaluation: top-1 0.74 → 0.81 with 5 taught examples per class).
 
-Not implemented yet (honestly): **no sound recognition, no learning, no music.** The
-`inference` field in every API response is `not_run`. ECHO-0 only states what is true
-("a signal has been preserved"). The audio model (CLAP / YAMNet) arrives in M2.
+Still honest about what is **not** there: no music, no atlas, no narration beyond
+template lines tied to real events, no fine-tuning (only retrieval memory changes), and
+unknown-sound detection is a measured heuristic (54 % recall at 5 % false flags), not a guarantee.
 
 ## Architecture summary
 
 Modular monolith (docs/architecture/02): one FastAPI process with internal packages
-`ingest → dsp → (models) → storage/events/jobs → api`, SQLite (WAL) + content-addressed
-files under `data/`, and a Vite/React PWA. Processing is durability-first: the raw upload and
-the recording row are committed before any processing; the DSP stage runs on an in-process
-worker thread polling a `job` table; failures leave the recording inspectable and retryable.
-Full design: [`docs/architecture/README.md`](docs/architecture/README.md).
+`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → storage/events/jobs → api`,
+SQLite (WAL) + content-addressed files under `data/`, and a Vite/React PWA. Processing is
+durability-first: the raw upload and the recording row are committed before any processing;
+the `dsp` and `infer` stages run on an in-process worker thread polling a `job` table;
+failures leave the recording inspectable and retryable. Full design:
+[`docs/architecture/README.md`](docs/architecture/README.md); decisions in
+[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2).
 
 ```
 the-unheard/
-  server/unheard/   api/ ingest/ dsp/ models/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
-  server/tests/     DSP, ingest, API, e2e tests + synthetic fixtures
+  server/unheard/   api/ ingest/ dsp/ models/ memory/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
+  server/tests/     DSP, ingest, API, memory/fusion, migration, e2e, real-model tests + fixtures
   web/src/          api/ audio/ state/ components/  (React + TS)
-  scripts/          mkcert.sh, verify_env.py
-  docs/             api.md, local-https.md, smoke-test.md, M1-REPORT.md, architecture/
-  data/             (gitignored) unheard.sqlite3, audio/, artifacts/
+  eval/             run_eval.py, reports/
+  scripts/          mkcert.sh, verify_env.py, bench_models.py
+  docs/             api.md, model-setup.md, local-https.md, smoke-test.md, M1-REPORT.md, M2-REPORT.md, architecture/
+  data/             (gitignored) unheard.sqlite3, audio/, artifacts/, eval/
 ```
 
 ## Prerequisites
@@ -44,6 +50,7 @@ the-unheard/
 | Node ≥ 20 + npm | frontend | Node 26.8.1 / npm 12 |
 | **ffmpeg + ffprobe** | decoding browser codecs (webm/opus, mp4/aac, ogg, mp3). Without it only WAV/FLAC/OGG uploads decode (libsndfile fallback) and `/api/health` reports `ffmpeg_available: false` | 9.0.1 |
 | mkcert (optional) | HTTPS on the LAN for phone testing, see [`docs/local-https.md`](docs/local-https.md) | — |
+| torch + transformers (optional, `uv sync --extra ml`) | ECHO-0's ears (LAION-CLAP, ~600 MB weights, CPU) — see [`docs/model-setup.md`](docs/model-setup.md) | torch 2.14+cpu, transformers 4.x |
 
 FFmpeg licensing: the project only *invokes* the `ffmpeg` binary found on `PATH` (LGPL/GPL
 depending on your build); nothing from FFmpeg is linked or redistributed here. If `ffmpeg`
@@ -54,7 +61,8 @@ is missing, uploads in a container it cannot decode fail with `503 DECODER_UNAVA
 ```bash
 git clone https://github.com/miclaldogan/the-unheard && cd the-unheard
 python3 scripts/verify_env.py          # prints python/ffmpeg/node status
-(cd server && uv sync)                 # creates server/.venv with Python 3.12
+(cd server && uv sync --extra ml)      # creates server/.venv with Python 3.12 (+ torch/transformers)
+(cd server && uv run unheard fetch-model)   # one-time ~600 MB download of the CLAP weights
 (cd web && npm install)
 ```
 
@@ -75,30 +83,29 @@ at `http://127.0.0.1:8000/`.
 Configuration is via `UNHEARD_*` environment variables (see `server/unheard/config.py`):
 `UNHEARD_DATA_DIR`, `UNHEARD_PORT`, `UNHEARD_API_TOKEN`, `UNHEARD_MAX_DURATION_S`, …
 
-## Recording and processing audio
+## Recording, hearing, teaching
 
-1. Press **Record**, allow the microphone. Capture uses an `AudioWorklet` and produces 16-bit
-   PCM WAV at the device's native rate (lossless); `MediaRecorder` (webm/opus or mp4/aac) is
-   the fallback when AudioWorklet is unavailable. Constraints request
-   `echoCancellation/noiseSuppression/autoGainControl = false`; whether the browser honoured
-   them is stored in `device_info`.
-2. Press **Stop** (auto-stops at 30 s). Listen to the preview; **Submit for analysis**.
-3. The server sniffs the container from magic bytes (client MIME/extension are ignored),
-   decodes with ffmpeg to 48 kHz mono float32, validates (3–30 s, not silent, ≤ 25 MB, NaN-free),
-   stores the original bytes and the canonical WAV, commits the row, then the worker extracts
-   features and writes `features_v1.npz`. The UI polls until `ready`.
-4. **Analysis** shows the waveform (server-computed min/max/RMS buckets), the log-mel or STFT
-   spectrogram (dB values from the server) and scalar measurements. Nothing is synthesised
-   client-side.
-5. **Archive** lists everything persisted; Play streams the original upload; Delete removes the
-   row and every file for that id.
+1. Press **Record**, allow the microphone, press **Stop** (auto-stops at 30 s), listen to the
+   preview, **Submit for analysis**.
+2. The server validates and decodes the upload, extracts DSP features (`ready`), then queues
+   inference: CLAP embeds the canonical audio in 10 s windows and scores every source label by
+   cosine similarity to its text prompt. The **Hearing** panel shows the ranked hypotheses with
+   their real score semantics (ears cosine, memory cosine, fused rank score) — never percentages.
+3. ECHO-0 speaks only from persisted events: *"I hear something. My strongest hypothesis is …"*,
+   *"I can hear it. I cannot name it yet."* when the novelty gate fires, *"This resembles
+   something you taught me before"* when a remembered recording is close.
+4. **Teach**: confirm or reject hypotheses, pick another known source, name a new one, or mark
+   it unknown; optionally add descriptors (how it sounds), place and feeling — these three are
+   stored separately and never used for recognition. Submitting stores the annotation and, if
+   the recording has an embedding, one exemplar per source label in memory; previous
+   annotations are superseded and their exemplars retracted; every other recording is
+   re-scored and the response lists what changed.
+5. **Acoustic memory** shows exemplar counts per name, learned names, memory version and the
+   recordings most similar to the selected one. Deleting a recording removes its embeddings,
+   predictions, annotations and exemplars and re-scores the rest.
 
-Upload from the command line:
-
-```bash
-curl -F "file=@clip.wav" http://127.0.0.1:8000/api/recordings
-curl http://127.0.0.1:8000/api/recordings/<id>/features | jq .summary
-```
+Recordings made before M2 (or while the model was disabled) show *Not yet heard* with a
+*Listen with ECHO-0's ears* button that queues inference.
 
 ### Supported formats and limits
 
@@ -118,47 +125,39 @@ Same input + version ⇒ byte-identical output (tested).
 
 ## API
 
-See [`docs/api.md`](docs/api.md). Summary:
-
-| Method | Path |
-|---|---|
-| GET | `/api/health` |
-| POST | `/api/recordings` (multipart `file`, optional `captured_at`, `device_info`) → 202 |
-| GET | `/api/recordings`, `/api/recordings/{id}` |
-| GET | `/api/recordings/{id}/audio?variant=source\|canonical` |
-| GET | `/api/recordings/{id}/features`, `/api/recordings/{id}/spectrogram?kind=mel\|stft` |
-| POST | `/api/recordings/{id}/retry` |
-| DELETE | `/api/recordings/{id}` → 204 |
-
-Errors are RFC 7807 problem documents with stable codes (`AUDIO_TOO_SHORT`, `AUDIO_SILENT`,
-`DUPLICATE_RECORDING`, …).
+See [`docs/api.md`](docs/api.md). M1 endpoints unchanged; M2 adds `GET /api/model`,
+`POST /api/model/load`, `GET /api/recordings/{id}/prediction`, `POST …/infer`,
+`GET …/neighbours`, `GET/POST /api/labels`, `GET/POST …/annotations`, `GET /api/memory`,
+`GET …/echo`. Errors are RFC 7807 problem documents with stable codes.
 
 ## Tests
 
 ```bash
-cd server && uv run pytest            # DSP numerics, ingest, API, persistence, e2e
+cd server && uv run pytest                      # fast suite (fake model), ~10 s
+cd server && uv run pytest -m real_model -s     # real CLAP + ESC-50 integration test (needs weights + eval data)
 cd server && uv run ruff check . && uv run mypy unheard
 cd web && npm test && npm run typecheck && npm run build
+cd server && uv run python ../scripts/bench_models.py   # model gate numbers
+cd server && uv run python ../eval/run_eval.py          # before/after personalization (eval/README.md)
 ```
 
 Manual browser checklist: [`docs/smoke-test.md`](docs/smoke-test.md).
 
 ## Current limitations
 
-- No audio model, no predictions, no memory, no music, no atlas (M2+).
-- Phone capture over LAN HTTPS is documented and wired (`scripts/mkcert.sh`, Vite TLS +
-  proxy, bearer token) but **was not tested on a physical phone** in M1.
-- No offline capture queue / service worker: the app is installable but needs the server.
-- Deleting a recording hard-deletes it (doc 08's tombstone that blocks silent re-import is
-  deferred to M2, when memory exemplars make it matter).
-- One worker thread; one job at a time (by design, ADR-003).
-- Only tested on Linux (Arch) with Chrome and Firefox.
+- No music, atlas or free narration (M3+). ECHO-0 lines are templates bound to events.
+- Personal memory is retrieval only (kNN over CLAP embeddings); the model is never fine-tuned.
+- Unknown detection is a thresholded heuristic measured on ESC-50 (`eval/reports`), not a
+  calibrated detector; fused scores are rank scores, not probabilities.
+- CPU inference only was measured; CUDA is possible but untested here.
+- Phone capture over LAN HTTPS is wired but still untested on a physical phone; no offline queue.
+- Hard delete (no tombstones); single worker; Linux + Chrome/Firefox only.
 
-## Next milestone — M2
+## Next milestone — M3
 
-Install and gate an open-weight audio model (CLAP primary / YAMNet fallback) behind the
-`AudioModel` adapter in `server/unheard/models/contracts.py`, feed it the canonical PCM,
-persist embeddings and predictions, add the annotation API and kNN memory so human labels
-change later predictions. Only then will ECHO-0 be allowed to say "I heard".
+The acoustic atlas consumes what M2 persists: pooled and window embeddings (`embedding`),
+label assignments (`annotation`, `exemplar`), DSP features (`feature_set`), similarity
+(`/neighbours`), and temporal metadata (`captured_at`, `window_start_s/end_s`). The symphony
+engine (M4) reads canonical audio, features and recognised/annotated sources from the same tables.
 
 License: MIT.

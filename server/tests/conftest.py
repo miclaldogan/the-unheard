@@ -16,7 +16,8 @@ requires_ffmpeg = pytest.mark.skipif(not HAS_FFMPEG, reason="ffmpeg/ffprobe not 
 
 
 def make_settings(tmp_path: Path, **overrides: object) -> Settings:
-    base = dict(data_dir=tmp_path / "data", worker_enabled=False, api_token=None)
+    # model disabled by default: unit tests never load CLAP (see test_real_model.py)
+    base = dict(data_dir=tmp_path / "data", worker_enabled=False, api_token=None, model_name="none")
     base.update(overrides)
     # Make sure a developer .env does not leak into tests
     os.environ.pop("UNHEARD_DATA_DIR", None)

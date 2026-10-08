@@ -56,3 +56,60 @@ Production code never emits predictions until a real model adapter exists (M2).
 | canonical rate | 48 kHz mono float32 |
 | silence rejection | RMS < −60 dBFS |
 | clipping flag | > 0.5 % of samples with \|x\| ≥ 0.99 (flagged, not rejected) |
+
+---
+
+# M2 additions — hearing, teaching, memory
+
+All under `/api`, same auth and error rules. Score semantics are stated in every response
+(`score_kind`); **no value is a calibrated probability**.
+
+| Method | Path | Response |
+|---|---|---|
+| GET | `/api/model` | `{status: disabled\|not_loaded\|loading\|ready\|failed, model_id, revision, device, embedding_dim, preprocessing_version, load_seconds, error, inference:"local", known_versions}` |
+| POST | `/api/model/load` | loads the model now (otherwise lazy on first job); `409 NOT_READY` if disabled/failed |
+| GET | `/api/recordings/{id}/prediction` | `{state, model_status, model, job, base, fused, annotation}` — see below |
+| POST | `/api/recordings/{id}/infer` | `202` queues the `infer` job (old recordings, retries); `409` if not `ready` or already queued |
+| GET | `/api/recordings/{id}/neighbours?limit=5` | most similar other recordings by pooled-embedding cosine, with their labels |
+| GET | `/api/labels?q=` | source labels (vocabulary + user) with exemplar counts |
+| POST | `/api/labels` `{name}` | `201` creates (or returns the existing) user label; slug-normalised, 1–48 chars |
+| POST | `/api/recordings/{id}/annotations` | body below → `201 {annotation, memory_version, exemplars_added, exemplars_retracted, created_label_ids, rescored_changes, fused_top}` |
+| GET | `/api/recordings/{id}/annotations` | history, newest first (`status: active\|superseded`, `superseded_by`) |
+| GET | `/api/memory` | `{memory_version, exemplars, annotations, unknown_annotations, custom_labels, labels:[{name, origin, n_exemplars, recording_ids, prototype{n_eff,sigma}}]}` |
+| GET | `/api/recordings/{id}/echo` | ECHO-0 lines `[{template, text, tags:[model\|memory\|imagination], event_ids}]`, each derived from persisted events |
+
+## Prediction states
+
+`model_disabled` · `not_run` (no inference yet, e.g. M1 recordings — call `/infer`) ·
+`analyzing` (job queued/running) · `inference_failed` (job failed; features intact; `/infer`
+retries) · `awaiting_feedback` (hypotheses exist, no annotation) · `remembered` (annotated).
+
+## `base` vs `fused`
+
+- `base.candidates[]`: `{label_id, slug, name, rank, similarity}` — **cosine similarity** between
+  the CLAP audio embedding and the label's text prompt, max over 10 s windows. Ears only.
+  `base.windows[]` keeps the top-3 per window for temporal views.
+- `fused.candidates[]`: `{rank, fused_score, base_similarity, base_score, memory_similarity,
+  memory_score, n_exemplars, lambda, evidence}` at `fused.memory_version`.
+  `fused_score` is a relative ranking score over the current label space (sums to 1),
+  `memory_similarity` the nearest exemplar cosine for that label, `evidence` ∈ ears|memory|both.
+- `fused.novelty`: `{novel, nearest_exemplar_similarity, fused_margin, base_entropy_normalised,
+  memory_size, relevant_exemplars, lambda, nothing_similar_remembered, disagreement, ears_top,
+  memory_top, neighbours[], thresholds}`.
+
+## Annotation body
+
+```json
+{"label_ids": ["<label uuid>", "..."], "new_labels": ["Roof gutter"], "rejected_label_ids": [],
+ "is_unknown": false, "descriptors": ["continuous", "soft"], "environment": "park", "mood": "calm", "note": null}
+```
+Limits: ≤ 6 source labels, ≤ 3 new names (1–48 chars), ≤ 10 descriptors (≤ 32 chars),
+environment/mood ≤ 80 chars, note ≤ 500. `is_unknown` clears source labels. Only source labels
+feed memory; descriptors/environment/mood are stored on the annotation and never used for
+recognition. A new submission supersedes the previous one and retracts its exemplars.
+
+## Events (append-only `event` table)
+
+`AudioInferenceCompleted`, `AudioInferenceFailed`, `AnnotationSubmitted`,
+`PredictionConfirmed`, `PredictionCorrected`, `CustomCategoryCreated`,
+`AcousticMemoryUpdated` (with `rescored_changes`), `UnknownSoundObserved` (`by: system|user`).

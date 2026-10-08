@@ -6,6 +6,7 @@ import { Waveform } from './Waveform';
 
 interface Props {
   recordingId: string | null;
+  version?: number; // bump to re-fetch (e.g. after inference or annotation)
 }
 
 function Stat({ label, value, unit, digits = 1 }: { label: string; value: number; unit?: string; digits?: number }) {
@@ -17,7 +18,7 @@ function Stat({ label, value, unit, digits = 1 }: { label: string; value: number
   );
 }
 
-export function AnalysisPanel({ recordingId }: Props) {
+export function AnalysisPanel({ recordingId, version = 0 }: Props) {
   const [detail, setDetail] = useState<RecordingDetail | null>(null);
   const [features, setFeatures] = useState<Features | null>(null);
   const [spec, setSpec] = useState<SpecData | null>(null);
@@ -55,7 +56,7 @@ export function AnalysisPanel({ recordingId }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [recordingId, kind]);
+  }, [recordingId, kind, version]);
 
   return (
     <section className="panel" aria-labelledby="an-h">
@@ -71,7 +72,7 @@ export function AnalysisPanel({ recordingId }: Props) {
             <dt>source</dt><dd>{detail.assets.filter((a) => a.kind === 'source').map((a) => `${a.container ?? '?'} / ${a.codec ?? '?'} · ${a.sample_rate} Hz · ${a.channels} ch · ${(a.bytes / 1024).toFixed(0)} KiB`)}</dd>
             <dt>canonical</dt><dd>{detail.assets.filter((a) => a.kind === 'canonical').map((a) => `${a.sample_rate} Hz mono float32 WAV`)}</dd>
             <dt>quality</dt><dd>{detail.quality.flags.length ? <span className="flags">{detail.quality.flags.join(', ')}</span> : 'no flags'} · peak {detail.quality.peak_dbfs.toFixed(1)} dBFS · clipped {(detail.quality.clipping_ratio * 100).toFixed(2)}%</dd>
-            <dt>inference</dt><dd>{detail.inference.status === 'not_run' ? 'not run — no audio model is installed in M1' : detail.inference.status}</dd>
+            <dt>inference</dt><dd>{detail.inference.status === 'not_run' ? 'not run — see the Hearing panel' : `${detail.inference.status} · ${detail.inference.model_id ?? ''} · embedding ${detail.inference.embedding?.dim ?? '—'}-d`}</dd>
           </dl>
           {loading && <p className="caption" style={{ marginTop: 10 }}>loading measurements…</p>}
           {detail.status !== 'ready' && !loading && <p className="caption" style={{ marginTop: 10 }}>Measurements appear when processing reaches <em>ready</em>.</p>}

@@ -16,6 +16,13 @@ dependencies = [
     "soundfile>=0.12,<1",
 ]
 
+[project.optional-dependencies]
+# Real audio model (M2). Installed with `uv sync --extra ml`; CPU-only torch by default.
+ml = [
+    "torch>=2.4,<3",
+    "transformers>=4.45,<5",
+]
+
 [project.scripts]
 unheard = "unheard.cli:main"
 
@@ -27,6 +34,17 @@ dev = [
     "mypy>=1.11",
 ]
 
+[tool.uv]
+# CPU wheels for torch (no CUDA libraries). To use the GPU, install a CUDA build of torch
+# into the venv manually and set UNHEARD_DEVICE=cuda; see docs/model-setup.md.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -36,7 +54,8 @@ packages = ["unheard"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not real_model'"
+markers = ["real_model: needs the real CLAP weights and ESC-50 clips (slow)"]
 filterwarnings = ["error::RuntimeWarning"]
 
 [tool.ruff]
@@ -46,6 +65,11 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "W"]
 ignore = ["B008"]  # FastAPI Depends()/File() in defaults is the framework idiom
+
+[tool.ruff.lint.per-file-ignores]
+"unheard/storage/repos_m2.py" = ["E501"]  # long SQL strings
+"unheard/api/intelligence.py" = ["E501"]  # ECHO-0 templates
+"tests/*" = ["E501", "E741"]
 
 [tool.mypy]
 python_version = "3.12"

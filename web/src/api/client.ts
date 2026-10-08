@@ -1,4 +1,21 @@
-import type { Features, Health, Problem, RecordingDetail, RecordingList, Spectrogram, UploadAccepted } from './types';
+import type {
+  AnnotationIn,
+  AnnotationOut,
+  AnnotationResult,
+  EchoLine,
+  Features,
+  Health,
+  Label,
+  MemoryOverview,
+  ModelStatus,
+  Neighbour,
+  Prediction,
+  Problem,
+  RecordingDetail,
+  RecordingList,
+  Spectrogram,
+  UploadAccepted,
+} from './types';
 
 export class ApiError extends Error {
   readonly problem: Problem;
@@ -63,6 +80,19 @@ export const api = {
   audioUrl: (id: string) => `/api/recordings/${encodeURIComponent(id)}/audio`,
   retry: (id: string) => request<{ recording_id: string }>(`/api/recordings/${encodeURIComponent(id)}/retry`, { method: 'POST' }),
   delete: (id: string) => request<void>(`/api/recordings/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+  // M2
+  model: () => request<ModelStatus>('/api/model'),
+  loadModel: () => request<ModelStatus>('/api/model/load', { method: 'POST' }),
+  prediction: (id: string) => request<Prediction>(`/api/recordings/${encodeURIComponent(id)}/prediction`),
+  infer: (id: string) => request<{ recording_id: string; state: string }>(`/api/recordings/${encodeURIComponent(id)}/infer`, { method: 'POST' }),
+  neighbours: (id: string, limit = 5) => request<Neighbour[]>(`/api/recordings/${encodeURIComponent(id)}/neighbours?limit=${limit}`),
+  labels: (q?: string) => request<Label[]>(`/api/labels${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+  createLabel: (name: string) => request<Label>('/api/labels', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }) }),
+  annotate: (id: string, body: AnnotationIn) =>
+    request<AnnotationResult>(`/api/recordings/${encodeURIComponent(id)}/annotations`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
+  annotations: (id: string) => request<AnnotationOut[]>(`/api/recordings/${encodeURIComponent(id)}/annotations`),
+  memory: () => request<MemoryOverview>('/api/memory'),
+  echo: (id: string) => request<EchoLine[]>(`/api/recordings/${encodeURIComponent(id)}/echo`),
   upload: (blob: Blob, filename: string, deviceInfo: Record<string, unknown>) => {
     const form = new FormData();
     form.append('file', blob, filename);
@@ -84,6 +114,19 @@ export async function waitUntilProcessed(
     const d = await api.get(id);
     if (d.status === 'ready' || d.status === 'failed') return d;
     if (Date.now() > deadline) throw new ApiError({ type: 'timeout', title: 'Timeout', status: 0, code: 'TIMEOUT', detail: 'processing took too long' });
+    await new Promise((r) => setTimeout(r, interval));
+  }
+}
+
+/** Poll the prediction until inference has finished (ready or failed) or the model is disabled. */
+export async function waitForPrediction(id: string, opts: { intervalMs?: number; timeoutMs?: number } = {}): Promise<Prediction> {
+  const interval = opts.intervalMs ?? 700;
+  const deadline = Date.now() + (opts.timeoutMs ?? 120_000);
+  for (;;) {
+    const p = await api.prediction(id);
+    if (p.state !== 'analyzing' && p.state !== 'not_run') return p;
+    if (p.state === 'not_run' && p.model_status === 'disabled') return p;
+    if (Date.now() > deadline) return p;
     await new Promise((r) => setTimeout(r, interval));
   }
 }

@@ -23,3 +23,16 @@ Setup: `cd server && uv run unheard serve` and `cd web && npm run dev`; open `ht
 | 13 | Stop the backend, press Submit | Error `NETWORK`; preview is retained; restart backend, Clear, Submit again succeeds | not run | not run | not run |
 | 14 | Resize to 375 px width | Single column; Record button ≥ 150 px; table remains usable | ✅ 400 px window | not run | not run |
 | 15 | Let recording run to 30 s | Auto-stop fires; file is submittable | ✅ auto-stop at 30 s; first run exposed a 30.01 s overrun bug, fixed by trimming PCM | not run | not run |
+
+## M2 additions (hearing / teaching / memory)
+
+| # | Step | Expected | Chrome Linux |
+|---|---|---|---|
+| 16 | Masthead | shows `ears: ready · clap-htsat-unfused · cpu` after first inference | |
+| 17 | After submit | Hearing panel walks Analyzing → Hypothesizing; ranked table with ears cosine, memory —, fused score; ECHO-0 hypothesis line | |
+| 18 | Teach: confirm top hypothesis + a descriptor | state → Remembered; memory panel shows 1 example under that name; ECHO-0 "You confirmed …" | |
+| 19 | Teach: Correct this → reject top, name a new source | annotation history has 2 rows (active/superseded); learned names = 1; ECHO-0 "I called it … You called it …" | |
+| 20 | Record a second similar sound | Hearing shows memory column filled for the taught name, evidence `memory`/`both`, neighbours list the first recording | |
+| 21 | Mark a recording unknown | exemplars drop, ECHO-0 "You could not name it either." | |
+| 22 | Delete an annotated recording | memory counts drop, other recordings re-scored | |
+| 23 | Stop the backend mid-way | panels show a clearable `NETWORK` error; nothing fabricated | |

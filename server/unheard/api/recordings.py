@@ -36,6 +36,7 @@ from unheard.storage.repos import (
     RecordingRepo,
     RecordingRow,
 )
+from unheard.storage.repos_m2 import AnnotationRepo, PredictionRepo
 
 router = APIRouter(dependencies=[Depends(require_token)])
 
@@ -62,6 +63,29 @@ def _summary(rec: RecordingRow, dsp_version: int | None) -> RecordingSummary:
         quality=rec.quality,
         error=ErrorInfo(**rec.error) if rec.error else None,
         dsp_version=dsp_version,
+    )
+
+
+def _inference_info(services: Services, rid: str) -> InferenceInfo:
+    """Model-adapter contract view: persisted base prediction + pooled embedding, or not_run."""
+    from unheard.storage.repos_m2 import EmbeddingRepo, ModelVersionRepo
+
+    with services.db.connection() as conn:
+        base = PredictionRepo.latest(conn, rid, "base")
+        if base is None:
+            return InferenceInfo(**InferenceResult.not_run().to_json())  # type: ignore[arg-type]
+        mv = ModelVersionRepo.get(conn, base.model_version_id)
+        emb = EmbeddingRepo.pooled(conn, rid, base.model_version_id)
+    return InferenceInfo(
+        status="ok",
+        model_id=mv.name if mv else None,
+        model_version=mv.revision if mv else None,
+        predictions=[
+            {"label": c["name"], "score": c["similarity"], "score_kind": "cosine_similarity"}
+            for c in base.results[:5]
+        ],
+        embedding={"dim": int(emb.vec.size), "window_idx": None} if emb else None,
+        error=None,
     )
 
 
@@ -164,7 +188,7 @@ def get_recording(
             for j in jobs
         ],
         features=fs.summary if fs else None,
-        inference=InferenceInfo(**InferenceResult.not_run().to_json()),  # type: ignore[arg-type]
+        inference=_inference_info(services, rec.id),
         links=_links(rec.id),
     )
 
@@ -321,9 +345,16 @@ def delete_recording(
     # Row first (cascades to assets/features/jobs), then files. A crash between the two
     # leaves orphan files that are harmless and cleaned by the next delete of the same id.
     with services.db.transaction() as conn:
+        ann = AnnotationRepo.active(conn, rec.id)
+        base = PredictionRepo.latest(conn, rec.id, "base")
+        # cascades: assets, features, jobs, embeddings, predictions, annotations, exemplars
         RecordingRepo.delete(conn, rec.id)
         EventRepo.append(
             conn, RECORDING_DELETED, {"content_hash": rec.content_hash}, recording_id=rec.id
         )
+        if ann or base:
+            services.memory.on_recording_deleted(
+                conn, rec.id, ann.label_ids if ann else [], base.model_version_id if base else None
+            )
     services.blobs.delete_recording_dirs(rec.id)
     return Response(status_code=204)

@@ -8,13 +8,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from unheard import __version__
-from unheard.api import health, recordings
+from unheard.api import health, intelligence, recordings
 from unheard.api.deps import Services
 from unheard.config import Settings, get_settings
 from unheard.errors import AppError
@@ -54,6 +55,7 @@ def create_app(settings: Settings | None = None, *, web_dist: Path | None = None
     )
     app.include_router(health.router, prefix="/api")
     app.include_router(recordings.router, prefix="/api")
+    app.include_router(intelligence.router, prefix="/api")
 
     @app.exception_handler(AppError)
     async def _app_error(request: Request, exc: AppError) -> JSONResponse:
@@ -69,7 +71,7 @@ def create_app(settings: Settings | None = None, *, web_dist: Path | None = None
             "status": 422,
             "detail": "request validation failed",
             "code": "VALIDATION_FAILED",
-            "errors": exc.errors(),
+            "errors": jsonable_encoder(exc.errors(), custom_encoder={Exception: str}),
             "instance": str(request.url.path),
         }
         return JSONResponse(body, status_code=422, media_type=PROBLEM)
