@@ -5,6 +5,7 @@ import type {
   Composition,
   CompositionEvent,
   CompositionListItem,
+  CompositionMode,
   CompositionTrace,
   Controls,
   AnnotationResult,
@@ -108,7 +109,7 @@ export const api = {
   compositions: (recordingId?: string) =>
     request<CompositionListItem[]>(`/api/compositions${recordingId ? `?recording_id=${encodeURIComponent(recordingId)}` : ''}`),
   composition: (id: string) => request<Composition>(`/api/compositions/${encodeURIComponent(id)}`),
-  createComposition: (body: { recording_ids: string[]; seed?: number; controls?: Partial<Controls>; duration_s?: number; name?: string; role_overrides?: Record<string, string> }) =>
+  createComposition: (body: { recording_ids: string[]; mode?: CompositionMode; seed?: number; controls?: Partial<Controls>; duration_s?: number; name?: string; role_overrides?: Record<string, string> }) =>
     request<Composition>('/api/compositions', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
   variation: (id: string, body: { seed?: number; controls?: Partial<Controls> } = {}) =>
     request<Composition>(`/api/compositions/${encodeURIComponent(id)}/variation`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),

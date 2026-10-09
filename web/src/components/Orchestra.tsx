@@ -5,6 +5,8 @@ import type {
   Composition,
   CompositionEvent,
   CompositionListItem,
+  CompositionMode,
+  Hierarchy,
   CompositionTrace,
   Controls,
   MusicRole,
@@ -48,6 +50,11 @@ const SLIDERS: { key: keyof Controls; lo: string; hi: string; hint: string }[] =
   { key: 'structure', lo: 'Organic', hi: 'Structured', hint: 'keep each sound’s natural timing ↔ snap to a 16th-note grid' },
   { key: 'intensity', lo: 'Calm', hi: 'Intense', hint: 'tempo ±8 %, brightness and the loudness of the climax' },
 ];
+const HIER_NAME: Record<Hierarchy, string> = { lead: 'lead', foundation: 'groove', support: 'answer', gesture: 'gesture', bed: 'atmosphere' };
+const MODES: { key: CompositionMode; name: string; hint: string }[] = [
+  { key: 'composed', name: 'Composed', hint: 'clear phrases, call-and-response, a steadier groove with swing and ghost notes' },
+  { key: 'organic', name: 'Organic', hint: 'sources keep their own timing; sparse, atmospheric, the environment stays forward' },
+];
 const DURATIONS = [30, 45, 60, 75];
 const MAX_SOURCES = 8;
 
@@ -77,6 +84,7 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
   const [picked, setPicked] = useState<string[]>(preselected);
   const [controls, setControls] = useState<Controls>({ density: 0.5, structure: 0.5, intensity: 0.5 });
   const [duration, setDuration] = useState(45);
+  const [mode, setMode] = useState<CompositionMode>('composed');
   const [comp, setComp] = useState<Composition | null>(null);
   const [events, setEvents] = useState<CompositionEvent[]>([]);
   const [saved, setSaved] = useState<CompositionListItem[]>([]);
@@ -225,7 +233,7 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
     }
   }, [loadComposition, refreshSaved]);
 
-  const generate = () => run('Composing…', () => api.createComposition({ recording_ids: picked, controls, duration_s: duration }));
+  const generate = () => run('Composing…', () => api.createComposition({ recording_ids: picked, mode, controls, duration_s: duration }));
   const another = () => comp && run('Composing a variation…', () => api.variation(comp.id, { controls }));
   const retry = () => comp && run('Rendering again…', () => api.rerender(comp.id));
   const openSaved = (id: string) => run('Opening…', () => api.composition(id));
@@ -306,6 +314,11 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
               );
             })}
           </ul>
+          <div className="modes" role="group" aria-label="arrangement mode">
+            {MODES.map((m) => (
+              <button key={m.key} className={`btn small ${mode === m.key ? 'teal' : ''}`} aria-pressed={mode === m.key} title={m.hint} onClick={() => setMode(m.key)}>{m.name}</button>
+            ))}
+          </div>
           <div className="sliders">
             {SLIDERS.map((s) => (
               <label key={s.key} className="slider" title={s.hint}>
@@ -353,13 +366,20 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
                 <span className="caption">{fmt(time)} / {fmt(comp.duration_s)}</span>
               </div>
               <p className="caption">{comp.tempo_bpm} BPM{comp.tempo_source === 'default_free' ? ' (free time; nothing periodic to lock to)' : ` (from ${comp.tempo_source?.replace('_', ' ')})`}{comp.key ? ' · key from the measured pitch of your melodic sound' : ' · no key: nothing here was pitched enough'} · seed {comp.seed} · plan {comp.plan_hash?.slice(0, 8)}</p>
+              {comp.form && (
+                <p className="caption form" aria-label="musical form">
+                  {Object.entries(comp.form).map(([sec, f]) => `${sec}: ${f}`).join('  ·  ')}
+                  {comp.conversation.length > 0 ? ` · conversation: ${comp.conversation.length} call-and-response (fit ${(comp.conversation[0].evidence.score ?? 0).toFixed(2)})` : ''}
+                  {comp.groove ? ` · groove ${Math.round(comp.groove.quantisation * 100)} % on the grid${comp.groove.swing_steps ? `, swing ${comp.groove.swing_steps}` : ''}` : ''}
+                </p>
+              )}
               <div className="instruments">
                 {comp.tracks.map((t) => (
                   <div key={t.track_key} className={`track ${focus === t.track_key ? 'focus' : ''} ${gains[t.track_key] === 0 ? 'dim' : ''}`}>
                     <Instrument recordingId={t.recording_id} clock={clocks.get(t.recording_id) ?? null} setRef={(id, el) => { if (el) instRefs.current.set(id, el); else instRefs.current.delete(id); }} label={nameOf(t.recording_id)} />
                     <div className="track-meta">
                       <strong>{nameOf(t.recording_id)}</strong>
-                      <span className="chip" style={{ color: ROLE_COLOR[t.role], borderColor: ROLE_COLOR[t.role] }}>{ROLE_NAME[t.role]}</span>
+                      <span className="chip" style={{ color: ROLE_COLOR[t.role], borderColor: ROLE_COLOR[t.role] }}>{t.hierarchy ? HIER_NAME[t.hierarchy] : ROLE_NAME[t.role]}</span>
                       <span className="caption">enters in {t.enters}</span>
                     </div>
                     <div className="row">
@@ -381,6 +401,7 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
                     source {trace.event.source_start_s.toFixed(2)}–{trace.event.source_end_s.toFixed(2)} s of {trace.source.duration_s?.toFixed(1)} s → placed at {trace.event.comp_start_s.toFixed(2)} s in the piece
                     {trace.event.params.pitch_shift_st ? `, pitch ${Number(trace.event.params.pitch_shift_st) > 0 ? '+' : ''}${Number(trace.event.params.pitch_shift_st).toFixed(1)} semitones` : ''}
                     {trace.event.params.rate && trace.event.params.rate !== 1 ? `, rate ×${Number(trace.event.params.rate).toFixed(2)}` : ''}, gain {Number(trace.event.params.gain_db ?? 0).toFixed(1)} dB
+                    {trace.event.params.motif ? ` · motif ${String(trace.event.params.motif).split(':').pop()}${trace.event.params.variation ? ` (${trace.event.params.variation})` : ''}` : ''}
                     {trace.also_in.length ? ` · also used in ${trace.also_in.length} other composition${trace.also_in.length > 1 ? 's' : ''}` : ''}
                   </p>
                   <div className="row"><button className="btn small teal" onClick={() => onOpenSpecimen(trace.source.recording_id)} disabled={!trace.source.exists}>Open its specimen</button><button className="btn small" onClick={() => setTrace(null)}>Close</button></div>
@@ -412,7 +433,7 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
                 <p className="caption">peak {Number(comp.metrics.peak_dbfs).toFixed(1)} dBFS · ≈{Number(comp.metrics.lufs_approx).toFixed(1)} LUFS · clipping {(Number(comp.metrics.clipping_ratio) * 100).toFixed(2)} % · {events.length} events · renders offline, plays at 48 kHz</p>
               )}
               <details className="caption"><summary>How it was built</summary>
-                <ul>{comp.sources.map((s) => <li key={s.recording_id}><strong>{s.label ?? s.recording_id.slice(0, 8)}</strong>: {s.decision?.rationale}</li>)}</ul>
+                <ul>{comp.sources.map((s) => <li key={s.recording_id}><strong>{s.label ?? s.recording_id.slice(0, 8)}</strong>: {s.decision?.rationale}{comp.tracks.some((t) => t.recording_id === s.recording_id) ? '' : ' — not used in this arrangement (the composer keeps the foreground selective)'}</li>)}</ul>
                 <p>This piece contains transformed audio from your recordings, possibly including background speech. It stays on this machine unless you export it.</p>
               </details>
             </>

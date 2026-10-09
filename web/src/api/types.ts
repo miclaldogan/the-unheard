@@ -424,6 +424,8 @@ export interface Atlas {
 // ---------------------------------------------------------------- M4: the Orchestra
 
 export type CompositionStatus = 'queued' | 'processing' | 'ready' | 'failed';
+export type CompositionMode = 'organic' | 'composed' | 'legacy';
+export type Hierarchy = 'lead' | 'foundation' | 'support' | 'gesture' | 'bed';
 export type MusicRole = 'texture' | 'drone' | 'rhythmic_texture' | 'percussion' | 'tonal_motif' | 'accent' | 'granular';
 export interface Controls { density: number; structure: number; intensity: number }
 
@@ -453,6 +455,7 @@ export interface CompositionTrack {
   layer_order: number;
   pan: number;
   enters: string;
+  hierarchy: Hierarchy | null;
   stem_url: string | null;
   original_url: string;
 }
@@ -463,6 +466,7 @@ export interface Composition {
   parent_id: string | null;
   name: string;
   saved: boolean;
+  mode: CompositionMode;
   status: CompositionStatus;
   error: string | null;
   seed: number;
@@ -478,6 +482,10 @@ export interface Composition {
   export_url: string | null;
   metrics: Record<string, unknown> | null;
   sections: Section[];
+  form: Record<string, string> | null;
+  conversation: { lead: string; responder: string; evidence: Record<string, number> }[];
+  groove: { quantisation: number; swing_steps: number; micro_ms: number; ghost_notes: boolean; fills: boolean; tonal_strategy: string } | null;
+  hierarchy: Record<string, unknown> | null;
   key: { tonic_midi: number; scale: string; from: string } | null;
   tempo_source: string | null;
   sources: CompositionSource[];
@@ -493,6 +501,7 @@ export interface CompositionListItem {
   parent_id: string | null;
   name: string;
   saved: boolean;
+  mode: CompositionMode;
   status: CompositionStatus;
   seed: number;
   duration_s: number | null;
@@ -512,7 +521,7 @@ export interface CompositionEvent {
   comp_dur_s: number;
   source_start_s: number;
   source_end_s: number;
-  params: { rate?: number; gain_db?: number; pitch_shift_st?: number; [k: string]: unknown };
+  params: { rate?: number; gain_db?: number; pitch_shift_st?: number; hierarchy?: Hierarchy; motif?: string | null; variation?: string | null; velocity?: number; ghost?: boolean; [k: string]: unknown };
 }
 export interface CompositionTrace {
   composition_id: string;

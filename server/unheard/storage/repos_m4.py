@@ -17,6 +17,7 @@ class CompositionRow:
     parent_id: str | None
     name: str
     saved: bool
+    mode: str
     status: str
     error: str | None
     attempts: int
@@ -46,6 +47,7 @@ class CompositionRow:
             r["parent_id"],
             r["name"],
             bool(r["saved"]),
+            r["mode"],
             r["status"],
             r["error"],
             int(r["attempts"]),
@@ -84,17 +86,19 @@ class CompositionRepo:
         overrides: dict[str, str],
         target_duration_s: float,
         sources: list[dict[str, str]],
+        mode: str = "legacy",
     ) -> str:
         cid = uuid7()
         now = utcnow()
         conn.execute(
-            "INSERT INTO composition (id,parent_id,name,saved,status,seed,planner_version,"
+            "INSERT INTO composition (id,parent_id,name,saved,mode,status,seed,planner_version,"
             "render_version,analysis_version,dsp_version,request_hash,controls_json,overrides_json,"
-            "target_duration_s,created_at,updated_at) VALUES (?,?,?,0,'queued',?,?,?,?,?,?,?,?,?,?,?)",
+            "target_duration_s,created_at,updated_at) VALUES (?,?,?,0,?,'queued',?,?,?,?,?,?,?,?,?,?,?)",
             (
                 cid,
                 parent_id,
                 name,
+                mode,
                 seed,
                 versions["planner"],
                 versions["render"],

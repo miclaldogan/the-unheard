@@ -22,7 +22,7 @@ def test_health(client: TestClient) -> None:
     r = client.get("/api/health")
     assert r.status_code == 200
     body = r.json()
-    assert body["status"] == "ok" and body["dsp_version"] == 1 and body["schema_version"] == 4
+    assert body["status"] == "ok" and body["dsp_version"] == 1 and body["schema_version"] == 5
     assert body["inference"] == "local" and body["model_loaded"] is False
     assert body["limits"]["max_duration_s"] == 30.0
 

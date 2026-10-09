@@ -47,3 +47,11 @@ Format: Decision · Rationale · Alternatives · Revisit when.
 **ADR-021 Roles come from measurements, never from labels; a missing capability makes a role unassignable.** Pitch (YIN) gates melody and key; noise can never yield either. Power-domain spectral flatness is not used for "noisiness" because it is tilt-dominated on real recordings. *Alt:* label → instrument table (explicitly rejected: two water recordings must not sound alike). *Revisit:* learned role classifier once enough human corrections exist.
 
 **ADR-022 Deleting a recording deletes the compositions that contain it; compositions store plain recording ids (no FK) and render one at a time.** Privacy beats convenience: those files contain the recording's audio. One render at a time bounds RAM (≈1.1 GB peak for 8 sources × 60 s). *Alt:* keep compositions as "orphaned" derivatives; concurrent renders. *Revisit:* an explicit "keep this piece" confirmation.
+
+## M4.6 decisions (implemented)
+
+**ADR-023 A second planner (motif/phrase composer) beside the first, selected per composition (`mode`); the M4/M4.5 planner stays and renders bit-identical audio.** The renderer, persistence, provenance and UI contracts are shared; only the plan changes. *Alt:* rewrite the planner in place (loses A/B comparison and reproducibility of the reviewed pieces). *Revisit:* delete `legacy` once listening confirms the new modes.
+
+**ADR-024 Quality is reported as transparent measurements plus flags, never as one score.** A single musicality number would reward density or loudness and could not be defended; the report names structural defects (overlapping foreground, literal repetition, no silence, masking, clicks) and carries a disclaimer. *Alt:* a learned or composite score. *Revisit:* only with human ratings to calibrate against.
+
+**ADR-025 Tonal material is used only when reliable, kept as measured contour, and moved by whole octaves with duration-preserving WSOLA; no default scale snapping.** Noise gets no pitch. *Alt:* always quantise to a pentatonic scale (kept as `tonal_strategy="pentatonic"` for comparison); a phase-vocoder pitch shifter. *Revisit:* after listening, and if monophonic WSOLA artefacts prove audible.

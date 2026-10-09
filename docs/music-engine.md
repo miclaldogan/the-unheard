@@ -1,4 +1,9 @@
-# The music engine (M4)
+# The music engine (M4 / M4.5 / M4.6)
+
+> **M4.6 adds a second planner.** `mode=composed` (default) and `mode=organic` use the motif/phrase composer
+> described in [`M4-6-MUSICAL-REFINEMENT.md`](M4-6-MUSICAL-REFINEMENT.md) (material → motif → phrase → section, hierarchy,
+> call-and-response, groove, tonal gating, WSOLA pitch shifts). `mode=legacy` is the M4/M4.5 event planner described
+> below, unchanged and bit-identical. Sections 1–10 describe that legacy planner and the shared renderer.
 
 Everything here describes code that exists in `server/unheard/music/`. Versions:
 `ANALYSIS_VERSION = 1`, `PLANNER_VERSION = 1`, `RENDER_VERSION = 1` (stored on every composition).
@@ -156,6 +161,13 @@ Deterministic lines, each with its evidence: the "remembered separately" pair on
 ever ready composition; the shared-rhythm line only when two sources have periodicity ≥ 0.3 and
 periods within 4 % (octave-folded); a role summary from the real role counts; the closing line
 after a successful render. The optional Gemma planner is **not implemented** (see limitations).
+
+## 11. M4.6 additions to the shared parts
+
+* **Analysis v2:** voiced runs carry a YIN `confidence`; `material.py` ranks attacks (clarity, sharpness, isolation — not loudness), tonal runs (reliability gate), gestures, textures, beds and cycles.
+* **Renderer:** `preserve_duration` events are pitch-shifted by resampling and then time-stretched back with WSOLA (`sola_stretch`) so a note keeps its length; ducking accepts per-trigger depths (`ducking.depths`); legacy plans render exactly as before (the loudness compensation is still measured on the source excerpt).
+* **Plan fields (composer):** `mode`, `groove`, `motifs[]` (with `relation`), `phrases[]`, `form`, `conversation[]`, `hierarchy`, `foreground_dropped`; events add `hierarchy`, `motif`, `variation`, `phrase`, `fragment`, `velocity`, `ghost`, `fg_window_s`, `response_to`.
+* **Quality report:** `music/quality.py` (`evaluate`) returns measurements and flags with a disclaimer; it is a diagnostic, not a score.
 
 ## 10. Known limitations
 

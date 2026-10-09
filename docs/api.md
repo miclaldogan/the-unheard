@@ -145,7 +145,7 @@ Rendering is asynchronous: `queued → processing → ready | failed`.
 
 | Method | Path | Notes |
 |---|---|---|
-| POST | `/api/compositions` | body `{recording_ids[1..8], seed?, controls?{density,structure,intensity ∈ 0..1}, duration_s? (15–90), role_overrides?{recording_id: role}, name?}` → `202` composition (`created: true`) or `200` with the existing one (`created: false`) when the same sources + seed + controls + duration + overrides + versions were already requested. `404` unknown recording, `409 NOT_READY` recording not ready, `422` bad input. |
+| POST | `/api/compositions` | body `{recording_ids[1..8], mode? ("composed" default | "organic" | "legacy"), seed?, controls?{density,structure,intensity ∈ 0..1}, duration_s? (15–90), role_overrides?{recording_id: role}, name?}` → `202` composition (`created: true`) or `200` with the existing one (`created: false`) when the same sources + seed + controls + duration + overrides + versions were already requested. `404` unknown recording, `409 NOT_READY` recording not ready, `422` bad input. |
 | GET | `/api/compositions[?recording_id=]` | list items (`id, name, saved, status, seed, duration_s, tempo_bpm, n_sources, recording_ids`); the filter answers "which compositions use this specimen?" |
 | GET | `/api/compositions/{id}` | full state: controls, tempo/key, `sections`, `sources[]` (label, role, secondary role, decision{scores, evidence, rationale, overridden}, analysis), `tracks[]` (role, pan, enters, `stem_url`, `original_url`), `metrics`, `echo[]` (conductor lines with evidence), `plan_hash`, `master_sha256`, `master_url`, `export_url`. |
 | PATCH | `/api/compositions/{id}` | `{name?, saved?}` |
@@ -163,3 +163,21 @@ Deleting a recording (`DELETE /api/recordings/{id}`) also deletes every composit
 contains it. Events: `CompositionCreated`, `CompositionPlanned`, `CompositionRendered`,
 `CompositionFailed`, `CompositionRevised` (variations), `CompositionDeleted` (`reason: user|source_deleted`).
 Design and limits: [`music-engine.md`](music-engine.md).
+
+---
+
+# M4.6 additions — arrangement modes
+
+`POST /api/compositions` accepts `mode`: **`composed`** (default; clear phrases, call-and-response, swing/ghost notes),
+**`organic`** (source-timed, sparse, atmospheric) or **`legacy`** (the M4/M4.5 event planner, kept for comparison). The
+mode is part of the idempotency key, so the same sources/seed in two modes are two compositions; variations inherit
+their parent's mode. Invalid modes → `422`.
+
+Composition responses gain: `mode`, `form` (phrase recipe per section, e.g. `"A + F F' Fa + R→A"`), `conversation[]`
+(`{lead, responder, evidence{score, temporal_fit, spectral_contrast, tonal_consonance, pulse_relation}}`), `groove`
+(`quantisation, swing_steps, micro_ms, ghost_notes, fills, tonal_strategy`), `hierarchy` (the chosen lead/foundation/
+support/gesture/bed sources) and per-track `hierarchy` (`lead|foundation|support|gesture|bed`). List items gain `mode`.
+Event `params` gain `hierarchy`, `motif`, `variation` (the operator-named variant, `response`, `fill`, `boundary` …),
+`phrase`, `fragment`, `velocity`, `ghost`, and `pitch_shift_st`/`octave_shift`/`preserve_duration` for pitched notes; the
+trace endpoint returns them unchanged. ECHO-0's `echo[]` adds an "answered in the silence" line, only when the plan
+contains answer events, with the conversation evidence attached. Migration `0005` adds `composition.mode`.

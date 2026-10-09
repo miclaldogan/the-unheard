@@ -7,6 +7,11 @@ from pydantic import BaseModel, Field
 
 class CompositionIn(BaseModel):
     recording_ids: list[str] = Field(min_length=1, max_length=8)
+    mode: Literal["organic", "composed", "legacy"] = Field(
+        default="composed",
+        description="organic: source-timed, sparse, atmospheric; composed: structured motifs, call-and-response; "
+        "legacy: the M4/M4.5 event planner (kept for A/B comparison)",
+    )
     seed: int | None = Field(default=None, ge=0, le=2**32 - 1)
     controls: dict[str, float] | None = Field(
         default=None, description="density, structure, intensity in 0…1 (default 0.5 each)"
@@ -48,6 +53,7 @@ class TrackOut(BaseModel):
     layer_order: int
     pan: float
     enters: str
+    hierarchy: str | None = None
     stem_url: str | None
     original_url: str
 
@@ -57,6 +63,7 @@ class CompositionOut(BaseModel):
     parent_id: str | None
     name: str
     saved: bool
+    mode: str = "legacy"
     status: Literal["queued", "processing", "ready", "failed"]
     error: str | None
     seed: int
@@ -74,6 +81,10 @@ class CompositionOut(BaseModel):
     export_url: str | None
     metrics: dict[str, Any] | None
     sections: list[dict[str, Any]] = []
+    form: dict[str, str] | None = None
+    conversation: list[dict[str, Any]] = []
+    groove: dict[str, Any] | None = None
+    hierarchy: dict[str, Any] | None = None
     key: dict[str, Any] | None = None
     tempo_source: str | None = None
     sources: list[SourceOut] = []
@@ -90,6 +101,7 @@ class CompositionListItem(BaseModel):
     parent_id: str | None
     name: str
     saved: bool
+    mode: str = "legacy"
     status: str
     seed: int
     duration_s: float | None

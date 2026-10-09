@@ -8,6 +8,8 @@ world; its memory, atlas, artwork and music are built from your recordings.
 
 ## Status
 
+**M4.6 (musical refinement, in progress on `feat/m4-6-musical-refinement`):** the orchestra can now be composed in two modes — **Composed** (motifs → phrases → sections, a clear foreground, call-and-response, swing and ghost notes) or **Organic** (source-timed, sparse and atmospheric) — in addition to the unchanged M4/M4.5 planner (`legacy`). Structure improved on objective measures; **nobody has listened to it yet**. See [`docs/M4-6-MUSICAL-REFINEMENT.md`](docs/M4-6-MUSICAL-REFINEMENT.md).
+
 **M4 — the Impossible Orchestra: implemented (engineering PARTIAL, musical quality NEEDS
 REVIEW).** Pick several sound memories (in the list or in the atlas), press Compose, and a
 deterministic planner turns their *measured* acoustics into sections, layers, rhythm and (when

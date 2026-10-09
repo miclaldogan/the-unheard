@@ -263,3 +263,59 @@ def test_role_override_changes_the_plan(mc: TestClient, ids: list[str]) -> None:
     assert b["plan_hash"] != a["plan_hash"]
     role = next(s for s in b["sources"] if s["recording_id"] == ids[0])
     assert role["role"] == "granular" and role["decision"]["overridden"]
+
+
+# ------------------------------------------------------------------ M4.6 modes
+def test_modes_default_to_composed_and_render_different_music(
+    mc: TestClient, ids: list[str]
+) -> None:
+    default = _render(mc, ids, seed=5)
+    assert default["mode"] == "composed" and default["form"] and default["hierarchy"]["lead"]
+    assert {t["hierarchy"] for t in default["tracks"]} >= {"lead", "bed"}
+    organic = _render(mc, ids, seed=5, mode="organic")
+    legacy = _render(mc, ids, seed=5, mode="legacy")
+    assert organic["mode"] == "organic" and legacy["mode"] == "legacy" and legacy["form"] is None
+    assert len({default["plan_hash"], organic["plan_hash"], legacy["plan_hash"]}) == 3
+    assert len({default["master_sha256"], organic["master_sha256"], legacy["master_sha256"]}) == 3
+    assert default["groove"]["swing_steps"] > 0 and organic["groove"]["swing_steps"] == 0
+    assert all(c["status"] == "ready" for c in (default, organic, legacy))
+    modes = {i["mode"] for i in mc.get("/api/compositions").json()}
+    assert modes == {"composed", "organic", "legacy"}
+
+
+def test_unknown_mode_is_rejected(mc: TestClient, ids: list[str]) -> None:
+    assert (
+        mc.post("/api/compositions", json={"recording_ids": ids, "mode": "jazz"}).status_code == 422
+    )
+
+
+def test_same_request_in_different_modes_is_not_deduplicated(
+    mc: TestClient, ids: list[str]
+) -> None:
+    body = {"recording_ids": ids, "seed": 3, "duration_s": 20}
+    a = mc.post("/api/compositions", json={**body, "mode": "organic"})
+    b = mc.post("/api/compositions", json={**body, "mode": "composed"})
+    c = mc.post("/api/compositions", json={**body, "mode": "organic"})
+    assert (
+        a.json()["id"] != b.json()["id"]
+        and a.json()["id"] == c.json()["id"]
+        and c.status_code == 200
+    )
+
+
+def test_variation_keeps_the_mode_and_conductor_reports_the_conversation(
+    mc: TestClient, ids: list[str]
+) -> None:
+    comp = _render(mc, ids, seed=5, mode="composed")
+    if comp["conversation"]:
+        texts = [e["text"] for e in comp["echo"]]
+        assert any("answered in the silence" in t for t in texts)
+        ev = next(e for e in comp["echo"] if "answered" in e["text"])
+        assert ev["evidence"]["conversation"]["score"] >= 0.45
+    v = mc.post(f"/api/compositions/{comp['id']}/variation", json={}).json()
+    _services(mc).compositions.run_pending()
+    assert mc.get(f"/api/compositions/{v['id']}").json()["mode"] == "composed"
+    events = mc.get(f"/api/compositions/{comp['id']}/events").json()
+    assert all("hierarchy" in e["params"] and "fragment" in e["params"] for e in events)
+    tr = mc.get(f"/api/compositions/{comp['id']}/trace/{events[0]['seq']}").json()
+    assert tr["event"]["params"].get("hierarchy") and tr["source"]["exists"]

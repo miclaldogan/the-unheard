@@ -23,7 +23,7 @@ from unheard.events import (
     COMPOSITION_RENDERED,
     COMPOSITION_REVISED,
 )
-from unheard.music import ANALYSIS_VERSION, PLANNER_VERSION, RENDER_VERSION
+from unheard.music import ANALYSIS_VERSION, COMPOSER_VERSION, PLANNER_VERSION, RENDER_VERSION
 from unheard.music.engine import SourceInput, compose
 from unheard.music.planner import DEFAULT_CONTROLS, MAX_SOURCES
 from unheard.music.render import SR, to_pcm16
@@ -46,6 +46,8 @@ REQUIRED_ARRAYS = (
     "times_s",
 )
 MIN_DURATION_S, MAX_DURATION_S, DEFAULT_DURATION_S = 15.0, 90.0, 45.0
+ALL_MODES = ("legacy", "organic", "composed")
+DEFAULT_MODE = "composed"
 LICENSE_NOTE = (
     "This composition contains transformed audio from your own recordings, which may include "
     "unintended background speech. It stays on this machine unless you export it."
@@ -127,8 +129,11 @@ class CompositionService:
         role_overrides: dict[str, str] | None = None,
         name: str | None = None,
         parent_id: str | None = None,
+        mode: str = DEFAULT_MODE,
     ) -> tuple[CompositionRow, bool]:
         """Create (or return the existing identical) composition. Returns ``(row, created)``."""
+        if mode not in ALL_MODES:
+            raise ValidationFailed(f"mode must be one of {list(ALL_MODES)}")
         ids = list(dict.fromkeys(recording_ids))
         if not ids:
             raise ValidationFailed("select at least one recording")
@@ -169,7 +174,7 @@ class CompositionService:
         by_rid = {s["recording_id"]: s["content_hash"] for s in sources}
         ov_hash = {by_rid[r]: v for r, v in overrides_in.items()}
         versions = {
-            "planner": PLANNER_VERSION,
+            "planner": PLANNER_VERSION if mode == "legacy" else COMPOSER_VERSION,
             "render": RENDER_VERSION,
             "analysis": ANALYSIS_VERSION,
             "dsp": DSP_VERSION,
@@ -182,6 +187,7 @@ class CompositionService:
                     "controls": ctrl,
                     "duration": round(dur, 3),
                     "overrides": ov_hash,
+                    "mode": mode,
                     "versions": versions,
                 },
                 sort_keys=True,
@@ -202,6 +208,7 @@ class CompositionService:
                 overrides=ov_hash,
                 target_duration_s=dur,
                 sources=sources,
+                mode=mode,
             )
             EventRepo.append(
                 conn,
@@ -242,6 +249,7 @@ class CompositionService:
             role_overrides={by_hash[h]: r for h, r in parent.overrides.items() if h in by_hash},
             name=parent.name,
             parent_id=parent.id,
+            mode=parent.mode,
         )
 
     def retry(self, cid: str) -> CompositionRow:
@@ -318,6 +326,7 @@ class CompositionService:
             controls=row.controls,
             duration_s=row.target_duration_s,
             role_overrides=row.overrides,
+            mode=row.mode,
         )
         plan = res.plan
         # files first (atomic each); the DB row flips to 'ready' only after all exist
@@ -391,8 +400,9 @@ class CompositionService:
             "composition_id": cid,
             "seed": row.seed,
             "controls": row.controls,
+            "mode": row.mode,
             "versions": {
-                "planner": PLANNER_VERSION,
+                "planner": PLANNER_VERSION if row.mode == "legacy" else COMPOSER_VERSION,
                 "render": RENDER_VERSION,
                 "analysis": ANALYSIS_VERSION,
                 "dsp": DSP_VERSION,
@@ -520,6 +530,21 @@ class CompositionService:
                             },
                         }
                     )
+        with self.db.connection() as conn:
+            plan = CompositionRepo.plan(conn, row.id) or {}
+        conv = plan.get("conversation") or []
+        answered = any(e.get("variation") == "response" for e in plan.get("events", []))
+        if conv and answered:
+            rid_of = {s["content_hash"]: s["recording_id"] for s in srcs}
+            a = names.get(rid_of.get(conv[0]["lead_source"], ""), "one sound")
+            b = names.get(rid_of.get(conv[0]["responder_source"], ""), "another")
+            lines.append(
+                {
+                    "text": f"{a} spoke first.\n{b} answered in the silence.",
+                    "tag": "measured",
+                    "evidence": {"conversation": conv[0]["evidence"], "mode": row.mode},
+                }
+            )
         roles = [s["role"] for s in srcs if s["role"]]
         if roles:
             n_rhythm = sum(r in ("percussion", "rhythmic_texture", "accent") for r in roles)

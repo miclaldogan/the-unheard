@@ -9,6 +9,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 from unheard.music.analysis import SourceAnalysis, analyze_source
+from unheard.music.composer import MODES, compose_plan
+from unheard.music.material import extract_material
 from unheard.music.planner import canonical_plan_hash, plan_composition
 from unheard.music.render import SR, render_plan
 from unheard.music.roles import RoleDecision, assign_role
@@ -40,8 +42,12 @@ def analyse_and_plan(
     controls: dict[str, float] | None = None,
     duration_s: float = 45.0,
     role_overrides: dict[str, str] | None = None,
+    mode: str = "legacy",
+    tonal_strategy: str = "contour",
+    groove_q: float | None = None,
 ) -> tuple[dict[str, Any], dict[str, SourceAnalysis], dict[str, RoleDecision]]:
-    """``role_overrides`` is keyed by source key (content hash)."""
+    """``role_overrides`` is keyed by source key (content hash). ``mode``: legacy (M4/M4.5 planner),
+    organic or composed (M4.6 motif composer)."""
     if not sources:
         raise ValueError("at least one source is required")
     keys = [s.key for s in sources]
@@ -54,9 +60,28 @@ def analyse_and_plan(
     analyses = {s.key: analyze_source(s.key, s.samples, s.sample_rate, s.arrays) for s in ordered}
     overrides = role_overrides or {}
     roles = {k: assign_role(a, overrides.get(k)) for k, a in analyses.items()}
-    plan = plan_composition(
-        list(analyses.values()), roles, seed=seed, controls=controls, duration_s=duration_s
-    )
+    if mode == "legacy":
+        plan = plan_composition(
+            list(analyses.values()), roles, seed=seed, controls=controls, duration_s=duration_s
+        )
+        plan["mode"] = "legacy"
+    elif mode in MODES:
+        materials = {
+            s.key: extract_material(analyses[s.key], s.samples, s.sample_rate) for s in ordered
+        }
+        plan = compose_plan(
+            list(analyses.values()),
+            roles,
+            materials,
+            seed=seed,
+            mode=mode,
+            controls=controls,
+            duration_s=duration_s,
+            tonal_strategy=tonal_strategy,
+            groove_q=groove_q,
+        )
+    else:
+        raise ValueError(f"mode must be 'legacy' or one of {MODES}")
     return plan, analyses, roles
 
 
@@ -67,9 +92,19 @@ def compose(
     controls: dict[str, float] | None = None,
     duration_s: float = 45.0,
     role_overrides: dict[str, str] | None = None,
+    mode: str = "legacy",
+    tonal_strategy: str = "contour",
+    groove_q: float | None = None,
 ) -> ComposeResult:
     plan, analyses, roles = analyse_and_plan(
-        sources, seed=seed, controls=controls, duration_s=duration_s, role_overrides=role_overrides
+        sources,
+        seed=seed,
+        controls=controls,
+        duration_s=duration_s,
+        role_overrides=role_overrides,
+        mode=mode,
+        tonal_strategy=tonal_strategy,
+        groove_q=groove_q,
     )
     by_key = {s.key: s.samples for s in sources}
     stems, master, metrics = render_plan(plan, by_key)

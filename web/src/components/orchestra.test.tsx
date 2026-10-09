@@ -12,12 +12,12 @@ const items = [rec('r1'), rec('r2'), rec('r3')];
 const atlas = { nodes: items.map((r, i) => ({ recording_id: r.id, label: ['Rain', 'Footsteps', 'Bird'][i], state: 'confirmed', hue: 100 + i * 60 })), edges: [] } as unknown as AtlasData;
 
 const comp = (status: Composition['status'] = 'ready'): Composition => ({
-  id: 'c1', parent_id: null, name: 'Untitled orchestra', saved: false, status, error: status === 'failed' ? 'boom' : null, seed: 7,
+  id: 'c1', parent_id: null, name: 'Untitled orchestra', saved: false, mode: 'composed', status, error: status === 'failed' ? 'boom' : null, seed: 7,
   controls: { density: 0.5, structure: 0.5, intensity: 0.5 }, target_duration_s: 45, duration_s: status === 'ready' ? 40 : null, tempo_bpm: 96,
   planner_version: 1, render_version: 1, plan_hash: 'abcdef123456', master_sha256: 'x', master_url: '/api/compositions/c1/master', export_url: '/api/compositions/c1/export',
-  metrics: { peak_dbfs: -1, lufs_approx: -18, clipping_ratio: 0 }, sections: [{ name: 'introduction', start_bar: 0, bars: 4, start_s: 0, end_s: 10 }], key: null, tempo_source: 'periodicity',
+  metrics: { peak_dbfs: -1, lufs_approx: -18, clipping_ratio: 0 }, sections: [{ name: 'introduction', start_bar: 0, bars: 4, start_s: 0, end_s: 10 }], form: { introduction: 'A', discovery: "A' + R→A" }, conversation: [{ lead: 'x:A', responder: 'y:R', evidence: { score: 0.82 } }], groove: { quantisation: 0.6, swing_steps: 0.22, micro_ms: 5, ghost_notes: true, fills: true, tonal_strategy: 'contour' }, hierarchy: null, key: null, tempo_source: 'periodicity',
   sources: items.map((r, i) => ({ position: i, recording_id: r.id, content_hash: `h${i}`, exists: true, label: ['Rain', 'Footsteps', 'Bird'][i], role: (['texture', 'percussion', 'tonal_motif'] as const)[i], secondary_role: null, decision: { primary: (['texture', 'percussion', 'tonal_motif'] as const)[i], secondary: null, scores: {}, evidence: {}, rationale: `measured reason ${i}`, overridden: false }, analysis: {} })),
-  tracks: items.map((r, i) => ({ track_key: `t${i + 1}`, recording_id: r.id, role: (['texture', 'percussion', 'tonal_motif'] as const)[i], layer_order: i, pan: 0, enters: 'introduction', stem_url: `/api/compositions/c1/stems/t${i + 1}`, original_url: `/api/recordings/${r.id}/audio` })),
+  tracks: items.map((r, i) => ({ track_key: `t${i + 1}`, recording_id: r.id, role: (['texture', 'percussion', 'tonal_motif'] as const)[i], layer_order: i, pan: 0, enters: 'introduction', hierarchy: (['bed', 'foundation', 'lead'] as const)[i], stem_url: `/api/compositions/c1/stems/t${i + 1}`, original_url: `/api/recordings/${r.id}/audio` })),
   echo: [{ text: 'This is what your world sounds like through my memory.', tag: 'imagination', evidence: {} }],
   created_at: 'x', updated_at: 'x', rendered_at: 'x', created: true,
 });
@@ -89,7 +89,10 @@ describe('Orchestra view', () => {
     expect(post.body).toMatchObject({ recording_ids: ['r1', 'r3'], controls: { density: 0.5, structure: 0.5, intensity: 0.5 }, duration_s: 45 });
     // one instrument per layer, each with a role chip and the conductor line
     expect(screen.getAllByRole('button', { name: /^mute / })).toHaveLength(3);
-    expect(screen.getByText('percussion')).toBeInTheDocument();
+    expect(screen.getByText('groove')).toBeInTheDocument();
+    expect(screen.getByText('lead')).toBeInTheDocument();
+    expect(screen.getByText('atmosphere')).toBeInTheDocument();
+    expect(screen.getByLabelText('musical form')).toHaveTextContent(/introduction: A.*conversation: 1 call-and-response \(fit 0\.82\).*swing 0\.22/s);
     expect(screen.getByText(/through my memory/)).toBeInTheDocument();
   });
 
@@ -192,6 +195,25 @@ describe('Orchestra view', () => {
     render(<Orchestra items={[]} preselected={[]} activityRef={{ current: {} }} onOpenSpecimen={vi.fn()} onOpenAtlas={vi.fn()} />);
     expect(await screen.findByText(/No ready recordings yet/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Compose from 0 sounds/ })).toBeDisabled();
+  });
+});
+
+describe('arrangement modes', () => {
+  it('composes in Composed mode by default and lets the player switch to Organic', async () => {
+    const { calls } = setup();
+    expect(await screen.findByRole('button', { name: 'Composed' })).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'Organic' }));
+    expect(screen.getByRole('button', { name: 'Organic' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Composed' })).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(screen.getByRole('button', { name: /Compose from 3 sounds/ }));
+    await screen.findByRole('button', { name: 'Play' });
+    expect(calls.find((c) => c.method === 'POST' && c.url === '/api/compositions')!.body).toMatchObject({ mode: 'organic' });
+  });
+  it('sends composed by default', async () => {
+    const { calls } = setup();
+    fireEvent.click(await screen.findByRole('button', { name: /Compose from 3 sounds/ }));
+    await screen.findByRole('button', { name: 'Play' });
+    expect(calls.find((c) => c.method === 'POST' && c.url === '/api/compositions')!.body).toMatchObject({ mode: 'composed' });
   });
 });
 

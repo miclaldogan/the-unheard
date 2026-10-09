@@ -31,7 +31,7 @@ CLIPS = [
 CONFIGS = [(3, 30), (5, 60), (8, 60)]
 
 
-def child(n: int, dur: int) -> None:
+def child(n: int, dur: int, mode: str) -> None:
     sys.path.insert(0, str(Path(__file__).parent))
     from m4_demo import load_clip
 
@@ -41,7 +41,7 @@ def child(n: int, dur: int) -> None:
 
     srcs = [load_clip(f) for f in CLIPS[:n]]
     t0 = time.perf_counter()
-    plan, _, _ = analyse_and_plan(srcs, seed=7, duration_s=dur)
+    plan, _, _ = analyse_and_plan(srcs, seed=7, duration_s=dur, mode=mode)
     t_plan = time.perf_counter() - t0
     t1 = time.perf_counter()
     _, master, metrics = render_plan(plan, {s.key: s.samples for s in srcs})
@@ -50,6 +50,7 @@ def child(n: int, dur: int) -> None:
     print(
         json.dumps(
             {
+                "mode": mode,
                 "sources": n,
                 "target_s": dur,
                 "piece_s": round(plan["duration_s"], 1),
@@ -67,16 +68,20 @@ def child(n: int, dur: int) -> None:
 
 
 def main() -> None:
-    if len(sys.argv) == 3:
-        child(int(sys.argv[1]), int(sys.argv[2]))
+    if len(sys.argv) == 4:
+        child(int(sys.argv[1]), int(sys.argv[2]), sys.argv[3])
         return
     assert (ESC / "esc50.csv").exists(), "download ESC-50 clips first (see eval/README.md)"
     print(f"# {platform.platform()} · python {platform.python_version()}")
-    for n, d in CONFIGS:
-        out = subprocess.run(
-            [sys.executable, __file__, str(n), str(d)], capture_output=True, text=True, check=True
-        )
-        print(out.stdout.strip())
+    for mode in ("legacy", "organic", "composed"):
+        for n, d in CONFIGS:
+            out = subprocess.run(
+                [sys.executable, __file__, str(n), str(d), mode],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            print(out.stdout.strip())
 
 
 if __name__ == "__main__":

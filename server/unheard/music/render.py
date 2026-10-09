@@ -114,6 +114,48 @@ def _crest_soften(x: Mono, crest: float = 3.0) -> Mono:
     return np.asarray(np.tanh(x / tau) * tau)
 
 
+def sola_stretch(x: Mono, n_out: int, win: int = 1536, seek: int = 384) -> Mono:
+    """WSOLA time-stretch to exactly ``n_out`` samples (pitch unchanged). For short pitched notes."""
+    n_in = x.size
+    if n_out <= 0 or n_in < win * 2 or abs(n_out - n_in) < 32:
+        out = np.zeros(max(n_out, 0))
+        m = min(n_in, n_out)
+        out[:m] = x[:m]
+        return out
+    hop_s = win // 2
+    hop_a = hop_s * n_in / n_out
+    window = np.hanning(win)
+    pad = np.concatenate([np.zeros(seek), x, np.zeros(win + seek + hop_s)])
+    out = np.zeros(n_out + 2 * win)
+    norm = np.zeros_like(out)
+    prev = seek
+    n_frames = int(np.ceil(n_out / hop_s)) + 1
+    for k in range(n_frames):
+        target = int(round(k * hop_a)) + seek
+        if k == 0:
+            pos = target
+        else:
+            ref = pad[prev + hop_s : prev + hop_s + win]
+            best, pos = -np.inf, target
+            for d in range(-seek, seek + 1, 4):
+                cand = target + d
+                if cand < 0 or cand + win > pad.size:
+                    continue
+                seg = pad[cand : cand + win : 4]
+                score = float(np.dot(seg, ref[::4]))
+                if score > best:
+                    best, pos = score, cand
+        frame = pad[pos : pos + win]
+        if frame.size < win:
+            frame = np.pad(frame, (0, win - frame.size))
+        o = k * hop_s
+        out[o : o + win] += frame * window
+        norm[o : o + win] += window
+        prev = pos
+    out = out / np.maximum(norm, 1e-6)
+    return out[:n_out]
+
+
 def _loop(seg: Mono, n_out: int, xf: int) -> Mono:
     if seg.size <= 2 * xf + 8:
         reps = int(np.ceil(n_out / max(seg.size, 1)))
@@ -143,7 +185,12 @@ def render_event(ev: dict[str, Any], src: Mono, pan: float, seed: int, buf: Ster
         x = _excerpt(src, ev["source_start_s"], ev["source_end_s"])
         if x.size < 8:
             return
-        x = _crest_soften(_resample(x, ev.get("rate", 1.0))) * _window_gain(x)
+        n0 = x.size
+        g_win = _window_gain(x)  # measured on the source excerpt (as in M4/M4.5)
+        x = _resample(x, ev.get("rate", 1.0))
+        if ev.get("preserve_duration"):  # pitch moved, length kept (tonal notes)
+            x = sola_stretch(x, n0)
+        x = _crest_soften(x) * g_win
         x = _highpass(_lowpass(x, ev.get("lowpass_hz")), ev.get("highpass_hz"))
         fi = max(int(ev.get("fade_in_s", 0.005) * SR), 48)
         fo = max(int(ev.get("fade_out_s", 0.02) * SR), 96)
@@ -256,13 +303,14 @@ def duck_envelope(plan: dict[str, Any], n: int) -> Mono | None:
     d = plan.get("ducking")
     if not d or not d["targets"] or not d["triggers"]:
         return None
-    depth = 10 ** (-d["depth_db"] / 20)
+    depths = d.get("depths", {})
     att, rel = int(d["attack_s"] * SR), int(d["release_s"] * SR)
     env = np.ones(n)
     trig = set(d["triggers"])
     for ev in plan["events"]:
         if ev["track"] not in trig or ev["kind"] != "slice":
             continue
+        depth = 10 ** (-depths.get(ev["track"], d["depth_db"]) / 20)
         a0 = int(ev["t"] * SR)
         hold = int(min(ev["dur"], d["max_hold_s"]) * SR)
         total = att + hold + rel

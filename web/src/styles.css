@@ -211,3 +211,8 @@ canvas.signature { width: 100%; aspect-ratio: 1 / 1; display: block; border-radi
 .saved { margin-top: 10px; font-size: 0.85rem; }
 .saved summary { cursor: pointer; color: var(--text-dim); }
 a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* ---- M4.6: arrangement mode ---- */
+.modes { display: flex; gap: 8px; margin-top: 10px; }
+.modes .btn { flex: 1; }
+.caption.form { line-height: 1.5; }

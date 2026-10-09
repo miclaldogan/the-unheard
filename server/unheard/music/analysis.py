@@ -155,7 +155,12 @@ def yin_pitch(
     return times, f0, cm
 
 
-def _voiced_runs(times: NDArray[np.float64], f0: NDArray[np.float64], dur: float) -> list[Segment]:
+def _voiced_runs(
+    times: NDArray[np.float64],
+    f0: NDArray[np.float64],
+    dur: float,
+    cmnd: NDArray[np.float64] | None = None,
+) -> list[Segment]:
     runs: list[Segment] = []
     voiced = f0 > 0
     i, n = 0, f0.size
@@ -181,7 +186,14 @@ def _voiced_runs(times: NDArray[np.float64], f0: NDArray[np.float64], dur: float
                     start,
                     end,
                     score=(end - start) / (1.0 + stab),
-                    meta={"midi": float(np.median(midis)), "stability_st": stab},
+                    meta={
+                        "midi": float(np.median(midis)),
+                        "stability_st": stab,
+                        # YIN confidence: 1 − mean cumulative-mean-normalised difference (1 = clean tone)
+                        "confidence": 1.0
+                        if cmnd is None
+                        else float(np.clip(1.0 - np.mean(cmnd[i : j + 1]), 0.0, 1.0)),
+                    },
                 )
             )
         i = j + 1
@@ -260,9 +272,9 @@ def analyze_source(
             if sc > best:
                 best, sustained = sc, Segment(float(st), float(st + win), sc)
 
-    t_p, f0, _cm = yin_pitch(samples, sr)
+    t_p, f0, cm = yin_pitch(samples, sr)
     voiced_ratio = float(np.mean(f0 > 0)) if f0.size else 0.0
-    runs = _voiced_runs(t_p, f0, dur) if voiced_ratio > 0 else []
+    runs = _voiced_runs(t_p, f0, dur, cm) if voiced_ratio > 0 else []
     f0_med: float | None = None
     pstab: float | None = None
     if runs:

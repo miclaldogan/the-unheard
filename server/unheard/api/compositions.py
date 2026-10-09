@@ -59,6 +59,7 @@ def _out(services: Services, row: CompositionRow, *, created: bool | None = None
         for s in srcs
         if exists[s["recording_id"]]
     }
+    hier_of = {t["id"]: t.get("hierarchy") for t in (plan or {}).get("tracks", [])}
     base = f"/api/compositions/{row.id}"
     ready = row.status == "ready"
     return CompositionOut(
@@ -66,6 +67,7 @@ def _out(services: Services, row: CompositionRow, *, created: bool | None = None
         parent_id=row.parent_id,
         name=row.name,
         saved=row.saved,
+        mode=row.mode,
         status=row.status,  # type: ignore[arg-type]
         error=row.error,
         seed=row.seed,
@@ -83,6 +85,10 @@ def _out(services: Services, row: CompositionRow, *, created: bool | None = None
         export_url=f"{base}/export" if ready else None,
         metrics=row.metrics,
         sections=(plan or {}).get("sections", []),
+        form=(plan or {}).get("form"),
+        conversation=(plan or {}).get("conversation", []),
+        groove=(plan or {}).get("groove"),
+        hierarchy=(plan or {}).get("hierarchy"),
         key=(plan or {}).get("key"),
         tempo_source=(plan or {}).get("tempo_source"),
         sources=[
@@ -107,6 +113,7 @@ def _out(services: Services, row: CompositionRow, *, created: bool | None = None
                 layer_order=t["layer_order"],
                 pan=t["pan"],
                 enters=t["enters"],
+                hierarchy=hier_of.get(t["track_key"]),
                 stem_url=f"{base}/stems/{t['track_key']}" if t["stem_path"] else None,
                 original_url=f"/api/recordings/{t['recording_id']}/audio",
             )
@@ -132,6 +139,7 @@ def create_composition(
         controls=body.controls,
         duration_s=body.duration_s,
         role_overrides=body.role_overrides,
+        mode=body.mode,
         name=body.name,
     )
     if not created:
@@ -156,6 +164,7 @@ def list_compositions(
                     parent_id=r.parent_id,
                     name=r.name,
                     saved=r.saved,
+                    mode=r.mode,
                     status=r.status,
                     seed=r.seed,
                     duration_s=r.duration_s,
