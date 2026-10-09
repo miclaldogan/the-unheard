@@ -15,6 +15,8 @@ The rendered WAVs are kept for a human to listen to (see "Listening protocol").
 Optional Gemma planner: **not implemented** (deferred, extension point documented in
 `docs/music-engine.md` §9). The app and every test run without it.
 
+> **Update (M4.5, same day):** the audio numbers in "Audio quality" below are from the *first* render. Objective diagnostics found two defects (hits masked by the atmosphere beds; a 16–20 dB loudness spread between sections), which were fixed with atmosphere ducking and tighter section dynamics, and a UI defect (switching to the Atlas stopped the music) was fixed. Current numbers, the audio file paths, the pending browser run and the listening questionnaire are in [`M4-LISTENING-REVIEW.md`](M4-LISTENING-REVIEW.md).
+
 ## What exists
 
 | Area | Where |

@@ -95,6 +95,16 @@ audio** and it only ever processes recorded material; there are no synthesised v
 Not implemented: time-stretching (rate changes pitch *and* speed), spectral processing beyond
 filters, stereo recordings (sources are mono).
 
+### Arrangement ducking and level shaping (M4.5)
+
+Atmosphere layers (texture, drone, grain cloud) duck by 4 dB under every slice of a percussion,
+accent or melody layer (15 ms attack, hold ≤ 0.4 s, 250 ms raised-cosine release). The ducking
+spec is stored in the plan (`ducking`) and applied to the stems before they are summed, so stems
+still sum to the master. Sections with fewer sounding layers get +1.5 dB per missing layer
+(≤ +6 dB) and the section offsets are −6 / −3 / 0 / −5 dB, which keeps the section-to-section
+loudness spread near 11–12 dB instead of ~19 dB. Both were chosen from the diagnostics in
+[`M4-LISTENING-REVIEW.md`](M4-LISTENING-REVIEW.md), not by ear.
+
 ## 5. Mixing and limiting
 
 Master = Σ stems. One makeup gain moves integrated loudness towards −18 LUFS (BS.1770-style

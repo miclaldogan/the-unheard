@@ -23,6 +23,7 @@ export default function App() {
   const [version, setVersion] = useState(0);
   const [view, setView] = useState<'hearing' | 'specimen' | 'atlas' | 'orchestra'>('hearing');
   const [orchestraIds, setOrchestraIds] = useState<string[]>([]);
+  const [orchestraOpened, setOrchestraOpened] = useState(false);
   const activityRef = useRef<Record<string, number>>({});
   const toggleOrchestra = useCallback((id: string) => setOrchestraIds((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : cur.length >= 8 ? cur : [...cur, id])), []);
 
@@ -90,11 +91,16 @@ export default function App() {
         <button className={view === 'hearing' ? 'active' : ''} onClick={() => setView('hearing')}>Hearing</button>
         <button className={view === 'specimen' ? 'active' : ''} onClick={() => setView('specimen')} disabled={!selected}>Specimen</button>
         <button className={view === 'atlas' ? 'active' : ''} onClick={() => setView('atlas')}>Atlas</button>
-        <button className={view === 'orchestra' ? 'active' : ''} onClick={() => setView('orchestra')}>Orchestra</button>
+        <button className={view === 'orchestra' ? 'active' : ''} onClick={() => { setOrchestraOpened(true); setView('orchestra'); }}>Orchestra</button>
       </nav>
 
-      {view === 'atlas' && <Atlas version={version + items.length} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onBack={() => setView('hearing')} selection={orchestraIds} onToggleSelect={toggleOrchestra} onCompose={() => setView('orchestra')} activityRef={activityRef} />}
-      {view === 'orchestra' && <Orchestra items={items} preselected={orchestraIds} activityRef={activityRef} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onOpenAtlas={() => setView('atlas')} />}
+      {view === 'atlas' && <Atlas version={version + items.length} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onBack={() => setView('hearing')} selection={orchestraIds} onToggleSelect={toggleOrchestra} onCompose={() => { setOrchestraOpened(true); setView('orchestra'); }} activityRef={activityRef} />}
+      {/* stays mounted (hidden) once opened, so the music keeps playing and the atlas can react to it */}
+      {(orchestraOpened || view === 'orchestra') && (
+        <div hidden={view !== 'orchestra'}>
+          <Orchestra items={items} preselected={orchestraIds} activityRef={activityRef} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onOpenAtlas={() => setView('atlas')} />
+        </div>
+      )}
       {view === 'specimen' && selected && <Specimen recordingId={selected} onTeach={() => setView('hearing')} onOpenAtlas={() => setView('atlas')} onSelect={setSelected} />}
       <main className="grid" hidden={view !== 'hearing'}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>

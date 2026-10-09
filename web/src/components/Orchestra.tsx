@@ -178,7 +178,7 @@ export function Orchestra({ items, preselected, activityRef, onOpenSpecimen, onO
     let last = 0;
     const frame = () => {
       const t = p.currentTime;
-      const act = activityAt(events, t, gains);
+      const act = p.paused ? {} : activityAt(events, t, gains); // restrained when nothing sounds
       activityRef.current = act;
       instRefs.current.forEach((el, rid) => el.style.setProperty('--lv', String(reduced ? Math.round((act[rid] ?? 0) * 3) / 3 : (act[rid] ?? 0).toFixed(3))));
       draw(t);

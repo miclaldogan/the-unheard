@@ -173,15 +173,18 @@ describe('Orchestra view', () => {
     expect(screen.getByRole('link', { name: /with stems/ })).toHaveAttribute('href', '/api/compositions/c1/export?bundle=true');
   });
 
-  it('writes live activity for the atlas only while a sounding event covers the playhead', async () => {
+  it('writes live activity for the atlas only while something is playing and an event covers the playhead', async () => {
     const { p, activityRef } = setup();
     fireEvent.click(await screen.findByRole('button', { name: /Compose from 3 sounds/ }));
     await screen.findByRole('button', { name: 'Play' });
+    expect(activityRef.current).toEqual({}); // nothing plays yet → everything restrained
     p.seek(2.05);
+    await p.play();
     await waitFor(() => expect(activityRef.current.r2).toBeGreaterThan(0.5));
     expect(activityRef.current.r1).toBeGreaterThan(0);
     p.seek(30);
     await waitFor(() => expect(activityRef.current).toEqual({}));
+    p.pause();
   });
 
   it('asks for a recording first when nothing is ready', async () => {

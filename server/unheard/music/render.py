@@ -251,6 +251,36 @@ def limiter_gain(x: Stereo) -> Mono:
     return np.asarray(g)
 
 
+def duck_envelope(plan: dict[str, Any], n: int) -> Mono | None:
+    """Gain (≤ 1) dipping under every trigger-layer slice: fast attack, hold, raised-cosine release."""
+    d = plan.get("ducking")
+    if not d or not d["targets"] or not d["triggers"]:
+        return None
+    depth = 10 ** (-d["depth_db"] / 20)
+    att, rel = int(d["attack_s"] * SR), int(d["release_s"] * SR)
+    env = np.ones(n)
+    trig = set(d["triggers"])
+    for ev in plan["events"]:
+        if ev["track"] not in trig or ev["kind"] != "slice":
+            continue
+        a0 = int(ev["t"] * SR)
+        hold = int(min(ev["dur"], d["max_hold_s"]) * SR)
+        total = att + hold + rel
+        if a0 >= n:
+            continue
+        shape = np.concatenate(
+            [
+                np.linspace(0.0, 1.0, att, endpoint=False),
+                np.ones(hold),
+                0.5 + 0.5 * np.cos(np.pi * np.arange(rel) / max(rel, 1)),
+            ]
+        )
+        g = 1.0 - (1.0 - depth) * shape
+        end = min(n, a0 + total)
+        env[a0:end] = np.minimum(env[a0:end], g[: end - a0])
+    return env
+
+
 def render_plan(
     plan: dict[str, Any], sources: dict[str, Mono]
 ) -> tuple[dict[str, Stereo], Stereo, dict[str, Any]]:
@@ -271,6 +301,11 @@ def render_plan(
             )
             buf = buf + send * wet
         stems[tr["id"]] = buf
+
+    duck = duck_envelope(plan, n)
+    if duck is not None:
+        for tid in plan["ducking"]["targets"]:
+            stems[tid] = stems[tid] * duck[:, None]
 
     master = np.zeros((n, 2))
     for s in stems.values():

@@ -80,6 +80,16 @@ def main() -> None:
         for tid, stem in res.stems.items():
             sf.write(out / f"{name}_{tid}.wav", to_pcm16(stem), SR, subtype="PCM_16")
         (out / f"{name}_plan.json").write_text(json.dumps(res.plan, indent=1))
+        # ~25 s excerpt around the start of the convergence section (the fullest part)
+        conv = next(sec for sec in res.plan["sections"] if sec["name"] == "convergence")
+        a = max(0.0, conv["start_s"] - 8.0)
+        i0, i1 = int(a * SR), int(min(res.master.shape[0] / SR, a + 25.0) * SR)
+        ex = res.master[i0:i1].copy()
+        fade = int(0.05 * SR)
+        ex[:fade] *= np.linspace(0, 1, fade)[:, None]
+        ex[-fade:] *= np.linspace(1, 0, fade)[:, None]
+        (out / "excerpts").mkdir(exist_ok=True)
+        sf.write(out / "excerpts" / f"{name}_excerpt.wav", to_pcm16(ex), SR, subtype="PCM_16")
         report[name] = {
             "sources": {
                 names[k]: {"role": d.primary, "secondary": d.secondary, "why": d.rationale}

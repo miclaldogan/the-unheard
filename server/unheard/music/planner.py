@@ -32,14 +32,14 @@ from unheard.music.analysis import Segment, SourceAnalysis, hz_to_midi
 from unheard.music.roles import ROLES, RoleDecision
 
 SECTIONS = ("introduction", "discovery", "convergence", "resolution")
-SECTION_DB = {"introduction": -9.0, "discovery": -5.0, "convergence": 0.0, "resolution": -8.0}
+SECTION_DB = {"introduction": -6.0, "discovery": -3.0, "convergence": 0.0, "resolution": -5.0}
 ROLE_BASE_DB = {
     "texture": -8.0,
     "drone": -8.0,
     "rhythmic_texture": -8.0,
-    "percussion": -8.0,
+    "percussion": -5.0,
     "tonal_motif": -5.0,
-    "accent": -7.0,
+    "accent": -5.0,
     "granular": -12.0,
 }
 ROLE_REVERB = {
@@ -55,6 +55,7 @@ ROLE_LOWPASS = {"drone": 700.0}
 PENTATONIC = (0, 3, 5, 7, 10)  # minor pentatonic degrees (semitones above the tonic)
 TARGET_SEG_RMS_DB = -24.0
 STEPS_PER_BAR = 16
+DUCK_DEPTH_DB = 4.0
 ATMOSPHERE_ROLES = ("texture", "drone", "granular")
 LANE_EDGES_HZ = (0.0, 1200.0, 4500.0, 20000.0)
 REGISTER_CEILING_MIDI = 84.0  # ≈ 1 kHz: melodies above this are moved down by octaves (≤ 2)
@@ -250,8 +251,12 @@ def plan_composition(
         for si, sec in enumerate(sections):
             if li >= active_n[sec["name"]]:
                 continue
-            sec_db = SECTION_DB[sec["name"]] + (
-                intens_db if sec["name"] == "convergence" else 0.4 * intens_db
+            # fewer layers sound quieter: give thin sections +1.5 dB per missing layer (≤ +6 dB)
+            thin = min(6.0, 1.5 * (n_layers - active_n[sec["name"]]))
+            sec_db = (
+                SECTION_DB[sec["name"]]
+                + thin
+                + (intens_db if sec["name"] == "convergence" else 0.4 * intens_db)
             )
             evs += _role_events(
                 role,
@@ -274,6 +279,18 @@ def plan_composition(
         events += evs
     if len(events) > MAX_EVENTS:
         events = events[:MAX_EVENTS]
+    # Atmosphere layers step aside (−DUCK_DEPTH_DB) for hits, accents and notes, so beds do not
+    # mask them. Recorded in the plan; applied by the renderer on the stems (sum is preserved).
+    ducking = {
+        "depth_db": DUCK_DEPTH_DB,
+        "attack_s": 0.015,
+        "release_s": 0.25,
+        "max_hold_s": 0.4,
+        "targets": [t["id"] for t in tracks if t["role"] in ATMOSPHERE_ROLES],
+        "triggers": [
+            t["id"] for t in tracks if t["role"] in ("percussion", "accent", "tonal_motif")
+        ],
+    }
     events.sort(key=lambda e: (e["t"], e["track"], e["kind"]))
     for i, e in enumerate(events):
         e["seq"] = i
@@ -302,6 +319,7 @@ def plan_composition(
             for s in sections
         ],
         "tracks": tracks,
+        "ducking": ducking,
         "events": events,
         "sources": [a.key for a in analyses],
     }

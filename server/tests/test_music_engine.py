@@ -288,3 +288,39 @@ def test_provenance_every_event_maps_to_a_source_window() -> None:
     plan2["tracks"][0]["source"] = "nope"
     with pytest.raises(KeyError):
         render_plan(plan2, {s.key: s.samples for s in srcs})
+
+
+def test_atmosphere_ducks_under_hits_and_only_there() -> None:
+    from unheard.music.render import duck_envelope
+
+    srcs = three_sources()
+    plan, _, _ = analyse_and_plan(srcs, seed=4, duration_s=20)
+    d = plan["ducking"]
+    roles = {t["id"]: t["role"] for t in plan["tracks"]}
+    assert d["targets"] and all(roles[t] in ("texture", "drone", "granular") for t in d["targets"])
+    assert d["triggers"] and all(
+        roles[t] in ("percussion", "accent", "tonal_motif") for t in d["triggers"]
+    )
+    n = int((plan["duration_s"] + plan["tail_s"]) * SR)
+    env = duck_envelope(plan, n)
+    assert env is not None and env.max() <= 1.0 and env.min() >= 10 ** (-d["depth_db"] / 20) - 1e-9
+    hit = next(e for e in plan["events"] if e["track"] in d["triggers"] and e["kind"] == "slice")
+    assert env[int((hit["t"] + 0.05) * SR)] < 0.7  # dipped while the hit sounds
+    assert env[-1] == 1.0  # untouched far from any hit
+    # with ducking disabled the beds are louder at the hit; trigger stems are identical
+    srcs_by_key = {s.key: s.samples for s in srcs}
+    with_duck = render_plan(plan, srcs_by_key)[0]
+    plain = copy.deepcopy(plan)
+    plain["ducking"] = None
+    without = render_plan(plain, srcs_by_key)[0]
+    a0, a1 = int(hit["t"] * SR), int((hit["t"] + 0.2) * SR)
+    bed = d["targets"][0]
+    assert np.sqrt(np.mean(with_duck[bed][a0:a1] ** 2)) < 0.8 * np.sqrt(
+        np.mean(without[bed][a0:a1] ** 2)
+    )
+
+
+def test_thin_sections_are_not_left_nearly_silent() -> None:
+    res = compose(three_sources(), seed=4, duration_s=30)
+    rms = [s["rms_dbfs"] for s in res.metrics["section_rms"]]
+    assert max(rms) - min(rms) < 15.0  # the quiet ends stay audible in a real room
