@@ -33,3 +33,9 @@ Format: Decision · Rationale · Alternatives · Revisit when.
 **ADR-015 (M2) Novelty gate = nearest-exemplar cosine AND (low margin OR high entropy).** Doc 04 §4's three-way AND never fired on ESC-50; the nearest-exemplar cosine alone has AUROC 0.95 for a never-taught class. Defaults τ_n=0.55, τ_m=0.60, τ_e=0.25 flag 54 % of unknown-class clips at a 5 % false-flag rate (eval/reports). Thresholds are configuration, not guarantees.
 
 **ADR-016 (M2) Hard delete instead of tombstones remains.** Deleting a recording cascades embeddings, predictions, annotations and exemplars, recomputes prototypes and re-scores the rest. Tombstones still deferred.
+
+**ADR-017 (M3) Visual parameters are computed and persisted server-side; geometry is rendered in the browser with Canvas 2D.** The server owns the scientific→visual mapping (one deterministic implementation, versioned, ≈6 KB per recording); the browser owns drawing, animation and export, so raw feature arrays and 512-d embeddings never leave the server for the visual path. *Alt:* SVG generated server-side (bigger payloads, no playback animation), WebGL (unneeded below ~1 000 nodes). *Revisit:* above ~1 000 nodes.
+
+**ADR-018 (M3) Atlas basis freezes at 8 nodes, not doc 05's "≥ 8 and user action only".** Below 8 the set is refit on change (tiny, movement is harmless); at ≥ 8 the PCA basis is persisted and new nodes are projected + nudged (≤ 0.08) with every other node pinned; `POST /api/atlas/rebuild` refits explicitly. Explained variance of the 2-D projection is reported in the UI.
+
+**ADR-019 (M3) Playback animation uses precomputed timelines, not a live analyser.** Envelope (256 pts), flux (128 pts) and onset times ship with the visual parameters; the renderer samples them at `audio.currentTime`. Exact, cheap, deterministic, works for seek/replay; the Web Audio analyser would add CPU, be non-deterministic and could stall playback.

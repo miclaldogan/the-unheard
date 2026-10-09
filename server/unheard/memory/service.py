@@ -65,6 +65,7 @@ class MemoryService:
     def __init__(self, settings: Settings, db: Database) -> None:
         self.settings = settings
         self.db = db
+        self.visual: Any = None  # VisualService (set by Services.build); refreshes semantic layers
 
     def params(self) -> FusionParams:
         s = self.settings
@@ -382,12 +383,23 @@ class MemoryService:
                 },
                 recording_id=recording_id,
             )
-            return {
+            result = {
                 **payload,
                 "exemplars_added": added,
                 "exemplars_retracted": retracted,
                 "rescored_changes": changes,
             }
+        self._refresh_visuals([recording_id] + [c["recording_id"] for c in changes])
+        return result
+
+    def _refresh_visuals(self, recording_ids: list[str]) -> None:
+        if self.visual is None:
+            return
+        for rid in dict.fromkeys(recording_ids):
+            try:
+                self.visual.ensure_artifact(rid)
+            except Exception:  # noqa: BLE001
+                log.exception("visual refresh failed for %s", rid)
 
     @staticmethod
     def _confirm_or_correct(shown: PredictionRow | None, label_ids: list[str]) -> str:

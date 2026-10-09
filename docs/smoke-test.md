@@ -36,3 +36,15 @@ Setup: `cd server && uv run unheard serve` and `cd web && npm run dev`; open `ht
 | 21 | Mark a recording unknown | exemplars drop, ECHO-0 "You could not name it either." | |
 | 22 | Delete an annotated recording | memory counts drop, other recordings re-scored | |
 | 23 | Stop the backend mid-way | panels show a clearable `NETWORK` error; nothing fabricated | |
+
+## M3 additions (specimen / atlas)
+
+| # | Step | Expected | Chrome Linux |
+|---|---|---|---|
+| 24 | Atlas tab with recordings present | canvas with glyph nodes, teal acoustic edges, copper dashed shared-name edges, anchors with names; ECHO-0 atlas lines | |
+| 25 | Click a node | side panel with label, state, ears/fused, relationships; "Open specimen" | |
+| 26 | Specimen view | large signature centred, playback animates (breathing + onset glow), export PNG/SVG, measurements toggle | |
+| 27 | Teach a correction, return to Specimen | hue changes, geometry hash unchanged | |
+| 28 | Mark unknown | dashed hollow outline + "why unresolved" line; atlas node dashed | |
+| 29 | Delete a recording | node disappears, others keep position | |
+| 30 | Reload | same positions, same specimens | |

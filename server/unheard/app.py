@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from unheard import __version__
-from unheard.api import health, intelligence, recordings
+from unheard.api import atlas, health, intelligence, recordings
 from unheard.api.deps import Services
 from unheard.config import Settings, get_settings
 from unheard.errors import AppError
@@ -56,6 +56,7 @@ def create_app(settings: Settings | None = None, *, web_dist: Path | None = None
     app.include_router(health.router, prefix="/api")
     app.include_router(recordings.router, prefix="/api")
     app.include_router(intelligence.router, prefix="/api")
+    app.include_router(atlas.router, prefix="/api")
 
     @app.exception_handler(AppError)
     async def _app_error(request: Request, exc: AppError) -> JSONResponse:

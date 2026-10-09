@@ -305,3 +305,118 @@ export interface EchoLine {
   tags: ('model' | 'memory' | 'imagination')[];
   event_ids: string[];
 }
+
+// ---------------------------------------------------------------- M3: specimens + atlas
+
+export interface VisualGeometry {
+  ring: number[]; // 128 normalised RMS envelope points
+  bands: number[]; // 32 normalised log-mel band means
+  brightness_curve: number[]; // 32 normalised centroid points
+  ticks: number[]; // onset positions 0..1
+  sharpness: number;
+  symmetry_order: number;
+  jitter: number;
+  fragmentation: number;
+  scale: number;
+  energy: number;
+  duration_s: number;
+  onset_density_per_s: number;
+}
+
+export interface VisualSemantic {
+  label: string | null;
+  hue: number | null;
+  state: 'unknown' | 'uncertain' | 'hypothesis' | 'confirmed';
+  resolution: number;
+  confirmed_labels: string[];
+  descriptors: string[];
+  environment: string | null;
+  mood: string | null;
+  why: { novel: boolean; nearest_exemplar_similarity: number | null; fused_margin: number | null; base_entropy_normalised: number | null; disagreement: boolean } | null;
+  model_version_id: string | null;
+  memory_version: number | null;
+}
+
+export interface VisualParams {
+  generator_version: number;
+  seed: number;
+  dsp_version: number;
+  geometry: VisualGeometry;
+  animation: { duration_s: number; envelope: number[]; flux: number[]; onsets_s: number[] };
+  semantic: VisualSemantic;
+  geometry_hash: string;
+}
+
+export interface Visual {
+  artifact_id: string;
+  recording_id: string;
+  generator_version: number;
+  seed: number;
+  dsp_version: number;
+  model_version_id: string | null;
+  geometry_hash: string;
+  status: 'ready' | 'stale';
+  params: VisualParams;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AtlasNode {
+  recording_id: string;
+  artifact_id: string;
+  x: number;
+  y: number;
+  embedded: boolean;
+  state: VisualSemantic['state'];
+  resolution: number;
+  label: string | null;
+  hue: number | null;
+  label_ids: string[];
+  confirmed_labels: string[];
+  is_unknown: boolean;
+  descriptors: string[];
+  environment: string | null;
+  mood: string | null;
+  ears_top: string | null;
+  fused_top: string | null;
+  novel: boolean;
+  captured_at: string;
+  duration_s: number;
+  glyph: Pick<VisualGeometry, 'sharpness' | 'symmetry_order' | 'jitter' | 'fragmentation' | 'scale' | 'energy'>;
+  ring: number[];
+  seed: number;
+}
+
+export interface AtlasEdge {
+  a: string;
+  b: string;
+  type: 'acoustic' | 'shared_label';
+  weight: number;
+  label_id: string | null;
+}
+
+export interface AtlasAnchor {
+  label_id: string;
+  name: string;
+  origin: 'vocabulary' | 'user';
+  hue: number;
+  x: number;
+  y: number;
+  n: number;
+  spread: number;
+}
+
+export interface Atlas {
+  atlas_version: number;
+  layout_version: number;
+  generator_version: number;
+  model_version_id: string | null;
+  model: { id: string; revision: string } | null;
+  basis: { fitted_on: number; frozen: boolean; explained_variance_2d: number } | null;
+  nodes: AtlasNode[];
+  edges: AtlasEdge[];
+  anchors: AtlasAnchor[];
+  state: 'empty' | 'first_observation' | 'scattered' | 'emerging_relationships' | 'learned_categories' | 'new_concept';
+  counts: Record<string, number>;
+  narrative: (EchoLine & { edge?: [string, string] })[];
+}

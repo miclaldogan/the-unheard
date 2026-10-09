@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from fastapi import Depends, Request
 from fastapi.security.utils import get_authorization_scheme_param
 
+from unheard.atlas.service import AtlasService
 from unheard.config import Settings
 from unheard.errors import NotFound, Unauthorized
 from unheard.ingest.decode import Decoder
@@ -18,6 +19,7 @@ from unheard.models.manager import ModelManager
 from unheard.storage.blobs import BlobStore
 from unheard.storage.db import Database
 from unheard.storage.ids import is_valid_id
+from unheard.visual.service import VisualService
 
 
 @dataclass
@@ -30,6 +32,8 @@ class Services:
     worker: JobWorker
     models: ModelManager
     memory: MemoryService
+    visual: VisualService
+    atlas: AtlasService
 
     @classmethod
     def build(cls, settings: Settings) -> Services:
@@ -48,6 +52,9 @@ class Services:
             threads=settings.torch_threads,
         )
         memory = MemoryService(settings, db)
+        visual = VisualService(db, blobs, tau_strong=settings.fusion_tau_memory_strong)
+        atlas = AtlasService(db, visual)
+        memory.visual = visual
         worker = JobWorker(
             db,
             blobs,
@@ -57,7 +64,8 @@ class Services:
             memory=memory,
             auto_infer=settings.auto_infer and models.enabled,
         )
-        return cls(settings, db, blobs, decoder, ingest, worker, models, memory)
+        worker.visual = visual
+        return cls(settings, db, blobs, decoder, ingest, worker, models, memory, visual, atlas)
 
     def close(self) -> None:
         self.worker.stop()

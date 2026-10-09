@@ -12,6 +12,7 @@ import logging
 import threading
 import traceback
 from collections.abc import Callable
+from typing import Any
 
 from unheard.errors import AppError
 from unheard.events import AUDIO_INFERENCE_FAILED, JOB_FAILED
@@ -47,6 +48,7 @@ class JobWorker:
         self.models = models
         self.memory = memory
         self.auto_infer = auto_infer
+        self.visual: Any = None  # VisualService, set by Services.build
         self.stages: dict[str, StageFn] = {"dsp": run_dsp_stage}
         if models is not None and memory is not None:
             self.stages["infer"] = lambda db_, blobs_, rid: run_infer_stage(
@@ -116,6 +118,11 @@ class JobWorker:
                 RecordingRepo.set_status(conn, job.recording_id, "ready", None)
                 if self.auto_infer and not JobRepo.has_active(conn, job.recording_id, "infer"):
                     JobRepo.enqueue(conn, job.recording_id, "infer")
+        if self.visual is not None:
+            try:
+                self.visual.ensure_artifact(job.recording_id)
+            except Exception:  # the specimen is derived data; never fail the job for it
+                log.exception("artifact generation failed for %s", job.recording_id)
 
     def _fail(self, job: JobRow, detail: str, *, retryable: bool) -> None:
         with self.db.transaction() as conn:

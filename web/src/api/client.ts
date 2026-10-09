@@ -1,5 +1,6 @@
 import type {
   AnnotationIn,
+  Atlas,
   AnnotationOut,
   AnnotationResult,
   EchoLine,
@@ -15,6 +16,7 @@ import type {
   RecordingList,
   Spectrogram,
   UploadAccepted,
+  Visual,
 } from './types';
 
 export class ApiError extends Error {
@@ -93,6 +95,10 @@ export const api = {
   annotations: (id: string) => request<AnnotationOut[]>(`/api/recordings/${encodeURIComponent(id)}/annotations`),
   memory: () => request<MemoryOverview>('/api/memory'),
   echo: (id: string) => request<EchoLine[]>(`/api/recordings/${encodeURIComponent(id)}/echo`),
+  // M3
+  visual: (id: string) => request<Visual>(`/api/recordings/${encodeURIComponent(id)}/visual`),
+  atlas: () => request<Atlas>('/api/atlas'),
+  rebuildAtlas: () => request<Atlas>('/api/atlas/rebuild', { method: 'POST' }),
   upload: (blob: Blob, filename: string, deviceInfo: Record<string, unknown>) => {
     const form = new FormData();
     form.append('file', blob, filename);

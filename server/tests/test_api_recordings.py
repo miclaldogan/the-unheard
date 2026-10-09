@@ -22,7 +22,7 @@ def test_health(client: TestClient) -> None:
     r = client.get("/api/health")
     assert r.status_code == 200
     body = r.json()
-    assert body["status"] == "ok" and body["dsp_version"] == 1 and body["schema_version"] == 2
+    assert body["status"] == "ok" and body["dsp_version"] == 1 and body["schema_version"] == 3
     assert body["inference"] == "local" and body["model_loaded"] is False
     assert body["limits"]["max_duration_s"] == 30.0
 
@@ -127,7 +127,11 @@ def test_delete_removes_rows_and_files(client: TestClient) -> None:
         assert conn.execute("SELECT COUNT(*) FROM job").fetchone()[0] == 0
         assert conn.execute("SELECT COUNT(*) FROM audio_asset").fetchone()[0] == 0
         types = [r[0] for r in conn.execute("SELECT type FROM event ORDER BY created_at")]
-    assert types == ["RecordingCaptured", "FeaturesExtracted", "RecordingDeleted"]
+    assert [t for t in types if t != "ArtifactRendered"] == [
+        "RecordingCaptured",
+        "FeaturesExtracted",
+        "RecordingDeleted",
+    ]
 
 
 def test_processing_failure_is_inspectable_and_retryable(client: TestClient) -> None:

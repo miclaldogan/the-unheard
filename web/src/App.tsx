@@ -3,7 +3,9 @@ import { ApiError, api } from './api/client';
 import type { Health, MemoryOverview, ModelStatus, Neighbour, RecordingSummary } from './api/types';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { Archive } from './components/Archive';
+import { Atlas } from './components/Atlas';
 import { HearingPanel } from './components/HearingPanel';
+import { Specimen } from './components/Specimen';
 import { MemoryPanel } from './components/MemoryPanel';
 import { RecordingPanel } from './components/RecordingPanel';
 
@@ -18,6 +20,7 @@ export default function App() {
   const [memory, setMemory] = useState<MemoryOverview | null>(null);
   const [neighbours, setNeighbours] = useState<Neighbour[]>([]);
   const [version, setVersion] = useState(0);
+  const [view, setView] = useState<'hearing' | 'specimen' | 'atlas'>('hearing');
 
   const refresh = useCallback(async () => {
     try {
@@ -62,7 +65,7 @@ export default function App() {
       <header className="masthead">
         <div>
           <h1>THE <span>UNHEARD</span></h1>
-          <div className="sub">acoustic field instrument · M2: ears (CLAP) + personal memory · no music yet</div>
+          <div className="sub">acoustic field instrument · M3: ears, memory and a visible world · no music yet</div>
         </div>
         <div className="health" aria-label="server status">
           {health ? (
@@ -79,12 +82,21 @@ export default function App() {
         </div>
       </header>
 
-      <main className="grid">
+      <nav className="views" aria-label="views">
+        <button className={view === 'hearing' ? 'active' : ''} onClick={() => setView('hearing')}>Hearing</button>
+        <button className={view === 'specimen' ? 'active' : ''} onClick={() => setView('specimen')} disabled={!selected}>Specimen</button>
+        <button className={view === 'atlas' ? 'active' : ''} onClick={() => setView('atlas')}>Atlas</button>
+      </nav>
+
+      {view === 'atlas' && <Atlas version={version + items.length} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onBack={() => setView('hearing')} />}
+      {view === 'specimen' && selected && <Specimen recordingId={selected} onTeach={() => setView('hearing')} onOpenAtlas={() => setView('atlas')} onSelect={setSelected} />}
+      <main className="grid" hidden={view !== 'hearing'}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>
           <RecordingPanel limits={limits} onProcessed={(id) => { setSelected(id); void refresh(); }} onArchiveChanged={() => void refresh()} />
           <MemoryPanel memory={memory} neighbours={neighbours} onSelect={setSelected} />
         </div>
         <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>
+          {selected && <div className="row" style={{ justifyContent: 'flex-end' }}><button className="btn small teal" onClick={() => setView('specimen')}>Open visual memory</button></div>}
           <HearingPanel recordingId={selected} onMemoryChanged={onMemoryChanged} onNeighbours={onNeighbours} />
           <AnalysisPanel recordingId={selected} version={version} />
           <Archive items={items} selected={selected} onSelect={setSelected} onChanged={onDeletedOrChanged} />

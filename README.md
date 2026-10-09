@@ -8,36 +8,40 @@ world; its memory, atlas, artwork and music are built from your recordings.
 
 ## Status
 
-**M2 — ECHO-0 hears, is taught, and remembers: implemented.** On top of the M1 audio
-foundation, every recording is now analysed by a real open-weight audio model
-(**LAION-CLAP**, run locally on the CPU), ranked against a 39-label environmental vocabulary
-plus your own names, and re-ranked by a personal acoustic memory built from your
-confirmations and corrections. See [`docs/M2-REPORT.md`](docs/M2-REPORT.md) for measured
-results (held-out ESC-50 evaluation: top-1 0.74 → 0.81 with 5 taught examples per class).
+**M3 — the acoustic atlas: implemented.** Every recording now has a deterministic visual
+*specimen* whose geometry is a documented function of its measured DSP features
+([`docs/visual-grammar.md`](docs/visual-grammar.md)), and the player can explore ECHO-0's
+memory as a living *atlas* whose positions come from the stored CLAP embeddings (PCA with a
+frozen basis), whose edges are k-nearest-neighbour cosine similarity and shared confirmed
+names, and whose unknown sounds stay visibly unresolved. Corrections recolour and re-link a
+specimen; they never reshape it. See [`docs/M3-REPORT.md`](docs/M3-REPORT.md).
 
-Still honest about what is **not** there: no music, no atlas, no narration beyond
-template lines tied to real events, no fine-tuning (only retrieval memory changes), and
-unknown-sound detection is a measured heuristic (54 % recall at 5 % false flags), not a guarantee.
+Earlier milestones: M1 real audio foundation ([`docs/M1-REPORT.md`](docs/M1-REPORT.md)), M2
+real hearing (LAION-CLAP) and personal memory ([`docs/M2-REPORT.md`](docs/M2-REPORT.md)).
+
+Still honest about what is **not** there: no music, no free narration (ECHO-0 lines are
+templates bound to events), no fine-tuning, and the 2-D atlas keeps only part of the 512-d
+spread (the UI reports how much).
 
 ## Architecture summary
 
 Modular monolith (docs/architecture/02): one FastAPI process with internal packages
-`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → storage/events/jobs → api`,
+`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → visual (specimen params) → atlas (graph + layout) → storage/events/jobs → api`,
 SQLite (WAL) + content-addressed files under `data/`, and a Vite/React PWA. Processing is
 durability-first: the raw upload and the recording row are committed before any processing;
 the `dsp` and `infer` stages run on an in-process worker thread polling a `job` table;
 failures leave the recording inspectable and retryable. Full design:
 [`docs/architecture/README.md`](docs/architecture/README.md); decisions in
-[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2).
+[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2, ADR-017…019 for M3).
 
 ```
 the-unheard/
-  server/unheard/   api/ ingest/ dsp/ models/ memory/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
+  server/unheard/   api/ ingest/ dsp/ models/ memory/ visual/ atlas/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
   server/tests/     DSP, ingest, API, memory/fusion, migration, e2e, real-model tests + fixtures
-  web/src/          api/ audio/ state/ components/  (React + TS)
+  web/src/          api/ audio/ state/ visual/ components/  (React + TS)
   eval/             run_eval.py, reports/
   scripts/          mkcert.sh, verify_env.py, bench_models.py
-  docs/             api.md, model-setup.md, local-https.md, smoke-test.md, M1-REPORT.md, M2-REPORT.md, architecture/
+  docs/             api.md, model-setup.md, visual-grammar.md, local-https.md, smoke-test.md, M1/M2/M3-REPORT.md, architecture/
   data/             (gitignored) unheard.sqlite3, audio/, artifacts/, eval/
 ```
 
@@ -107,6 +111,16 @@ Configuration is via `UNHEARD_*` environment variables (see `server/unheard/conf
 Recordings made before M2 (or while the model was disabled) show *Not yet heard* with a
 *Listen with ECHO-0's ears* button that queues inference.
 
+6. **Specimen** (nav tab, or *Open visual memory*): the acoustic signature as the centrepiece —
+   outline from the RMS envelope, fold symmetry from tonality, crispness from the centroid,
+   gaps from spectral flux, one tick per onset, hue from the label. Play the original: the body
+   breathes with the recorded envelope and onsets glow, synced to the audio position. Export
+   PNG/SVG; toggle the waveform/spectrogram and numbers underneath.
+7. **Atlas**: pan (drag), zoom (wheel), click a node for its relationships, filter by name or
+   uncertainty, show your "feelings" as a separate subjective layer, open a specimen. The
+   state line (first observation → emerging relationships → learned categories → new concept)
+   is derived from real edges and anchors, not from counts.
+
 ### Supported formats and limits
 
 Containers: WAV, WebM (opus/vorbis), MP4/M4A (aac), OGG, FLAC, MP3 — anything ffmpeg decodes
@@ -128,7 +142,8 @@ Same input + version ⇒ byte-identical output (tested).
 See [`docs/api.md`](docs/api.md). M1 endpoints unchanged; M2 adds `GET /api/model`,
 `POST /api/model/load`, `GET /api/recordings/{id}/prediction`, `POST …/infer`,
 `GET …/neighbours`, `GET/POST /api/labels`, `GET/POST …/annotations`, `GET /api/memory`,
-`GET …/echo`. Errors are RFC 7807 problem documents with stable codes.
+`GET …/echo`. M3 adds `GET /api/recordings/{id}/visual`, `GET /api/atlas`,
+`POST /api/atlas/rebuild`. Errors are RFC 7807 problem documents with stable codes.
 
 ## Tests
 
@@ -149,15 +164,17 @@ Manual browser checklist: [`docs/smoke-test.md`](docs/smoke-test.md).
 - Personal memory is retrieval only (kNN over CLAP embeddings); the model is never fine-tuned.
 - Unknown detection is a thresholded heuristic measured on ESC-50 (`eval/reports`), not a
   calibrated detector; fused scores are rank scores, not probabilities.
+- The specimen grammar is an artistic mapping of measured quantities, documented per
+  parameter; the atlas is a 2-D PCA view of a 512-d space (explained variance shown in the UI).
 - CPU inference only was measured; CUDA is possible but untested here.
 - Phone capture over LAN HTTPS is wired but still untested on a physical phone; no offline queue.
 - Hard delete (no tombstones); single worker; Linux + Chrome/Firefox only.
 
-## Next milestone — M3
+## Next milestone — M4
 
-The acoustic atlas consumes what M2 persists: pooled and window embeddings (`embedding`),
-label assignments (`annotation`, `exemplar`), DSP features (`feature_set`), similarity
-(`/neighbours`), and temporal metadata (`captured_at`, `window_start_s/end_s`). The symphony
-engine (M4) reads canonical audio, features and recognised/annotated sources from the same tables.
+The symphony engine consumes what M1–M3 persist: canonical audio (`audio_asset`), DSP
+summaries and arrays (`feature_set` + `.npz`: RMS envelope, onsets, centroid/flux series,
+log-mel), embeddings and neighbours, confirmed/annotated sources, and the specimen's
+precomputed animation timelines (`visual_artifact.params.animation`) for audio-visual sync.
 
 License: MIT.

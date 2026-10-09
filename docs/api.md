@@ -113,3 +113,25 @@ recognition. A new submission supersedes the previous one and retracts its exemp
 `AudioInferenceCompleted`, `AudioInferenceFailed`, `AnnotationSubmitted`,
 `PredictionConfirmed`, `PredictionCorrected`, `CustomCategoryCreated`,
 `AcousticMemoryUpdated` (with `rescored_changes`), `UnknownSoundObserved` (`by: system|user`).
+
+---
+
+# M3 additions — specimens and the atlas
+
+| Method | Path | Response |
+|---|---|---|
+| GET | `/api/recordings/{id}/visual` | `{artifact_id, recording_id, generator_version, seed, dsp_version, model_version_id, geometry_hash, status, params{geometry, animation, semantic}, created_at, updated_at}`; `409 NOT_READY` until DSP features exist. Created on first access if missing; refreshed when the semantic layer changes. |
+| GET | `/api/atlas` | `{atlas_version, layout_version, generator_version, model_version_id, model, basis{fitted_on, frozen, explained_variance_2d}, nodes[], edges[], anchors[], state, counts, narrative[]}` — rebuilt from persisted artifacts/embeddings on every call (cheap), positions persisted. |
+| POST | `/api/atlas/rebuild` | same shape; refits the PCA basis on all current nodes (explicit user action). |
+
+`state` ∈ `empty · first_observation · scattered · emerging_relationships · learned_categories · new_concept`,
+derived from real facts (edges exist, a label has ≥ 2 confirmed members, a user-created label
+has members) — not from recording count.
+
+Node fields: `recording_id, artifact_id, x, y, embedded, state, resolution, label, hue,
+label_ids, confirmed_labels, is_unknown, descriptors, environment, mood, ears_top, fused_top,
+novel, captured_at, duration_s, glyph{…}, ring[32], seed`. Edge fields: `a, b, type
+(acoustic|shared_label), weight (cosine), label_id`.
+
+Events: `ArtifactRendered` (per recording, when its specimen is created or its semantic layer
+changes), `AtlasUpdated` (when nodes are placed or the basis is refit).

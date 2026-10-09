@@ -15,3 +15,7 @@ PREDICTION_CORRECTED = "PredictionCorrected"
 CUSTOM_CATEGORY_CREATED = "CustomCategoryCreated"
 ACOUSTIC_MEMORY_UPDATED = "AcousticMemoryUpdated"
 UNKNOWN_SOUND_OBSERVED = "UnknownSoundObserved"
+
+# M3
+ARTIFACT_RENDERED = "ArtifactRendered"
+ATLAS_UPDATED = "AtlasUpdated"
