@@ -2,6 +2,11 @@ import type {
   AnnotationIn,
   Atlas,
   AnnotationOut,
+  Composition,
+  CompositionEvent,
+  CompositionListItem,
+  CompositionTrace,
+  Controls,
   AnnotationResult,
   EchoLine,
   Features,
@@ -99,6 +104,20 @@ export const api = {
   visual: (id: string) => request<Visual>(`/api/recordings/${encodeURIComponent(id)}/visual`),
   atlas: () => request<Atlas>('/api/atlas'),
   rebuildAtlas: () => request<Atlas>('/api/atlas/rebuild', { method: 'POST' }),
+  // M4
+  compositions: (recordingId?: string) =>
+    request<CompositionListItem[]>(`/api/compositions${recordingId ? `?recording_id=${encodeURIComponent(recordingId)}` : ''}`),
+  composition: (id: string) => request<Composition>(`/api/compositions/${encodeURIComponent(id)}`),
+  createComposition: (body: { recording_ids: string[]; seed?: number; controls?: Partial<Controls>; duration_s?: number; name?: string; role_overrides?: Record<string, string> }) =>
+    request<Composition>('/api/compositions', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
+  variation: (id: string, body: { seed?: number; controls?: Partial<Controls> } = {}) =>
+    request<Composition>(`/api/compositions/${encodeURIComponent(id)}/variation`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
+  rerender: (id: string) => request<Composition>(`/api/compositions/${encodeURIComponent(id)}/render`, { method: 'POST' }),
+  patchComposition: (id: string, body: { name?: string; saved?: boolean }) =>
+    request<Composition>(`/api/compositions/${encodeURIComponent(id)}`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
+  deleteComposition: (id: string) => request<void>(`/api/compositions/${encodeURIComponent(id)}`, { method: 'DELETE' }),
+  compositionEvents: (id: string) => request<CompositionEvent[]>(`/api/compositions/${encodeURIComponent(id)}/events`),
+  trace: (id: string, seq: number) => request<CompositionTrace>(`/api/compositions/${encodeURIComponent(id)}/trace/${seq}`),
   upload: (blob: Blob, filename: string, deviceInfo: Record<string, unknown>) => {
     const form = new FormData();
     form.append('file', blob, filename);
@@ -135,4 +154,25 @@ export async function waitForPrediction(id: string, opts: { intervalMs?: number;
     if (Date.now() > deadline) return p;
     await new Promise((r) => setTimeout(r, interval));
   }
+}
+
+/** Poll a composition until it is ready or failed. */
+export async function waitForComposition(id: string, opts: { intervalMs?: number; timeoutMs?: number; signal?: AbortSignal } = {}): Promise<Composition> {
+  const interval = opts.intervalMs ?? 700;
+  const deadline = Date.now() + (opts.timeoutMs ?? 180_000);
+  for (;;) {
+    if (opts.signal?.aborted) throw new DOMException('aborted', 'AbortError');
+    const c = await api.composition(id);
+    if (c.status === 'ready' || c.status === 'failed') return c;
+    if (Date.now() > deadline) throw new ApiError({ type: 'timeout', title: 'Timeout', status: 0, code: 'TIMEOUT', detail: 'the render is taking too long' });
+    await new Promise((r) => setTimeout(r, interval));
+  }
+}
+
+/** Authenticated fetch of binary audio (the token header cannot ride on <audio src>). */
+export async function fetchAudio(url: string): Promise<ArrayBuffer> {
+  const token = getToken();
+  const res = await fetch(url, token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
+  if (!res.ok) throw new ApiError({ type: 'http', title: res.statusText, status: res.status, code: `HTTP_${res.status}`, detail: `could not load ${url}` });
+  return res.arrayBuffer();
 }

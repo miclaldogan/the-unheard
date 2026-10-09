@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, api } from './api/client';
 import type { Health, MemoryOverview, ModelStatus, Neighbour, RecordingSummary } from './api/types';
 import { AnalysisPanel } from './components/AnalysisPanel';
 import { Archive } from './components/Archive';
 import { Atlas } from './components/Atlas';
+import { Orchestra } from './components/Orchestra';
 import { HearingPanel } from './components/HearingPanel';
 import { Specimen } from './components/Specimen';
 import { MemoryPanel } from './components/MemoryPanel';
@@ -20,7 +21,10 @@ export default function App() {
   const [memory, setMemory] = useState<MemoryOverview | null>(null);
   const [neighbours, setNeighbours] = useState<Neighbour[]>([]);
   const [version, setVersion] = useState(0);
-  const [view, setView] = useState<'hearing' | 'specimen' | 'atlas'>('hearing');
+  const [view, setView] = useState<'hearing' | 'specimen' | 'atlas' | 'orchestra'>('hearing');
+  const [orchestraIds, setOrchestraIds] = useState<string[]>([]);
+  const activityRef = useRef<Record<string, number>>({});
+  const toggleOrchestra = useCallback((id: string) => setOrchestraIds((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : cur.length >= 8 ? cur : [...cur, id])), []);
 
   const refresh = useCallback(async () => {
     try {
@@ -65,7 +69,7 @@ export default function App() {
       <header className="masthead">
         <div>
           <h1>THE <span>UNHEARD</span></h1>
-          <div className="sub">acoustic field instrument · M3: ears, memory and a visible world · no music yet</div>
+          <div className="sub">acoustic field instrument · M4: ears, memory, a visible world and an orchestra made of it</div>
         </div>
         <div className="health" aria-label="server status">
           {health ? (
@@ -86,9 +90,11 @@ export default function App() {
         <button className={view === 'hearing' ? 'active' : ''} onClick={() => setView('hearing')}>Hearing</button>
         <button className={view === 'specimen' ? 'active' : ''} onClick={() => setView('specimen')} disabled={!selected}>Specimen</button>
         <button className={view === 'atlas' ? 'active' : ''} onClick={() => setView('atlas')}>Atlas</button>
+        <button className={view === 'orchestra' ? 'active' : ''} onClick={() => setView('orchestra')}>Orchestra</button>
       </nav>
 
-      {view === 'atlas' && <Atlas version={version + items.length} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onBack={() => setView('hearing')} />}
+      {view === 'atlas' && <Atlas version={version + items.length} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onBack={() => setView('hearing')} selection={orchestraIds} onToggleSelect={toggleOrchestra} onCompose={() => setView('orchestra')} activityRef={activityRef} />}
+      {view === 'orchestra' && <Orchestra items={items} preselected={orchestraIds} activityRef={activityRef} onOpenSpecimen={(id) => { setSelected(id); setView('specimen'); }} onOpenAtlas={() => setView('atlas')} />}
       {view === 'specimen' && selected && <Specimen recordingId={selected} onTeach={() => setView('hearing')} onOpenAtlas={() => setView('atlas')} onSelect={setSelected} />}
       <main className="grid" hidden={view !== 'hearing'}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0, alignContent: 'start' }}>

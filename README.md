@@ -8,40 +8,46 @@ world; its memory, atlas, artwork and music are built from your recordings.
 
 ## Status
 
-**M3 — the acoustic atlas: implemented.** Every recording now has a deterministic visual
-*specimen* whose geometry is a documented function of its measured DSP features
-([`docs/visual-grammar.md`](docs/visual-grammar.md)), and the player can explore ECHO-0's
-memory as a living *atlas* whose positions come from the stored CLAP embeddings (PCA with a
-frozen basis), whose edges are k-nearest-neighbour cosine similarity and shared confirmed
-names, and whose unknown sounds stay visibly unresolved. Corrections recolour and re-link a
-specimen; they never reshape it. See [`docs/M3-REPORT.md`](docs/M3-REPORT.md).
+**M4 — the Impossible Orchestra: implemented (engineering PARTIAL, musical quality NEEDS
+REVIEW).** Pick several sound memories (in the list or in the atlas), press Compose, and a
+deterministic planner turns their *measured* acoustics into sections, layers, rhythm and (when
+something is genuinely pitched) a melody; an offline renderer cuts, resamples, filters and mixes
+the actual recordings into a 48 kHz stereo piece with per-layer stems. You can solo/mute layers,
+compare original ↔ transformed layer ↔ full piece, click any event to trace it back to the exact
+second of the recording it came from, regenerate with a new seed, save, reopen after a restart
+and export the WAV. Specimens and atlas nodes react while their recordings sound. See
+[`docs/M4-REPORT.md`](docs/M4-REPORT.md) and [`docs/music-engine.md`](docs/music-engine.md).
+
+Honest about M4: nobody has listened to it yet (it was checked with measurements and
+spectrograms), the Orchestra UI was not run in a real browser in this session, and the optional
+Gemma planner is not implemented.
 
 Earlier milestones: M1 real audio foundation ([`docs/M1-REPORT.md`](docs/M1-REPORT.md)), M2
-real hearing (LAION-CLAP) and personal memory ([`docs/M2-REPORT.md`](docs/M2-REPORT.md)).
+real hearing (LAION-CLAP) and personal memory ([`docs/M2-REPORT.md`](docs/M2-REPORT.md)), M3
+specimens and atlas ([`docs/M3-REPORT.md`](docs/M3-REPORT.md)).
 
-Still honest about what is **not** there: no music, no free narration (ECHO-0 lines are
-templates bound to events), no fine-tuning, and the 2-D atlas keeps only part of the 512-d
-spread (the UI reports how much).
+Still not there: free narration (ECHO-0 lines are templates bound to events), fine-tuning, and
+anything real-time (the music engine renders offline).
 
 ## Architecture summary
 
 Modular monolith (docs/architecture/02): one FastAPI process with internal packages
-`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → visual (specimen params) → atlas (graph + layout) → storage/events/jobs → api`,
+`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → visual (specimen params) → atlas (graph + layout) → music (analysis → roles → planner → renderer) → storage/events/jobs → api`,
 SQLite (WAL) + content-addressed files under `data/`, and a Vite/React PWA. Processing is
 durability-first: the raw upload and the recording row are committed before any processing;
 the `dsp` and `infer` stages run on an in-process worker thread polling a `job` table;
 failures leave the recording inspectable and retryable. Full design:
 [`docs/architecture/README.md`](docs/architecture/README.md); decisions in
-[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2, ADR-017…019 for M3).
+[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2, ADR-017…019 for M3, ADR-020…022 for M4).
 
 ```
 the-unheard/
-  server/unheard/   api/ ingest/ dsp/ models/ memory/ visual/ atlas/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
+  server/unheard/   api/ ingest/ dsp/ models/ memory/ visual/ atlas/ music/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
   server/tests/     DSP, ingest, API, memory/fusion, migration, e2e, real-model tests + fixtures
   web/src/          api/ audio/ state/ visual/ components/  (React + TS)
   eval/             run_eval.py, reports/
-  scripts/          mkcert.sh, verify_env.py, bench_models.py
-  docs/             api.md, model-setup.md, visual-grammar.md, local-https.md, smoke-test.md, M1/M2/M3-REPORT.md, architecture/
+  scripts/          mkcert.sh, verify_env.py, bench_models.py, m4_demo.py, m4_bench.py
+  docs/             api.md, model-setup.md, visual-grammar.md, local-https.md, smoke-test.md, M1…M4-REPORT.md, music-engine.md, architecture/
   data/             (gitignored) unheard.sqlite3, audio/, artifacts/, eval/
 ```
 

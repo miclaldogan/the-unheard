@@ -342,6 +342,8 @@ def delete_recording(
     services: Services = Depends(get_services),
 ) -> Response:
     rec = _get_or_404(services, recording_id)
+    # Privacy cascade: compositions made from this recording contain its audio, so they go too.
+    services.compositions.delete_for_recording(rec.id)
     # Row first (cascades to assets/features/jobs), then files. A crash between the two
     # leaves orphan files that are harmless and cleaned by the next delete of the same id.
     with services.db.transaction() as conn:

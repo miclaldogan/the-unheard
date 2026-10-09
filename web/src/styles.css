@@ -180,3 +180,34 @@ canvas.signature { width: 100%; aspect-ratio: 1 / 1; display: block; border-radi
 .chip.state-confirmed { color: var(--teal); border-color: var(--teal-dim); }
 
 [hidden] { display: none !important; }
+
+/* ---- M4: the Orchestra ---- */
+.orchestra { display: grid; gap: 14px; }
+.orch-grid { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 18px; align-items: start; }
+@media (max-width: 860px) { .orch-grid { grid-template-columns: 1fr; } }
+.picklist { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
+.pick { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; min-height: 44px; cursor: pointer; }
+.pick.on { border-color: var(--amber); background: rgba(217, 164, 65, 0.07); }
+.pick .caption { grid-column: 3; margin-top: -4px; }
+.pick-name { font-weight: 600; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.sliders { display: grid; gap: 8px; margin-top: 8px; }
+.slider { display: grid; grid-template-columns: 70px 1fr 78px; gap: 8px; align-items: center; font-size: 0.78rem; color: var(--text-dim); }
+.slider input[type='range'], .seek { accent-color: var(--copper); width: 100%; min-height: 28px; }
+.transport { margin-bottom: 6px; }
+.transport .seek { flex: 1; min-width: 140px; }
+.instruments { display: grid; gap: 6px; margin: 10px 0; }
+.track { display: grid; grid-template-columns: 80px 1fr auto; gap: 10px; align-items: center; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; }
+.track.focus { border-color: var(--teal); }
+.track.dim { opacity: 0.55; }
+.track-meta { display: grid; gap: 2px; min-width: 0; }
+.instrument { --lv: 0; width: 76px; height: 76px; border-radius: 50%; opacity: calc(0.4 + 0.6 * var(--lv)); box-shadow: 0 0 calc(22px * var(--lv)) rgba(63, 167, 160, calc(0.7 * var(--lv))); transition: opacity 80ms linear, box-shadow 80ms linear; }
+.instrument canvas { width: 76px; height: 76px; display: block; }
+.instrument-ph { width: 76px; height: 76px; border: 1px dashed var(--line); border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) { .instrument { transition: none; } }
+.timeline { width: 100%; display: block; background: var(--ground); border: 1px solid var(--line); border-radius: 4px; cursor: crosshair; margin: 8px 0 2px; }
+.trace, .compare { border: 1px solid var(--teal-dim); border-radius: 4px; padding: 10px 12px; margin-top: 10px; background: rgba(63, 167, 160, 0.05); }
+.trace p { margin: 4px 0 8px; font-size: 0.85rem; }
+.saved { margin-top: 10px; font-size: 0.85rem; }
+.saved summary { cursor: pointer; color: var(--text-dim); }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; }
