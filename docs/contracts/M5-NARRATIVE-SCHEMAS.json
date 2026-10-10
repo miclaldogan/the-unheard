@@ -1,0 +1,1907 @@
+{
+ "contract_version": "m5.1",
+ "schemas": {
+  "CurrentOut": {
+   "$defs": {
+    "FactOut": {
+     "additionalProperties": true,
+     "properties": {
+      "handle": {
+       "title": "Handle",
+       "type": "string"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "ref": {
+       "anyOf": [
+        {
+         "$ref": "#/$defs/RefOut"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null
+      },
+      "statement": {
+       "title": "Statement",
+       "type": "string"
+      }
+     },
+     "required": [
+      "handle",
+      "statement",
+      "provenance"
+     ],
+     "title": "FactOut",
+     "type": "object"
+    },
+    "GenerationOut": {
+     "additionalProperties": true,
+     "properties": {
+      "attempts": {
+       "default": 0,
+       "title": "Attempts",
+       "type": "integer"
+      },
+      "fallback_reason": {
+       "anyOf": [
+        {
+         "enum": [
+          "disabled",
+          "unavailable",
+          "timeout",
+          "invalid_output",
+          "invalid_json",
+          "busy",
+          "no_model"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Fallback Reason"
+      },
+      "latency_ms": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Latency Ms"
+      },
+      "status": {
+       "enum": [
+        "ready",
+        "pending",
+        "fallback"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "status"
+     ],
+     "title": "GenerationOut",
+     "type": "object"
+    },
+    "LineOut": {
+     "additionalProperties": true,
+     "properties": {
+      "cites": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Cites",
+       "type": "array"
+      },
+      "kind": {
+       "enum": [
+        "grounded",
+        "imagination"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "provenance": {
+       "items": {
+        "enum": [
+         "model",
+         "user_confirmed",
+         "personal_memory",
+         "measurement",
+         "system",
+         "imagination"
+        ],
+        "type": "string"
+       },
+       "title": "Provenance",
+       "type": "array"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "text",
+      "kind",
+      "provenance",
+      "cites"
+     ],
+     "title": "LineOut",
+     "type": "object"
+    },
+    "MomentOut": {
+     "additionalProperties": true,
+     "properties": {
+      "act": {
+       "title": "Act",
+       "type": "string"
+      },
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "kind": {
+       "enum": [
+        "awaiting_sound",
+        "first_sound",
+        "teaching",
+        "correction",
+        "unknown",
+        "relationship",
+        "ready_to_compose",
+        "composition",
+        "ending"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "occurred_at": {
+       "title": "Occurred At",
+       "type": "string"
+      }
+     },
+     "required": [
+      "kind",
+      "key",
+      "act",
+      "occurred_at"
+     ],
+     "title": "MomentOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    },
+    "UtteranceOut": {
+     "additionalProperties": true,
+     "properties": {
+      "created_at": {
+       "title": "Created At",
+       "type": "string"
+      },
+      "facts": {
+       "items": {
+        "$ref": "#/$defs/FactOut"
+       },
+       "title": "Facts",
+       "type": "array"
+      },
+      "generation": {
+       "$ref": "#/$defs/GenerationOut"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "lines": {
+       "items": {
+        "$ref": "#/$defs/LineOut"
+       },
+       "title": "Lines",
+       "type": "array"
+      },
+      "model": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Model"
+      },
+      "moment": {
+       "$ref": "#/$defs/MomentOut"
+      },
+      "revision": {
+       "title": "Revision",
+       "type": "integer"
+      },
+      "source": {
+       "enum": [
+        "gemma",
+        "template"
+       ],
+       "title": "Source",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "revision",
+      "moment",
+      "lines",
+      "facts",
+      "source",
+      "generation",
+      "created_at"
+     ],
+     "title": "UtteranceOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "available_actions": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Available Actions",
+     "type": "array"
+    },
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "utterance": {
+     "$ref": "#/$defs/UtteranceOut"
+    }
+   },
+   "required": [
+    "contract_version",
+    "utterance",
+    "available_actions"
+   ],
+   "title": "CurrentOut",
+   "type": "object"
+  },
+  "EchoOut": {
+   "$defs": {
+    "FactOut": {
+     "additionalProperties": true,
+     "properties": {
+      "handle": {
+       "title": "Handle",
+       "type": "string"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "ref": {
+       "anyOf": [
+        {
+         "$ref": "#/$defs/RefOut"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null
+      },
+      "statement": {
+       "title": "Statement",
+       "type": "string"
+      }
+     },
+     "required": [
+      "handle",
+      "statement",
+      "provenance"
+     ],
+     "title": "FactOut",
+     "type": "object"
+    },
+    "GenerationOut": {
+     "additionalProperties": true,
+     "properties": {
+      "attempts": {
+       "default": 0,
+       "title": "Attempts",
+       "type": "integer"
+      },
+      "fallback_reason": {
+       "anyOf": [
+        {
+         "enum": [
+          "disabled",
+          "unavailable",
+          "timeout",
+          "invalid_output",
+          "invalid_json",
+          "busy",
+          "no_model"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Fallback Reason"
+      },
+      "latency_ms": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Latency Ms"
+      },
+      "status": {
+       "enum": [
+        "ready",
+        "pending",
+        "fallback"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "status"
+     ],
+     "title": "GenerationOut",
+     "type": "object"
+    },
+    "LineOut": {
+     "additionalProperties": true,
+     "properties": {
+      "cites": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Cites",
+       "type": "array"
+      },
+      "kind": {
+       "enum": [
+        "grounded",
+        "imagination"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "provenance": {
+       "items": {
+        "enum": [
+         "model",
+         "user_confirmed",
+         "personal_memory",
+         "measurement",
+         "system",
+         "imagination"
+        ],
+        "type": "string"
+       },
+       "title": "Provenance",
+       "type": "array"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "text",
+      "kind",
+      "provenance",
+      "cites"
+     ],
+     "title": "LineOut",
+     "type": "object"
+    },
+    "MomentOut": {
+     "additionalProperties": true,
+     "properties": {
+      "act": {
+       "title": "Act",
+       "type": "string"
+      },
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "kind": {
+       "enum": [
+        "awaiting_sound",
+        "first_sound",
+        "teaching",
+        "correction",
+        "unknown",
+        "relationship",
+        "ready_to_compose",
+        "composition",
+        "ending"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "occurred_at": {
+       "title": "Occurred At",
+       "type": "string"
+      }
+     },
+     "required": [
+      "kind",
+      "key",
+      "act",
+      "occurred_at"
+     ],
+     "title": "MomentOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    },
+    "UtteranceOut": {
+     "additionalProperties": true,
+     "properties": {
+      "created_at": {
+       "title": "Created At",
+       "type": "string"
+      },
+      "facts": {
+       "items": {
+        "$ref": "#/$defs/FactOut"
+       },
+       "title": "Facts",
+       "type": "array"
+      },
+      "generation": {
+       "$ref": "#/$defs/GenerationOut"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "lines": {
+       "items": {
+        "$ref": "#/$defs/LineOut"
+       },
+       "title": "Lines",
+       "type": "array"
+      },
+      "model": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Model"
+      },
+      "moment": {
+       "$ref": "#/$defs/MomentOut"
+      },
+      "revision": {
+       "title": "Revision",
+       "type": "integer"
+      },
+      "source": {
+       "enum": [
+        "gemma",
+        "template"
+       ],
+       "title": "Source",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "revision",
+      "moment",
+      "lines",
+      "facts",
+      "source",
+      "generation",
+      "created_at"
+     ],
+     "title": "UtteranceOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "utterances": {
+     "items": {
+      "$ref": "#/$defs/UtteranceOut"
+     },
+     "title": "Utterances",
+     "type": "array"
+    }
+   },
+   "required": [
+    "contract_version",
+    "utterances"
+   ],
+   "title": "EchoOut",
+   "type": "object"
+  },
+  "MissionOut": {
+   "$defs": {
+    "ProgressOut": {
+     "additionalProperties": true,
+     "properties": {
+      "current": {
+       "title": "Current",
+       "type": "integer"
+      },
+      "target": {
+       "title": "Target",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "current",
+      "target"
+     ],
+     "title": "ProgressOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    },
+    "WordingOut": {
+     "additionalProperties": true,
+     "properties": {
+      "source": {
+       "enum": [
+        "gemma",
+        "template"
+       ],
+       "title": "Source",
+       "type": "string"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "text",
+      "source"
+     ],
+     "title": "WordingOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "activated_at": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Activated At"
+    },
+    "completed_at": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Completed At"
+    },
+    "completion": {
+     "additionalProperties": {
+      "type": "string"
+     },
+     "title": "Completion",
+     "type": "object"
+    },
+    "evidence": {
+     "items": {
+      "$ref": "#/$defs/RefOut"
+     },
+     "title": "Evidence",
+     "type": "array"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "objective": {
+     "title": "Objective",
+     "type": "string"
+    },
+    "progress": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/ProgressOut"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "reason": {
+     "title": "Reason",
+     "type": "string"
+    },
+    "safe_fallback": {
+     "title": "Safe Fallback",
+     "type": "string"
+    },
+    "safety": {
+     "title": "Safety",
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "available",
+      "active",
+      "completed",
+      "expired"
+     ],
+     "title": "Status",
+     "type": "string"
+    },
+    "title": {
+     "title": "Title",
+     "type": "string"
+    },
+    "type": {
+     "enum": [
+      "record_first",
+      "gather_three",
+      "resolve_unknown",
+      "second_example",
+      "novel_sound",
+      "repeat_not_machine",
+      "find_tonal"
+     ],
+     "title": "Type",
+     "type": "string"
+    },
+    "wording": {
+     "$ref": "#/$defs/WordingOut"
+    }
+   },
+   "required": [
+    "id",
+    "type",
+    "title",
+    "objective",
+    "reason",
+    "evidence",
+    "completion",
+    "safe_fallback",
+    "safety",
+    "status",
+    "wording"
+   ],
+   "title": "MissionOut",
+   "type": "object"
+  },
+  "MissionsOut": {
+   "$defs": {
+    "MissionOut": {
+     "additionalProperties": true,
+     "properties": {
+      "activated_at": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Activated At"
+      },
+      "completed_at": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Completed At"
+      },
+      "completion": {
+       "additionalProperties": {
+        "type": "string"
+       },
+       "title": "Completion",
+       "type": "object"
+      },
+      "evidence": {
+       "items": {
+        "$ref": "#/$defs/RefOut"
+       },
+       "title": "Evidence",
+       "type": "array"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "objective": {
+       "title": "Objective",
+       "type": "string"
+      },
+      "progress": {
+       "anyOf": [
+        {
+         "$ref": "#/$defs/ProgressOut"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null
+      },
+      "reason": {
+       "title": "Reason",
+       "type": "string"
+      },
+      "safe_fallback": {
+       "title": "Safe Fallback",
+       "type": "string"
+      },
+      "safety": {
+       "title": "Safety",
+       "type": "string"
+      },
+      "status": {
+       "enum": [
+        "available",
+        "active",
+        "completed",
+        "expired"
+       ],
+       "title": "Status",
+       "type": "string"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "record_first",
+        "gather_three",
+        "resolve_unknown",
+        "second_example",
+        "novel_sound",
+        "repeat_not_machine",
+        "find_tonal"
+       ],
+       "title": "Type",
+       "type": "string"
+      },
+      "wording": {
+       "$ref": "#/$defs/WordingOut"
+      }
+     },
+     "required": [
+      "id",
+      "type",
+      "title",
+      "objective",
+      "reason",
+      "evidence",
+      "completion",
+      "safe_fallback",
+      "safety",
+      "status",
+      "wording"
+     ],
+     "title": "MissionOut",
+     "type": "object"
+    },
+    "ProgressOut": {
+     "additionalProperties": true,
+     "properties": {
+      "current": {
+       "title": "Current",
+       "type": "integer"
+      },
+      "target": {
+       "title": "Target",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "current",
+      "target"
+     ],
+     "title": "ProgressOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    },
+    "WordingOut": {
+     "additionalProperties": true,
+     "properties": {
+      "source": {
+       "enum": [
+        "gemma",
+        "template"
+       ],
+       "title": "Source",
+       "type": "string"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "text",
+      "source"
+     ],
+     "title": "WordingOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "active": {
+     "items": {
+      "$ref": "#/$defs/MissionOut"
+     },
+     "title": "Active",
+     "type": "array"
+    },
+    "candidates": {
+     "items": {
+      "$ref": "#/$defs/MissionOut"
+     },
+     "title": "Candidates",
+     "type": "array"
+    },
+    "completed": {
+     "items": {
+      "$ref": "#/$defs/MissionOut"
+     },
+     "title": "Completed",
+     "type": "array"
+    },
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "max_active": {
+     "title": "Max Active",
+     "type": "integer"
+    },
+    "selection": {
+     "additionalProperties": true,
+     "title": "Selection",
+     "type": "object"
+    }
+   },
+   "required": [
+    "contract_version",
+    "max_active",
+    "active",
+    "candidates",
+    "completed",
+    "selection"
+   ],
+   "title": "MissionsOut",
+   "type": "object"
+  },
+  "ModelStatusOut": {
+   "additionalProperties": true,
+   "properties": {
+    "available": {
+     "title": "Available",
+     "type": "boolean"
+    },
+    "base_url": {
+     "title": "Base Url",
+     "type": "string"
+    },
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "enabled": {
+     "title": "Enabled",
+     "type": "boolean"
+    },
+    "installed": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Installed",
+     "type": "array"
+    },
+    "license": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "License"
+    },
+    "limits": {
+     "additionalProperties": true,
+     "title": "Limits",
+     "type": "object"
+    },
+    "model": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Model"
+    },
+    "runtime": {
+     "title": "Runtime",
+     "type": "string"
+    },
+    "stats": {
+     "additionalProperties": true,
+     "title": "Stats",
+     "type": "object"
+    },
+    "status": {
+     "enum": [
+      "ready",
+      "loading",
+      "unavailable",
+      "disabled",
+      "no_model"
+     ],
+     "title": "Status",
+     "type": "string"
+    }
+   },
+   "required": [
+    "contract_version",
+    "runtime",
+    "base_url",
+    "enabled",
+    "available",
+    "status",
+    "installed",
+    "limits",
+    "stats"
+   ],
+   "title": "ModelStatusOut",
+   "type": "object"
+  },
+  "SettingsIn": {
+   "additionalProperties": false,
+   "properties": {
+    "gemma_enabled": {
+     "description": "Allow Gemma to write ECHO-0's lines (templates are used when off)",
+     "title": "Gemma Enabled",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "gemma_enabled"
+   ],
+   "title": "SettingsIn",
+   "type": "object"
+  },
+  "SettingsOut": {
+   "additionalProperties": true,
+   "properties": {
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "gemma_enabled": {
+     "title": "Gemma Enabled",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "contract_version",
+    "gemma_enabled"
+   ],
+   "title": "SettingsOut",
+   "type": "object"
+  },
+  "StateOut": {
+   "$defs": {
+    "ActOut": {
+     "additionalProperties": true,
+     "properties": {
+      "criteria": {
+       "items": {
+        "$ref": "#/$defs/CriterionOut"
+       },
+       "title": "Criteria",
+       "type": "array"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "progress": {
+       "$ref": "#/$defs/ProgressOut"
+      },
+      "status": {
+       "enum": [
+        "locked",
+        "active",
+        "complete"
+       ],
+       "title": "Status",
+       "type": "string"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "title",
+      "status",
+      "progress",
+      "criteria"
+     ],
+     "title": "ActOut",
+     "type": "object"
+    },
+    "CriterionOut": {
+     "additionalProperties": true,
+     "properties": {
+      "evidence": {
+       "default": [],
+       "items": {
+        "$ref": "#/$defs/RefOut"
+       },
+       "title": "Evidence",
+       "type": "array"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "met": {
+       "title": "Met",
+       "type": "boolean"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "text",
+      "met"
+     ],
+     "title": "CriterionOut",
+     "type": "object"
+    },
+    "MilestoneOut": {
+     "additionalProperties": true,
+     "properties": {
+      "achieved": {
+       "title": "Achieved",
+       "type": "boolean"
+      },
+      "achieved_at": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Achieved At"
+      },
+      "evidence": {
+       "default": [],
+       "items": {
+        "$ref": "#/$defs/RefOut"
+       },
+       "title": "Evidence",
+       "type": "array"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "optional": {
+       "title": "Optional",
+       "type": "boolean"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "title",
+      "achieved",
+      "optional"
+     ],
+     "title": "MilestoneOut",
+     "type": "object"
+    },
+    "ProgressOut": {
+     "additionalProperties": true,
+     "properties": {
+      "current": {
+       "title": "Current",
+       "type": "integer"
+      },
+      "target": {
+       "title": "Target",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "current",
+      "target"
+     ],
+     "title": "ProgressOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "act": {
+     "enum": [
+      "prologue",
+      "act_1",
+      "act_2",
+      "act_3",
+      "ending"
+     ],
+     "title": "Act",
+     "type": "string"
+    },
+    "acts": {
+     "items": {
+      "$ref": "#/$defs/ActOut"
+     },
+     "title": "Acts",
+     "type": "array"
+    },
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "counts": {
+     "additionalProperties": {
+      "type": "integer"
+     },
+     "title": "Counts",
+     "type": "object"
+    },
+    "derived_at": {
+     "title": "Derived At",
+     "type": "string"
+    },
+    "ending_unlocked": {
+     "title": "Ending Unlocked",
+     "type": "boolean"
+    },
+    "gemma": {
+     "additionalProperties": true,
+     "title": "Gemma",
+     "type": "object"
+    },
+    "milestones": {
+     "items": {
+      "$ref": "#/$defs/MilestoneOut"
+     },
+     "title": "Milestones",
+     "type": "array"
+    },
+    "phase": {
+     "enum": [
+      "awaiting_sound",
+      "first_hearing",
+      "teaching",
+      "ready_to_compose",
+      "composing",
+      "remembered"
+     ],
+     "title": "Phase",
+     "type": "string"
+    }
+   },
+   "required": [
+    "contract_version",
+    "derived_at",
+    "act",
+    "phase",
+    "ending_unlocked",
+    "acts",
+    "milestones",
+    "counts",
+    "gemma"
+   ],
+   "title": "StateOut",
+   "type": "object"
+  },
+  "TimelineOut": {
+   "additionalProperties": true,
+   "properties": {
+    "contract_version": {
+     "title": "Contract Version",
+     "type": "string"
+    },
+    "entries": {
+     "items": {
+      "additionalProperties": true,
+      "type": "object"
+     },
+     "title": "Entries",
+     "type": "array"
+    },
+    "next_before": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Next Before"
+    }
+   },
+   "required": [
+    "contract_version",
+    "entries"
+   ],
+   "title": "TimelineOut",
+   "type": "object"
+  },
+  "UtteranceOut": {
+   "$defs": {
+    "FactOut": {
+     "additionalProperties": true,
+     "properties": {
+      "handle": {
+       "title": "Handle",
+       "type": "string"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "ref": {
+       "anyOf": [
+        {
+         "$ref": "#/$defs/RefOut"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null
+      },
+      "statement": {
+       "title": "Statement",
+       "type": "string"
+      }
+     },
+     "required": [
+      "handle",
+      "statement",
+      "provenance"
+     ],
+     "title": "FactOut",
+     "type": "object"
+    },
+    "GenerationOut": {
+     "additionalProperties": true,
+     "properties": {
+      "attempts": {
+       "default": 0,
+       "title": "Attempts",
+       "type": "integer"
+      },
+      "fallback_reason": {
+       "anyOf": [
+        {
+         "enum": [
+          "disabled",
+          "unavailable",
+          "timeout",
+          "invalid_output",
+          "invalid_json",
+          "busy",
+          "no_model"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Fallback Reason"
+      },
+      "latency_ms": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Latency Ms"
+      },
+      "status": {
+       "enum": [
+        "ready",
+        "pending",
+        "fallback"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "status"
+     ],
+     "title": "GenerationOut",
+     "type": "object"
+    },
+    "LineOut": {
+     "additionalProperties": true,
+     "properties": {
+      "cites": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Cites",
+       "type": "array"
+      },
+      "kind": {
+       "enum": [
+        "grounded",
+        "imagination"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "provenance": {
+       "items": {
+        "enum": [
+         "model",
+         "user_confirmed",
+         "personal_memory",
+         "measurement",
+         "system",
+         "imagination"
+        ],
+        "type": "string"
+       },
+       "title": "Provenance",
+       "type": "array"
+      },
+      "text": {
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     "required": [
+      "text",
+      "kind",
+      "provenance",
+      "cites"
+     ],
+     "title": "LineOut",
+     "type": "object"
+    },
+    "MomentOut": {
+     "additionalProperties": true,
+     "properties": {
+      "act": {
+       "title": "Act",
+       "type": "string"
+      },
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "kind": {
+       "enum": [
+        "awaiting_sound",
+        "first_sound",
+        "teaching",
+        "correction",
+        "unknown",
+        "relationship",
+        "ready_to_compose",
+        "composition",
+        "ending"
+       ],
+       "title": "Kind",
+       "type": "string"
+      },
+      "occurred_at": {
+       "title": "Occurred At",
+       "type": "string"
+      }
+     },
+     "required": [
+      "kind",
+      "key",
+      "act",
+      "occurred_at"
+     ],
+     "title": "MomentOut",
+     "type": "object"
+    },
+    "RefOut": {
+     "additionalProperties": true,
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Label"
+      },
+      "provenance": {
+       "enum": [
+        "model",
+        "user_confirmed",
+        "personal_memory",
+        "measurement",
+        "system",
+        "imagination"
+       ],
+       "title": "Provenance",
+       "type": "string"
+      },
+      "type": {
+       "enum": [
+        "recording",
+        "annotation",
+        "label",
+        "prediction",
+        "composition",
+        "atlas_edge",
+        "mission",
+        "measurement"
+       ],
+       "title": "Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "type",
+      "id",
+      "provenance"
+     ],
+     "title": "RefOut",
+     "type": "object"
+    }
+   },
+   "additionalProperties": true,
+   "properties": {
+    "created_at": {
+     "title": "Created At",
+     "type": "string"
+    },
+    "facts": {
+     "items": {
+      "$ref": "#/$defs/FactOut"
+     },
+     "title": "Facts",
+     "type": "array"
+    },
+    "generation": {
+     "$ref": "#/$defs/GenerationOut"
+    },
+    "id": {
+     "title": "Id",
+     "type": "string"
+    },
+    "lines": {
+     "items": {
+      "$ref": "#/$defs/LineOut"
+     },
+     "title": "Lines",
+     "type": "array"
+    },
+    "model": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Model"
+    },
+    "moment": {
+     "$ref": "#/$defs/MomentOut"
+    },
+    "revision": {
+     "title": "Revision",
+     "type": "integer"
+    },
+    "source": {
+     "enum": [
+      "gemma",
+      "template"
+     ],
+     "title": "Source",
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "revision",
+    "moment",
+    "lines",
+    "facts",
+    "source",
+    "generation",
+    "created_at"
+   ],
+   "title": "UtteranceOut",
+   "type": "object"
+  }
+ }
+}

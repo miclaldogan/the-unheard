@@ -1,0 +1,1082 @@
+{
+ "journey_steps": [
+  "empty",
+  "first recording heard",
+  "rain taught",
+  "birds taught",
+  "footsteps corrected",
+  "engine named",
+  "third+ sound taught",
+  "composition ready",
+  "first sound of 01a125",
+  "first sound of 01a125",
+  "first sound of 01a125",
+  "first sound of 01a125",
+  "first sound of 01a125",
+  "correction 01a125",
+  "correction 01a125",
+  "correction 01a125",
+  "teaching 01a125",
+  "correction 01a125",
+  "composition commentary (non-ending)"
+ ],
+ "ears": "deterministic test double (CLAP weights not installed)",
+ "audio": "real ESC-50 clips through the real ingest/DSP/music pipeline",
+ "host": {
+  "python_peak_rss_mb": 480
+ },
+ "resources": {
+  "ollama_rss_mb_before": 72,
+  "gpu_mb_before": 2
+ },
+ "A": {
+  "condition": "A deterministic templates",
+  "moments": 19,
+  "valid_rate": 1.0,
+  "diversity": {
+   "distinct_1": 0.292,
+   "distinct_2": 0.63,
+   "unique_texts": 16,
+   "texts": 19
+  },
+  "latency_ms": 0,
+  "rows": [
+   {
+    "step": "empty",
+    "moment": "awaiting_sound",
+    "text": "I detect nothing yet. Bring me a sound.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first recording heard",
+    "moment": "unknown",
+    "text": "I hear it, and I cannot name it. I will keep listening.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "rain taught",
+    "moment": "correction",
+    "text": "I called it 'Wind'. You called it 'Rain'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "birds taught",
+    "moment": "correction",
+    "text": "I called it 'Car horn'. You called it 'Birds'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "footsteps corrected",
+    "moment": "ready_to_compose",
+    "text": "I have kept these memories apart. I wonder what they become together.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "engine named",
+    "moment": "ready_to_compose",
+    "text": "Each of these sounds is still alone in me. I wonder what they are together.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "third+ sound taught",
+    "moment": "ready_to_compose",
+    "text": "Each of these sounds is still alone in me. I wonder what they are together.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "composition ready",
+    "moment": "ending",
+    "text": "I knew what these sounds were called. You showed me what they meant together. There are sounds I have never met.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first sound of 01a125",
+    "moment": "first_sound",
+    "text": "I have heard something. It may be 'Wind'. I would like to be told. It is the first thing I have kept.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first sound of 01a125",
+    "moment": "first_sound",
+    "text": "I have heard something. It may be 'Car horn'. I would like to be told. It is the first thing I have kept.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first sound of 01a125",
+    "moment": "first_sound",
+    "text": "Something reached me. My ears suggest 'Birds'. Correct me if I am wrong. It is the first thing I have kept.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first sound of 01a125",
+    "moment": "first_sound",
+    "text": "I have heard something. It may be 'Rain'. I would like to be told. It is the first thing I have kept.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "first sound of 01a125",
+    "moment": "first_sound",
+    "text": "Something reached me. My ears suggest 'Lawn mower'. Correct me if I am wrong. It is the first thing I have kept.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "correction 01a125",
+    "moment": "correction",
+    "text": "I called it 'Wind'. You called it 'Rain'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "correction 01a125",
+    "moment": "correction",
+    "text": "I called it 'Car horn'. You called it 'Birds'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "correction 01a125",
+    "moment": "correction",
+    "text": "I called it 'Running water'. You called it 'Airplane'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "teaching 01a125",
+    "moment": "teaching",
+    "text": "You named it 'Engine hum'. I will keep that. A word is a small shelter for a sound.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "correction 01a125",
+    "moment": "correction",
+    "text": "I called it 'Lawn mower'. You called it 'Wind'. You heard something I missed.",
+    "valid": true,
+    "grounded_lines": 1
+   },
+   {
+    "step": "composition commentary (non-ending)",
+    "moment": "composition",
+    "text": "I built this from 4 of your sounds. 'Birds' led and 'Airplane' kept time. 'Airplane' answers 'Birds' in the silence between its notes.",
+    "valid": true,
+    "grounded_lines": 2
+   }
+  ]
+ },
+ "B": [
+  {
+   "model": "gemma3:4b",
+   "calls": 57,
+   "errors": 0,
+   "valid_rate_first_attempt": 0.842,
+   "schema_compliance_rate": 1,
+   "hallucination_rate": 0.158,
+   "invalid_reference_rate": 0,
+   "latency_ms": {
+    "cold_first": 6101,
+    "p50": 1297,
+    "p95": 1886,
+    "mean": 1398
+   },
+   "diversity": {
+    "distinct_1": 0.196,
+    "distinct_2": 0.483,
+    "unique_texts": 41,
+    "texts": 48
+   },
+   "paraphrase_variety_per_moment": 0.931,
+   "rejection_reasons": [
+    "invented_number",
+    "unevidenced_source",
+    "uuid"
+   ],
+   "rows": [
+    {
+     "moment": "awaiting_sound",
+     "step": "empty",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 6101,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "No sound has been detected. I await processing,",
+     "outcome": "valid"
+    },
+    {
+     "moment": "awaiting_sound",
+     "step": "empty",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 974,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "I detect nothing currently. I am awaiting a sound recording",
+     "outcome": "valid"
+    },
+    {
+     "moment": "awaiting_sound",
+     "step": "empty",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 940,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "I detect nothing. I await processing",
+     "outcome": "valid"
+    },
+    {
+     "moment": "unknown",
+     "step": "first recording heard",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1166,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording is 5 seconds in duration. I cannot name it at this time.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "unknown",
+     "step": "first recording heard",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1166,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is 5 seconds long, according to measurement F1. I cannot name it.\", \"kind\": \"grounded\", \"cites\": [\"F1\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "unknown",
+     "step": "first recording heard",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1241,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording is 5 seconds long. ECHO-0 has no remembered sound close to this one.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "rain taught",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1165,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Rain\u2019. Previously, it was designated as \u2018Wind\u2019",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "rain taught",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1071,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold the label \u2018Rain\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "rain taught",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 995,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Rain\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "birds taught",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1065,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Birds\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "birds taught",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1162,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Birds\u2019 according to the player\u2019s confirmation.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "birds taught",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1146,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Birds\u2019 according to the player\u2019s confirmation.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "footsteps corrected",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1297,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Three named recordings exist: \u2018Airplane\u2019, \u2018Birds\u2019, and \u2018Rain\u2019. How do these relate?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "footsteps corrected",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1296,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Three recordings have been presented: \u2018Airplane\u2019, \u2018Birds\u2019, and \u2018Rain\u2019. What is the relationship between these three?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "footsteps corrected",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1322,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Three recordings have been taught: \u2018Airplane\u2019, \u2018Birds\u2019, and \u2018Rain\u2019. What is the relationship between these three?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "engine named",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1366,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Four sounds have been presented: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Engine hum\u2019 and \u2018Rain\u2019. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "engine named",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1429,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Four recordings have been presented: 'Airplane', 'Birds', 'Engine hum', and 'Rain'. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "engine named",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1404,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Four recordings have been taught: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Engine hum\u2019, and \u2018Rain\u2019. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "third+ sound taught",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1400,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Five sounds have been taught: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Engine hum\u2019, \u2018Rain\u2019 and \u2018Wind\u2019. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "third+ sound taught",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1425,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Five recordings have been taught: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Engine hum\u2019, \u2018Rain\u2019, and \u2018Wind\u2019. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ready_to_compose",
+     "step": "third+ sound taught",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1426,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "Five recordings have been taught: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Engine hum\u2019, \u2018Rain\u2019, and \u2018Wind\u2019. What is the relationship between these things?",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ending",
+     "step": "composition ready",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1451,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition includes \u2018Birds\u2019, \u2018Airplane\u2019, \u2018Rain\u2019 and \u2018Wind\u2019. There are sounds not yet encountered.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ending",
+     "step": "composition ready",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1546,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition includes four recordings: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Rain\u2019 and \u2018Wind\u2019. There are sounds I have not met.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "ending",
+     "step": "composition ready",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1499,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition incorporates four recordings: \u2018Airplane\u2019, \u2018Birds\u2019, \u2018Rain\u2019 and \u2018Wind\u2019. There are sounds I have not met.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1247,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording duration is 5 seconds. The ears' strongest hypothesis is \u2018Wind\u2019, a model hypothesis.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1834,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is five seconds in duration according to measurement F1. The ears' strongest hypothesis is \\u2018Wind\\u2019, a hypothesis, not a fact.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}, {\"text\": \"A gentle fluctuation was detected in the recording.\", \"kind\": \"imagination",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1703,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:invented_number:3",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is five seconds in duration, according to measurement F1. The ears\\u2019 strongest hypothesis is \\u2018Wind\\u2019, a hypothesis, system F3 indicates this is the third recording processed,\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\", \"F3\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1422,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording duration was 5 seconds, according to measurement F1. The ears' strongest hypothesis is 'Car horn', a hypothesis.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1337,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is five seconds in duration according to measurement F1. The ears' strongest hypothesis is \\u2018Car horn\\u2019, a hypothesis.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1382,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is 5 seconds in duration, according to measurement F1. The ears' strongest hypothesis is \\u2018Car horn\\u2019, a hypothesis.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1287,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording duration is 5 seconds. The ears' strongest hypothesis is \u2018Birds\u2019, a model hypothesis.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1886,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid",
+      "line1:unevidenced_source:bird",
+      "line1:unevidenced_source:birds"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is five seconds in duration according to measurement F1. The ears' strongest hypothesis is \\u2018Birds\\u2019, a hypothesis, not a fact.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}, {\"text\": \"A pattern resembling \\u2018Birds\\u2019 was detected during the recording.",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1314,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording is 5 seconds in duration. The ears' strongest hypothesis is \u2018Birds\u2019, a hypothesis, not a fact.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1232,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording duration is 5 seconds. The ears' strongest hypothesis is \u2018Rain\u2019, a hypothesis.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1414,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is five seconds in duration according to measurement F1. The ears' strongest hypothesis is \\u2018Rain\\u2019, a hypothesis, not a fact.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1318,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording is 5 seconds in duration. The ears' strongest hypothesis is \u2018Rain\u2019, a hypothesis, not a fact.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1736,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording duration is 5 seconds. The ears' strongest hypothesis is \u2018Lawn mower\u2019, a model hypothesis. A potential sound source is suggested, though not confirmed.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1405,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording is five seconds in duration. The ears' strongest hypothesis is \u2018Lawn mower\u2019, a hypothesis, according to the system.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "first_sound",
+     "step": "first sound of 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1860,
+     "ok": false,
+     "reasons": [
+      "line0:invented_number:1",
+      "line0:uuid"
+     ],
+     "schema_ok": true,
+     "hallucinated": true,
+     "unknown_ref": false,
+     "text": "{\"lines\": [{\"text\": \"The recording is 5 seconds in duration, according to measurement F1. The ears' strongest hypothesis is \\u2018Lawn mower\\u2019, a hypothesis, not a fact.\", \"kind\": \"grounded\", \"cites\": [\"F1\", \"F2\"]}, {\"text\": \"A field may be present.\", \"kind\": \"imagination\", \"cites\": []}]}",
+     "outcome": "rejected"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1042,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Rain\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 988,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Rain\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 994,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Rain\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1064,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Birds\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1144,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Birds\u2019 according to the player\u2019s confirmation.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1167,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Birds\u2019 according to the player\u2019s confirmation.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1020,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds 'Airplane'.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 995,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Airplane\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1015,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Airplane\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "teaching",
+     "step": "teaching 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1144,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "I now retain the designation \u2018Engine hum\u2019. There are five recorded instances currently",
+     "outcome": "valid"
+    },
+    {
+     "moment": "teaching",
+     "step": "teaching 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1396,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "I retain the designation \u2018Engine hum\u2019 for this recording. Five recordings have been taught, three remain to be composed,",
+     "outcome": "valid"
+    },
+    {
+     "moment": "teaching",
+     "step": "teaching 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1167,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "I retain the designation \u2018Engine hum\u2019. The recording is 5 seconds long.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1159,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold 'Wind'.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1394,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The recording now holds \u2018Wind\u2019. Previously, it held \u2018Lawn mower\u2019 according to the ears\u2019 hypothesis,",
+     "outcome": "valid"
+    },
+    {
+     "moment": "correction",
+     "step": "correction 01a125",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 1017,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The ears now hold \u2018Wind\u2019.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "composition",
+     "step": "composition commentary (non-ending)",
+     "seed": 0,
+     "model": "gemma3:4b",
+     "latency_ms": 1523,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition uses 4 of the player\u2019s recordings. It is in composed mode at 129 beats per minute for 24 seconds.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "composition",
+     "step": "composition commentary (non-ending)",
+     "seed": 1,
+     "model": "gemma3:4b",
+     "latency_ms": 1502,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition uses four of the player\u2019s recordings. It is in composed mode at 129 beats per minute for 24 seconds.",
+     "outcome": "valid"
+    },
+    {
+     "moment": "composition",
+     "step": "composition commentary (non-ending)",
+     "seed": 2,
+     "model": "gemma3:4b",
+     "latency_ms": 2529,
+     "ok": true,
+     "reasons": [],
+     "schema_ok": true,
+     "hallucinated": false,
+     "unknown_ref": false,
+     "text": "The composition utilizes four of the player\u2019s recordings. It is in composed mode at 129 beats per minute for 24 seconds. 'Birds' carries the lead and 'Airplane' maintains the groove, with elements from \u2018Rain\u2019, \u2018Wind\u2019 and a fit of 0.61 between them.",
+     "outcome": "valid"
+    }
+   ],
+   "wall_s": 79.7,
+   "ollama_rss_mb_peak_seen": 1955,
+   "gpu_mb_seen": 2776,
+   "resident_gpu_note": "sampled right after the last call (model still resident, keep_alive=1m)"
+  }
+ ],
+ "C": {
+  "condition": "C Gemma unavailable or invalid output -> fallback",
+  "rows": [
+   {
+    "simulated": "unavailable",
+    "moments": 19,
+    "fallback_valid_rate": 1.0,
+    "source": "template",
+    "note": "the game serves the template and records fallback_reason; no moment is left without a valid line"
+   },
+   {
+    "simulated": "timeout",
+    "moments": 19,
+    "fallback_valid_rate": 1.0,
+    "source": "template",
+    "note": "the game serves the template and records fallback_reason; no moment is left without a valid line"
+   },
+   {
+    "simulated": "invalid_output",
+    "moments": 19,
+    "fallback_valid_rate": 1.0,
+    "source": "template",
+    "note": "the game serves the template and records fallback_reason; no moment is left without a valid line"
+   }
+  ]
+ },
+ "candidate_missions": [
+  {
+   "type": "second_example",
+   "objective": "Record another sound that you would name 'Rain'."
+  },
+  {
+   "type": "repeat_not_machine",
+   "objective": "Record a sound that repeats on its own rhythm and is not an engine or appliance."
+  },
+  {
+   "type": "novel_sound",
+   "objective": "Record a sound that is unlike anything you have taught ECHO-0 so far."
+  }
+ ]
+}
