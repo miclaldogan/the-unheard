@@ -1,0 +1,18 @@
+{
+  "state": {
+    "act": "ending",
+    "phase": "remembered",
+    "counts": {
+      "recordings": 4,
+      "heard": 0,
+      "taught": 4,
+      "labels_confirmed": 1,
+      "corrections": 3,
+      "unknown": 0,
+      "compositions": 7,
+      "memory_version": 4
+    }
+  },
+  "missionActivated": true,
+  "atlasMetric": "4 memories · 0 relationships (0 acoustic, 0 shared names) · 0 unknown · 0 uncertain · 1 names you invented · layout v0 · draw 3.7 ms · reduced motion"
+}
