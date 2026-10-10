@@ -13,7 +13,7 @@ uv run unheard fetch-model         # downloads ~600 MB into ~/.cache/huggingface
 uv run unheard serve               # model loads lazily on the first inference job (~6 s)
 ```
 
-Without `--extra ml`, or with `UNHEARD_MODEL=none`, the server runs exactly as in M1
+Without `--extra ml`, or with `UNHEARD_MODEL_NAME=none`, the server runs exactly as in M1
 (features, archive, annotations without memory) and `/api/model` reports `disabled`.
 
 Runtime downloads are **off** by default (`HF_HUB_OFFLINE=1` is set by the adapter). Set
@@ -23,7 +23,7 @@ Runtime downloads are **off** by default (`HF_HUB_OFFLINE=1` is set by the adapt
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `UNHEARD_MODEL` | `laion/clap-htsat-unfused` | Hub id; `none` disables inference |
+| `UNHEARD_MODEL_NAME` | `laion/clap-htsat-unfused` | Hub id; `none` disables inference |
 | `UNHEARD_DEVICE` | `cpu` | `cuda` needs a CUDA build of torch installed into the venv manually (`uv pip install torch --index-url https://download.pytorch.org/whl/cu126`); CLAP needs ≈1 GB VRAM |
 | `UNHEARD_TORCH_THREADS` | unset (torch default) | limit CPU threads |
 | `UNHEARD_AUTO_INFER` | `true` | queue inference automatically after DSP |

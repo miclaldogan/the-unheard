@@ -1,0 +1,304 @@
+{
+  "reloadPersisted": true,
+  "state": {
+    "contract_version": "m5.1",
+    "derived_at": "2026-10-10T12:32:14.390Z",
+    "act": "ending",
+    "phase": "remembered",
+    "ending_unlocked": true,
+    "acts": [
+      {
+        "id": "prologue",
+        "title": "Silence",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_recording",
+            "text": "A first recording finishes processing.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+                "label": null,
+                "provenance": "system"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_1",
+        "title": "The First Sound",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_hearing",
+            "text": "The first recording was processed and heard.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+                "label": null,
+                "provenance": "model"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_2",
+        "title": "Teach the Machine",
+        "status": "complete",
+        "progress": {
+          "current": 3,
+          "target": 3
+        },
+        "criteria": [
+          {
+            "id": "third_teaching",
+            "text": "Teach ECHO-0 three sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "annotation",
+                "id": "01a125cb-c590-7000-8ae9-a2c010a4f943",
+                "label": null,
+                "provenance": "user_confirmed"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_3",
+        "title": "The World Remembered",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "orchestra_of_three",
+            "text": "Compose an orchestra from three taught sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "composition",
+                "id": "01a125cb-c665-7000-8172-18d877da05ff",
+                "label": null,
+                "provenance": "measurement"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "first_recording",
+        "title": "A first recording",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:08.049+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+            "label": null,
+            "provenance": "system"
+          }
+        ]
+      },
+      {
+        "id": "first_hearing",
+        "title": "First hearing",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:09.088+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+            "label": null,
+            "provenance": "model"
+          }
+        ]
+      },
+      {
+        "id": "first_teaching",
+        "title": "A first teaching",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.698+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c522-7000-8bb8-5eec13dc6003",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "third_teaching",
+        "title": "Three sounds taught",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.808+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c590-7000-8ae9-a2c010a4f943",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "first_memory_influence",
+        "title": "Memory consulted",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:39.456+00:00",
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "first_correction",
+        "title": "A first correction",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.792+00:00",
+        "optional": true,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c580-7000-907c-1da5b04cb8a8",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "unknown_met",
+        "title": "A sound without a name",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:39.459+00:00",
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "unknown_resolved",
+        "title": "A nameless sound named",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "first_composition",
+        "title": "A first composition",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "orchestra_of_three",
+        "title": "An orchestra of three",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "ending_reached",
+        "title": "The world remembered",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      }
+    ],
+    "counts": {
+      "recordings": 8,
+      "heard": 8,
+      "taught": 7,
+      "labels_confirmed": 3,
+      "corrections": 2,
+      "unknown": 1,
+      "compositions": 3,
+      "memory_version": 7
+    },
+    "gemma": {
+      "status": "ready",
+      "model": "gemma3:4b",
+      "enabled": true
+    }
+  },
+  "seen": [
+    {
+      "id": "nar_98e1844c690853d6",
+      "revision": 16,
+      "source": "gemma",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 1821.1913220002316,
+        "attempts": 1,
+        "fallback_reason": null
+      }
+    },
+    {
+      "id": "nar_98e1844c690853d6",
+      "revision": 16,
+      "source": "gemma",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 1821.1913220002316,
+        "attempts": 1,
+        "fallback_reason": null
+      }
+    },
+    {
+      "id": "nar_98e1844c690853d6",
+      "revision": 16,
+      "source": "gemma",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 1821.1913220002316,
+        "attempts": 1,
+        "fallback_reason": null
+      }
+    }
+  ]
+}

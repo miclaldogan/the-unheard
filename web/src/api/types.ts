@@ -274,6 +274,8 @@ export interface AnnotationResult {
   memory_version: number;
   exemplars_added: number;
   exemplars_retracted: number;
+  /** true while the label is stored but the recording has no embedding yet, so memory has not changed */
+  memory_pending?: boolean;
   created_label_ids: string[];
   rescored_changes: { recording_id: string; from: string | null; to: string }[];
   fused_top: FusedCandidate[];
@@ -419,4 +421,115 @@ export interface Atlas {
   state: 'empty' | 'first_observation' | 'scattered' | 'emerging_relationships' | 'learned_categories' | 'new_concept';
   counts: Record<string, number>;
   narrative: (EchoLine & { edge?: [string, string] })[];
+}
+
+// ---------------------------------------------------------------- M4: the Orchestra
+
+export type CompositionStatus = 'queued' | 'processing' | 'ready' | 'failed';
+export type CompositionMode = 'organic' | 'composed' | 'legacy';
+export type Hierarchy = 'lead' | 'foundation' | 'support' | 'gesture' | 'bed';
+export type MusicRole = 'texture' | 'drone' | 'rhythmic_texture' | 'percussion' | 'tonal_motif' | 'accent' | 'granular';
+export interface Controls { density: number; structure: number; intensity: number }
+
+export interface RoleDecision {
+  primary: MusicRole;
+  secondary: MusicRole | null;
+  scores: Record<string, number>;
+  evidence: Record<string, number | null>;
+  rationale: string;
+  overridden: boolean;
+}
+export interface CompositionSource {
+  position: number;
+  recording_id: string;
+  content_hash: string;
+  exists: boolean;
+  label: string | null;
+  role: MusicRole | null;
+  secondary_role: MusicRole | null;
+  decision: RoleDecision | null;
+  analysis: Record<string, unknown> | null;
+}
+export interface CompositionTrack {
+  track_key: string;
+  recording_id: string;
+  role: MusicRole;
+  layer_order: number;
+  pan: number;
+  enters: string;
+  hierarchy: Hierarchy | null;
+  stem_url: string | null;
+  original_url: string;
+}
+export interface Section { name: string; start_bar: number; bars: number; start_s: number; end_s: number }
+export interface CompositionEcho { text: string; tag: string; evidence: Record<string, unknown> }
+export interface Composition {
+  id: string;
+  parent_id: string | null;
+  name: string;
+  saved: boolean;
+  mode: CompositionMode;
+  status: CompositionStatus;
+  error: string | null;
+  seed: number;
+  controls: Controls;
+  target_duration_s: number;
+  duration_s: number | null;
+  tempo_bpm: number | null;
+  planner_version: number;
+  render_version: number;
+  plan_hash: string | null;
+  master_sha256: string | null;
+  master_url: string | null;
+  export_url: string | null;
+  metrics: Record<string, unknown> | null;
+  sections: Section[];
+  form: Record<string, string> | null;
+  conversation: { lead: string; responder: string; evidence: Record<string, number> }[];
+  groove: { quantisation: number; swing_steps: number; micro_ms: number; ghost_notes: boolean; fills: boolean; tonal_strategy: string } | null;
+  hierarchy: Record<string, unknown> | null;
+  key: { tonic_midi: number; scale: string; from: string } | null;
+  tempo_source: string | null;
+  sources: CompositionSource[];
+  tracks: CompositionTrack[];
+  echo: CompositionEcho[];
+  created_at: string;
+  updated_at: string;
+  rendered_at: string | null;
+  created: boolean | null;
+}
+export interface CompositionListItem {
+  id: string;
+  parent_id: string | null;
+  name: string;
+  saved: boolean;
+  mode: CompositionMode;
+  status: CompositionStatus;
+  seed: number;
+  duration_s: number | null;
+  tempo_bpm: number | null;
+  n_sources: number;
+  recording_ids: string[];
+  created_at: string;
+}
+export interface CompositionEvent {
+  seq: number;
+  track_key: string;
+  recording_id: string;
+  kind: 'slice' | 'loop' | 'grains';
+  role: MusicRole;
+  section: string;
+  comp_start_s: number;
+  comp_dur_s: number;
+  source_start_s: number;
+  source_end_s: number;
+  params: { rate?: number; gain_db?: number; pitch_shift_st?: number; hierarchy?: Hierarchy; motif?: string | null; variation?: string | null; velocity?: number; ghost?: boolean; [k: string]: unknown };
+}
+export interface CompositionTrace {
+  composition_id: string;
+  event: CompositionEvent;
+  track: Record<string, unknown>;
+  source: { recording_id: string; exists: boolean; label?: string | null; captured_at?: string | null; duration_s?: number; audio_url?: string };
+  specimen: { artifact_id: string; geometry_hash: string; generator_version: number } | null;
+  also_in: string[];
 }

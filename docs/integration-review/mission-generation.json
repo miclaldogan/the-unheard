@@ -1,0 +1,82 @@
+{
+  "selectionTransitions": [
+    {
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "fallback_reason": null,
+      "status": "ready"
+    }
+  ],
+  "missions": {
+    "contract_version": "m5.1",
+    "max_active": 2,
+    "active": [],
+    "candidates": [
+      {
+        "id": "msn_d78324dfdafa",
+        "type": "find_tonal",
+        "title": "A sound with a pitch",
+        "objective": "Record a sound that has a clear pitch: something you could hum along to.",
+        "reason": "None of your taught sounds has a clear pitch; they are all broadband.",
+        "evidence": [
+          {
+            "type": "measurement",
+            "id": "voiced_ratio:taught",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ],
+        "completion": {
+          "predicate": "new_recording_matching",
+          "description": "A new, named recording that is pitched at least 20% of the time."
+        },
+        "safe_fallback": "If nothing like that is within easy reach, skip this mission; it will wait.",
+        "safety": "Stay on public paths. Keep your distance from animals. Do not record people without their consent.",
+        "status": "available",
+        "wording": {
+          "text": "I am attempting to identify an instance of a sound with a discernible pitch, like a hum.",
+          "source": "gemma"
+        },
+        "activated_at": null,
+        "completed_at": null,
+        "progress": null
+      },
+      {
+        "id": "msn_1d63361c31fe",
+        "type": "novel_sound",
+        "title": "Something unlike the rest",
+        "objective": "Record a sound that is unlike anything you have taught ECHO-0 so far.",
+        "reason": "4 recording(s) are taught; a very different one would widen the memory.",
+        "evidence": [
+          {
+            "type": "measurement",
+            "id": "memory:novelty",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ],
+        "completion": {
+          "predicate": "new_recording_novel",
+          "description": "A new recording whose closest taught sound is far away (similarity at most 0.75)."
+        },
+        "safe_fallback": "If nothing like that is within easy reach, skip this mission; it will wait.",
+        "safety": "Stay on public paths. Keep your distance from animals. Do not record people without their consent.",
+        "status": "available",
+        "wording": {
+          "text": "Record a sound that deviates significantly from my previously learned auditory data points.",
+          "source": "gemma"
+        },
+        "activated_at": null,
+        "completed_at": null,
+        "progress": null
+      }
+    ],
+    "completed": [],
+    "selection": {
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "fallback_reason": null,
+      "status": "ready"
+    }
+  }
+}

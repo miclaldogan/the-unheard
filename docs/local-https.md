@@ -4,7 +4,7 @@
 `http://localhost` and `http://127.0.0.1` as secure, but **not** an ordinary LAN address such as
 `http://192.168.1.20:5173`. So desktop testing works over plain HTTP, phone testing does not.
 
-## Option A — mkcert (recommended, verified approach, not yet exercised on a phone in M1)
+## Option A — mkcert (recommended; not yet exercised on a phone)
 
 1. Install mkcert (`sudo pacman -S mkcert` on Arch, `brew install mkcert` on macOS).
 2. Run `scripts/mkcert.sh`. It creates `web/certs/dev.pem` + `dev-key.pem` for
@@ -22,22 +22,28 @@
 6. On the phone open `https://<lan-ip>:5173/?token=<the token>` once; the token is stored in
    `localStorage` and sent as `Authorization: Bearer` on every API call.
 
-## Option B — Chrome flag (quick, Android only, not for demos)
+## Production PWA over HTTPS (no extra proxy needed)
 
-`chrome://flags/#unsafely-treat-insecure-origin-as-secure` → add `http://<lan-ip>:5173`. Works on
-Android Chrome; iOS Safari has no equivalent.
+Vite development does not register the service worker. For installation/offline testing, build `web/dist` and let
+the backend serve it with the same certificate, so the app and `/api` share one HTTPS origin:
 
-## Option C — temporary tunnel
+```bash
+cd web && npm run build
+cd ../server
+UNHEARD_API_TOKEN="$(openssl rand -hex 16)" uv run unheard serve --lan --port 8443 \
+  --ssl-certfile ../web/certs/dev.pem --ssl-keyfile ../web/certs/dev-key.pem
+```
 
-A quick tunnel (e.g. `cloudflared tunnel --url http://localhost:5173`) gives a public HTTPS URL.
-Traffic then transits a third-party relay; **the architecture requires the UI to label this**
-(doc 02). Not wired up in M1. Always set `UNHEARD_API_TOKEN` before exposing anything.
+`--ssl-certfile` and `--ssl-keyfile` must be given together. Without `--lan` the server stays on loopback; with `--lan`
+the token is mandatory. Serving the shell, manifest, service worker and a token-protected API over HTTPS was verified with a
+self-signed certificate on loopback; mkcert and an actual phone were not exercised in development. The full phone procedure and
+a results checklist are in [`ANDROID-FIELD-TEST.md`](ANDROID-FIELD-TEST.md).
+Do not bypass secure-context checks or publish the laptop through a tunnel for validation.
 
-## What is and is not verified in M1
+M5.5 verified actual laptop microphone capture and sandboxed desktop Chrome’s production PWA installation,
+offline shell, local recording persistence, authenticated upload and playback. No physical Android/iPhone,
+LAN HTTPS or outdoor test was performed. See `RELEASE-CHECKLIST.md` for those open gates.
 
-- Verified: desktop capture on `http://localhost:5173` with the Vite proxy (Chrome / Firefox on Linux).
-- Not verified: an actual phone over LAN HTTPS. `scripts/mkcert.sh` and the Vite config are in
-  place but no physical device test was run in this milestone. Do not claim otherwise.
-- Not implemented: offline capture queue (IndexedDB) and service worker. The manifest makes the
-  app installable, but an installed PWA still needs the server reachable to upload. This is
-  the "Offline queue → simple retry" cut from doc 12.
+Field now saves recordings in a bounded IndexedDB queue before upload. Offline capture is separate from
+analysis: CLAP/Gemma and composition still need the connected laptop. Background or locked-screen recording
+is not guaranteed. Keep the screen awake and stop/save explicitly before leaving the app.

@@ -132,6 +132,9 @@ def run_infer_stage(
     ]
 
     with db.transaction() as conn:
+        if RecordingRepo.get(conn, recording_id) is None:
+            log.info("infer result for %s dropped: recording was deleted meanwhile", recording_id)
+            return {"inference_ms": ms, "windows": 0, "skipped": "recording_deleted"}
         for w in windows:
             EmbeddingRepo.upsert(
                 conn,
@@ -194,11 +197,13 @@ def run_infer_stage(
                 },
                 recording_id=recording_id,
             )
+        backfill = memory.backfill_pending(conn, recording_id, model_version_id)
     log.info(
-        "infer done for %s: %d windows, %.0f ms, top=%s",
+        "infer done for %s: %d windows, %.0f ms, top=%s%s",
         recording_id,
         len(windows),
         ms,
         results[0]["slug"] if results else None,
+        ", pending label backfilled" if backfill else "",
     )
-    return {"inference_ms": ms, "windows": len(windows)}
+    return {"inference_ms": ms, "windows": len(windows), "memory_backfilled": backfill is not None}

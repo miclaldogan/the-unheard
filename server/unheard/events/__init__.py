@@ -19,3 +19,11 @@ UNKNOWN_SOUND_OBSERVED = "UnknownSoundObserved"
 # M3
 ARTIFACT_RENDERED = "ArtifactRendered"
 ATLAS_UPDATED = "AtlasUpdated"
+
+# M4
+COMPOSITION_CREATED = "CompositionCreated"
+COMPOSITION_PLANNED = "CompositionPlanned"
+COMPOSITION_RENDERED = "CompositionRendered"
+COMPOSITION_FAILED = "CompositionFailed"
+COMPOSITION_REVISED = "CompositionRevised"
+COMPOSITION_DELETED = "CompositionDeleted"

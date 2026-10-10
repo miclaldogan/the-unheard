@@ -127,6 +127,8 @@ class AnnotationResult(BaseModel):
     memory_version: int
     exemplars_added: int
     exemplars_retracted: int
+    # label stored, but the recording has no embedding yet, so memory has not changed
+    memory_pending: bool = False
     created_label_ids: list[str]
     rescored_changes: list[dict[str, Any]]
     fused_top: list[dict[str, Any]]

@@ -68,7 +68,8 @@ describe('recording state machine', () => {
     expect(canSubmit(s, 3000)).toBe(true);
     expect(reducer(s, { type: 'SUBMIT' }).phase).toBe('uploading');
     s = reducer(s, { type: 'CLEAR_ERROR' });
-    expect(s.phase).toBe('armed');
+    expect(s.phase).toBe('recorded');
+    expect(canSubmit(s, 3000)).toBe(true);
   });
 
   it('cancel and discard return to armed', () => {

@@ -385,12 +385,59 @@ class MemoryService:
             )
             result = {
                 **payload,
+                "memory_pending": bool(label_ids) and added == 0,
                 "exemplars_added": added,
                 "exemplars_retracted": retracted,
                 "rescored_changes": changes,
             }
         self._refresh_visuals([recording_id] + [c["recording_id"] for c in changes])
         return result
+
+    def backfill_pending(
+        self, conn: sqlite3.Connection, recording_id: str, model_version_id: str
+    ) -> dict[str, Any] | None:
+        """Turn an annotation made before inference into exemplars, exactly once.
+
+        Called inside the inference transaction after the recording's embedding is stored. Only the
+        *active* annotation counts (a correction made while inference was pending already superseded
+        the older one), and an annotation that already has an exemplar is left alone, so retries and
+        re-inference are idempotent.
+        """
+        ann = AnnotationRepo.active(conn, recording_id)
+        if ann is None or ann.is_unknown or not ann.label_ids:
+            return None
+        if conn.execute(
+            "SELECT 1 FROM exemplar WHERE annotation_id=? LIMIT 1", (ann.id,)
+        ).fetchone():
+            return None
+        pooled = EmbeddingRepo.pooled(conn, recording_id, model_version_id)
+        if pooled is None:
+            return None
+        for lid in ann.label_ids:
+            ExemplarRepo.insert(
+                conn,
+                annotation_id=ann.id,
+                embedding_id=pooled.id,
+                recording_id=recording_id,
+                label_id=lid,
+            )
+        version = MemoryMetaRepo.bump(conn)
+        self._recompute_prototypes(conn, model_version_id, set(ann.label_ids), version)
+        changes = self.rescore_all(conn, model_version_id)
+        EventRepo.append(
+            conn,
+            ACOUSTIC_MEMORY_UPDATED,
+            {
+                "memory_version": version,
+                "exemplars_added": len(ann.label_ids),
+                "exemplars_retracted": 0,
+                "rescored_changes": changes,
+                "reason": "annotation_backfill",
+                "annotation_id": ann.id,
+            },
+            recording_id=recording_id,
+        )
+        return {"annotation_id": ann.id, "exemplars_added": len(ann.label_ids), "changes": changes}
 
     def _refresh_visuals(self, recording_ids: list[str]) -> None:
         if self.visual is None:

@@ -58,6 +58,24 @@ class BlobStore:
         except FileNotFoundError:
             pass
 
+    def composition_path(self, composition_id: str, filename: str) -> str:
+        """``compositions/<aa>/<id>/<filename>`` (filename may be ``stems/<name>``)."""
+        if not is_valid_id(composition_id):
+            raise ValueError("invalid composition id")
+        parts = filename.split("/")
+        if len(parts) > 2 or any(p in {"", ".", ".."} or "\\" in p for p in parts):
+            raise ValueError("invalid filename")
+        return f"compositions/{composition_id[:2]}/{composition_id}/{filename}"
+
+    def delete_composition_dir(self, composition_id: str) -> None:
+        if not is_valid_id(composition_id):
+            raise ValueError("invalid composition id")
+        d = self.absolute(f"compositions/{composition_id[:2]}/{composition_id}")
+        if d.is_dir():
+            import shutil
+
+            shutil.rmtree(d)
+
     def delete_recording_dirs(self, recording_id: str) -> None:
         """Remove every file under audio/ and artifacts/ for a recording."""
         if not is_valid_id(recording_id):

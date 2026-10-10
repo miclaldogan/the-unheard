@@ -1,0 +1,6 @@
+{
+  "fakeMicrophone": false,
+  "physicalPhone": false,
+  "hardwareCapture": true,
+  "upload": true
+}

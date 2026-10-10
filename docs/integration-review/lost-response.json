@@ -1,0 +1,8 @@
+{
+  "responseDroppedAfterActual202": true,
+  "before": 1,
+  "accepted": 2,
+  "afterRetry": 2,
+  "duplicatePrevented": true,
+  "originalRetained": true
+}

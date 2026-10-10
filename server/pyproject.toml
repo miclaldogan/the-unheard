@@ -54,8 +54,12 @@ packages = ["unheard"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q -m 'not real_model'"
-markers = ["real_model: needs the real CLAP weights and ESC-50 clips (slow)"]
+addopts = "-q -m 'not real_model and not real_gemma'"
+markers = [
+    "real_model: needs the real CLAP weights and ESC-50 clips (slow)",
+    "real_gemma: needs a local Ollama with a Gemma model installed (slow, uses ~3 GB RAM/VRAM)",
+    "real_audio: needs the ESC-50 clips under server/data/eval/esc50 (skipped when absent)",
+]
 filterwarnings = ["error::RuntimeWarning"]
 
 [tool.ruff]
@@ -72,6 +76,13 @@ ignore = ["B008"]  # FastAPI Depends()/File() in defaults is the framework idiom
 "unheard/atlas/service.py" = ["E501"]  # SQL + ECHO-0 templates
 "unheard/storage/repos_m3.py" = ["E501"]  # long SQL strings
 "unheard/visual/signature.py" = ["E501"]  # grammar table in the docstring
+"unheard/narrative/*" = ["E501"]  # prompts, templates, regexes
+"unheard/api/narrative.py" = ["E501"]
+"unheard/api/schemas_m5.py" = ["E501"]
+"unheard/music/*" = ["E501"]  # evidence strings / ECHO-0 templates
+"unheard/storage/repos_m4.py" = ["E501"]  # long SQL strings
+"unheard/api/compositions.py" = ["E501"]
+"unheard/api/schemas_m4.py" = ["E501"]
 "tests/*" = ["E501", "E741"]
 
 [tool.mypy]

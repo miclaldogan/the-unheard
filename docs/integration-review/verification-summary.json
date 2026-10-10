@@ -1,0 +1,41 @@
+{
+  "backend": {
+    "passed": 270,
+    "skipped": 0,
+    "deselected": 2,
+    "duration_s": 111.36,
+    "localRealAudioFixtures": true
+  },
+  "realClapSmoke": {
+    "passed": 1,
+    "duration_s": 6.01,
+    "device": "cpu"
+  },
+  "realGemmaSmoke": {
+    "passed": 1,
+    "duration_s": 8.42,
+    "model": "gemma3:4b"
+  },
+  "frontend": {
+    "passed": 77,
+    "files": 13
+  },
+  "checks": {
+    "backendRuff": true,
+    "backendRuffFormat": true,
+    "backendMypy": true,
+    "contractSchemas": true,
+    "frontendLint": true,
+    "typescript": true,
+    "format": true,
+    "build": true,
+    "npmAuditVulnerabilities": 0,
+    "browserPostFix": true,
+    "pwaPostFix": true
+  },
+  "physicalLaptopMicrophone": true,
+  "physicalAndroid": false,
+  "outdoorSession": false,
+  "humanListening": false,
+  "humanGemmaRating": false
+}

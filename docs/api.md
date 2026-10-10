@@ -73,7 +73,7 @@ All under `/api`, same auth and error rules. Score semantics are stated in every
 | GET | `/api/recordings/{id}/neighbours?limit=5` | most similar other recordings by pooled-embedding cosine, with their labels |
 | GET | `/api/labels?q=` | source labels (vocabulary + user) with exemplar counts |
 | POST | `/api/labels` `{name}` | `201` creates (or returns the existing) user label; slug-normalised, 1–48 chars |
-| POST | `/api/recordings/{id}/annotations` | body below → `201 {annotation, memory_version, exemplars_added, exemplars_retracted, created_label_ids, rescored_changes, fused_top}` |
+| POST | `/api/recordings/{id}/annotations` | body below → `201 {annotation, memory_version, exemplars_added, exemplars_retracted, memory_pending, created_label_ids, rescored_changes, fused_top}`. `memory_pending: true` means the label is stored but the recording has no embedding yet, so memory has not changed; it is applied exactly once (event `AcousticMemoryUpdated` with `reason: annotation_backfill`) when inference completes. A later correction supersedes it, a deletion discards it. |
 | GET | `/api/recordings/{id}/annotations` | history, newest first (`status: active\|superseded`, `superseded_by`) |
 | GET | `/api/memory` | `{memory_version, exemplars, annotations, unknown_annotations, custom_labels, labels:[{name, origin, n_exemplars, recording_ids, prototype{n_eff,sigma}}]}` |
 | GET | `/api/recordings/{id}/echo` | ECHO-0 lines `[{template, text, tags:[model\|memory\|imagination], event_ids}]`, each derived from persisted events |
@@ -135,3 +135,49 @@ novel, captured_at, duration_s, glyph{…}, ring[32], seed`. Edge fields: `a, b,
 
 Events: `ArtifactRendered` (per recording, when its specimen is created or its semantic layer
 changes), `AtlasUpdated` (when nodes are placed or the basis is refit).
+
+---
+
+# M4 additions — compositions (the Orchestra)
+
+A composition is a deterministic arrangement rendered offline from 1–8 ready recordings.
+Rendering is asynchronous: `queued → processing → ready | failed`.
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/api/compositions` | body `{recording_ids[1..8], mode? ("composed" default | "organic" | "legacy"), seed?, controls?{density,structure,intensity ∈ 0..1}, duration_s? (15–90), role_overrides?{recording_id: role}, name?}` → `202` composition (`created: true`) or `200` with the existing one (`created: false`) when the same sources + seed + controls + duration + overrides + versions were already requested. `404` unknown recording, `409 NOT_READY` recording not ready, `422` bad input. |
+| GET | `/api/compositions[?recording_id=]` | list items (`id, name, saved, status, seed, duration_s, tempo_bpm, n_sources, recording_ids`); the filter answers "which compositions use this specimen?" |
+| GET | `/api/compositions/{id}` | full state: controls, tempo/key, `sections`, `sources[]` (label, role, secondary role, decision{scores, evidence, rationale, overridden}, analysis), `tracks[]` (role, pan, enters, `stem_url`, `original_url`), `metrics`, `echo[]` (conductor lines with evidence), `plan_hash`, `master_sha256`, `master_url`, `export_url`. |
+| PATCH | `/api/compositions/{id}` | `{name?, saved?}` |
+| DELETE | `/api/compositions/{id}` | removes rows and files (`204`) |
+| POST | `/api/compositions/{id}/variation` | `{seed?, controls?}` → new composition (`parent_id` set); default seed derived from the parent |
+| POST | `/api/compositions/{id}/render` | re-queues a `failed` composition (`409` if already running; no-op if ready) |
+| GET | `/api/compositions/{id}/events` | the timeline: `seq, track_key, recording_id, kind (slice|loop|grains), role, section, comp_start_s, comp_dur_s, source_start_s, source_end_s, params{rate, gain_db, pitch_shift_st, octave_shift, lowpass_hz, highpass_hz, fade_*…}` |
+| GET | `/api/compositions/{id}/trace/{seq}` | composition → track → event → source recording → specimen (`artifact_id`, `geometry_hash`), plus `also_in` |
+| GET | `/api/compositions/{id}/master` | `audio/wav` (range requests supported); `409` until ready |
+| GET | `/api/compositions/{id}/stems/{track_key}` | per-layer WAV; stems sum to the master |
+| GET | `/api/compositions/{id}/export[?bundle=true]` | attachment: master WAV, or a zip with master, stems, `plan.json`, `provenance.json` |
+
+Roles: `texture, drone, rhythmic_texture, percussion, tonal_motif, accent, granular`.
+Deleting a recording (`DELETE /api/recordings/{id}`) also deletes every composition that
+contains it. Events: `CompositionCreated`, `CompositionPlanned`, `CompositionRendered`,
+`CompositionFailed`, `CompositionRevised` (variations), `CompositionDeleted` (`reason: user|source_deleted`).
+Design and limits: [`music-engine.md`](music-engine.md).
+
+---
+
+# M4.6 additions — arrangement modes
+
+`POST /api/compositions` accepts `mode`: **`composed`** (default; clear phrases, call-and-response, swing/ghost notes),
+**`organic`** (source-timed, sparse, atmospheric) or **`legacy`** (the M4/M4.5 event planner, kept for comparison). The
+mode is part of the idempotency key, so the same sources/seed in two modes are two compositions; variations inherit
+their parent's mode. Invalid modes → `422`.
+
+Composition responses gain: `mode`, `form` (phrase recipe per section, e.g. `"A + F F' Fa + R→A"`), `conversation[]`
+(`{lead, responder, evidence{score, temporal_fit, spectral_contrast, tonal_consonance, pulse_relation}}`), `groove`
+(`quantisation, swing_steps, micro_ms, ghost_notes, fills, tonal_strategy`), `hierarchy` (the chosen lead/foundation/
+support/gesture/bed sources) and per-track `hierarchy` (`lead|foundation|support|gesture|bed`). List items gain `mode`.
+Event `params` gain `hierarchy`, `motif`, `variation` (the operator-named variant, `response`, `fill`, `boundary` …),
+`phrase`, `fragment`, `velocity`, `ghost`, and `pitch_shift_st`/`octave_shift`/`preserve_duration` for pitched notes; the
+trace endpoint returns them unchanged. ECHO-0's `echo[]` adds an "answered in the silence" line, only when the plan
+contains answer events, with the conversation evidence attached. Migration `0005` adds `composition.mode`.

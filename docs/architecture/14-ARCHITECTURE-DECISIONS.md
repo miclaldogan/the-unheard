@@ -39,3 +39,19 @@ Format: Decision · Rationale · Alternatives · Revisit when.
 **ADR-018 (M3) Atlas basis freezes at 8 nodes, not doc 05's "≥ 8 and user action only".** Below 8 the set is refit on change (tiny, movement is harmless); at ≥ 8 the PCA basis is persisted and new nodes are projected + nudged (≤ 0.08) with every other node pinned; `POST /api/atlas/rebuild` refits explicitly. Explained variance of the 2-D projection is reported in the UI.
 
 **ADR-019 (M3) Playback animation uses precomputed timelines, not a live analyser.** Envelope (256 pts), flux (128 pts) and onset times ship with the visual parameters; the renderer samples them at `audio.currentTime`. Exact, cheap, deterministic, works for seek/replay; the Web Audio analyser would add CPU, be non-deterministic and could stall playback.
+
+## M4 decisions (implemented)
+
+**ADR-020 Music is rendered offline by a deterministic NumPy/SciPy renderer; the browser plays rendered stems.** Stems and master are written once, the master SHA-256 is stored, and the same inputs + seed give identical bytes on one machine. *Alt:* Tone.js/live Web Audio synthesis (non-reproducible, harder to test, no export). The browser still uses Web Audio for stem playback so mute/solo are gain changes on one clock. *Revisit:* a live "play with the sliders" mode.
+
+**ADR-021 Roles come from measurements, never from labels; a missing capability makes a role unassignable.** Pitch (YIN) gates melody and key; noise can never yield either. Power-domain spectral flatness is not used for "noisiness" because it is tilt-dominated on real recordings. *Alt:* label → instrument table (explicitly rejected: two water recordings must not sound alike). *Revisit:* learned role classifier once enough human corrections exist.
+
+**ADR-022 Deleting a recording deletes the compositions that contain it; compositions store plain recording ids (no FK) and render one at a time.** Privacy beats convenience: those files contain the recording's audio. One render at a time bounds RAM (≈1.1 GB peak for 8 sources × 60 s). *Alt:* keep compositions as "orphaned" derivatives; concurrent renders. *Revisit:* an explicit "keep this piece" confirmation.
+
+## M4.6 decisions (implemented)
+
+**ADR-023 A second planner (motif/phrase composer) beside the first, selected per composition (`mode`); the M4/M4.5 planner stays and renders bit-identical audio.** The renderer, persistence, provenance and UI contracts are shared; only the plan changes. *Alt:* rewrite the planner in place (loses A/B comparison and reproducibility of the reviewed pieces). *Revisit:* delete `legacy` once listening confirms the new modes.
+
+**ADR-024 Quality is reported as transparent measurements plus flags, never as one score.** A single musicality number would reward density or loudness and could not be defended; the report names structural defects (overlapping foreground, literal repetition, no silence, masking, clicks) and carries a disclaimer. *Alt:* a learned or composite score. *Revisit:* only with human ratings to calibrate against.
+
+**ADR-025 Tonal material is used only when reliable, kept as measured contour, and moved by whole octaves with duration-preserving WSOLA; no default scale snapping.** Noise gets no pitch. *Alt:* always quantise to a pentatonic scale (kept as `tonal_strategy="pentatonic"` for comparison); a phase-vocoder pitch shifter. *Revisit:* after listening, and if monophonic WSOLA artefacts prove audible.

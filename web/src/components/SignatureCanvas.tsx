@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react';
 import type { VisualParams } from '../api/types';
+import type { AudioLike } from '../audio/orchestra';
 import { buildGeometry, drawSignature } from '../visual/signature';
 
 interface Props {
   params: VisualParams;
   size?: number; // css px; defaults to container width
   /** audio element to synchronise with (currentTime while playing) */
-  audio?: HTMLAudioElement | null;
+  audio?: AudioLike | null;
   detail?: 'full' | 'glyph';
   className?: string;
   ariaLabel?: string;

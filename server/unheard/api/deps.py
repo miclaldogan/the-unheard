@@ -16,6 +16,8 @@ from unheard.ingest.service import IngestService
 from unheard.jobs.worker import JobWorker
 from unheard.memory.service import MemoryService
 from unheard.models.manager import ModelManager
+from unheard.music.service import CompositionService
+from unheard.narrative.service import NarrativeService
 from unheard.storage.blobs import BlobStore
 from unheard.storage.db import Database
 from unheard.storage.ids import is_valid_id
@@ -34,6 +36,8 @@ class Services:
     memory: MemoryService
     visual: VisualService
     atlas: AtlasService
+    compositions: CompositionService
+    narrative: NarrativeService
 
     @classmethod
     def build(cls, settings: Settings) -> Services:
@@ -65,9 +69,26 @@ class Services:
             auto_infer=settings.auto_infer and models.enabled,
         )
         worker.visual = visual
-        return cls(settings, db, blobs, decoder, ingest, worker, models, memory, visual, atlas)
+        compositions = CompositionService(db, blobs, poll_s=settings.worker_poll_s)
+        narrative = NarrativeService(settings, db, blobs, models_enabled=lambda: models.enabled)
+        return cls(
+            settings,
+            db,
+            blobs,
+            decoder,
+            ingest,
+            worker,
+            models,
+            memory,
+            visual,
+            atlas,
+            compositions,
+            narrative,
+        )
 
     def close(self) -> None:
+        self.narrative.stop()
+        self.compositions.stop()
         self.worker.stop()
         self.models.unload()
         self.db.close()

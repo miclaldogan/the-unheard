@@ -9,6 +9,11 @@ interface Props {
   version: number; // bump to refetch
   onOpenSpecimen: (id: string) => void;
   onBack: () => void;
+  /** M4: memories chosen for an orchestra, and the live per-recording activity while it plays */
+  selection?: string[];
+  onToggleSelect?: (id: string) => void;
+  onCompose?: () => void;
+  activityRef?: { current: Record<string, number> };
 }
 
 const STATE_TITLE: Record<AtlasData['state'], string> = {
@@ -45,7 +50,9 @@ function glyphPath(ctx: CanvasRenderingContext2D, n: AtlasNode, cx: number, cy: 
   ctx.closePath();
 }
 
-export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
+const NO_SELECTION: string[] = [];
+
+export function Atlas({ version, onOpenSpecimen, onBack, selection = NO_SELECTION, onToggleSelect, onCompose, activityRef }: Props) {
   const [data, setData] = useState<AtlasData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -53,6 +60,7 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
   const [onlyUncertain, setOnlyUncertain] = useState(false);
   const [showMood, setShowMood] = useState(false);
   const [frameMs, setFrameMs] = useState<number | null>(null);
+  const [pickMode, setPickMode] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const view = useRef({ x: 0, y: 0, k: 1 });
   const drag = useRef<{ x: number; y: number; moved: boolean } | null>(null);
@@ -161,6 +169,25 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
       ctx.strokeStyle = sel ? '#e7e3da' : hsl(hue, 0.55, 0.6, alpha);
       ctx.stroke();
       ctx.setLineDash([]);
+      const act = activityRef?.current[n.recording_id] ?? 0;
+      if (act > 0.02) {
+        const glow = ctx.createRadialGradient(p[0], p[1], r * 0.4, p[0], p[1], r * (1.6 + 1.8 * act));
+        glow.addColorStop(0, hsl(hue, 0.7, 0.6, 0.55 * Math.min(1, act * 1.4)));
+        glow.addColorStop(1, hsl(hue, 0.7, 0.6, 0));
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], r * (1.6 + 1.8 * act), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (selection.includes(n.recording_id)) {
+        ctx.strokeStyle = 'rgba(217,164,65,0.95)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], r * 1.5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
       if (!n.embedded) {
         ctx.strokeStyle = 'rgba(231,227,218,0.25)';
         ctx.setLineDash([1, 3]);
@@ -178,7 +205,7 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
     }
     const dt = performance.now() - t0;
     setFrameMs((prev) => (prev === null ? dt : prev * 0.8 + dt * 0.2));
-  }, [data, visible, selected, showMood, toScreen]);
+  }, [data, visible, selected, showMood, toScreen, selection, activityRef]);
 
   useEffect(() => {
     draw();
@@ -187,6 +214,17 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
     if (ro && canvas) ro.observe(canvas);
     return () => ro?.disconnect();
   }, [draw]);
+
+  // follow the orchestra: redraw only when the activity actually changed
+  useEffect(() => {
+    if (!activityRef) return;
+    let last = '';
+    const id = window.setInterval(() => {
+      const sig = Object.entries(activityRef.current).map(([k, v]) => `${k}${Math.round(v * 20)}`).join();
+      if (sig !== last) { last = sig; draw(); }
+    }, prefersReducedMotion() ? 250 : 60);
+    return () => window.clearInterval(id);
+  }, [activityRef, draw]);
 
   const hit = (clientX: number, clientY: number): AtlasNode | null => {
     const canvas = canvasRef.current;
@@ -223,7 +261,8 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
     drag.current = null;
     if (d && !d.moved) {
       const n = hit(e.clientX, e.clientY);
-      setSelected(n ? n.recording_id : null);
+      if (pickMode && n && onToggleSelect) onToggleSelect(n.recording_id);
+      else setSelected(n ? n.recording_id : null);
     }
   };
   const onWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
@@ -253,14 +292,22 @@ export function Atlas({ version, onOpenSpecimen, onBack }: Props) {
           </select>
           <label className="check"><input type="checkbox" checked={onlyUncertain} onChange={(e) => setOnlyUncertain(e.target.checked)} /> uncertain only</label>
           <label className="check"><input type="checkbox" checked={showMood} onChange={(e) => setShowMood(e.target.checked)} /> feelings (yours)</label>
+          {onToggleSelect && <button className={`btn small ${pickMode ? 'teal' : ''}`} aria-pressed={pickMode} onClick={() => setPickMode(!pickMode)}>{pickMode ? 'Choosing sounds…' : 'Choose sounds for an orchestra'}</button>}
+          {onCompose && selection.length > 0 && <button className="btn small primary" onClick={onCompose}>Compose from {selection.length}</button>}
           <button className="btn small" onClick={() => { view.current = { x: 0, y: 0, k: 1 }; draw(); }}>Reset view</button>
           <button className="btn small" onClick={onBack}>Record</button>
         </div>
       </header>
       {error && <div className="error" role="alert"><span>{error}</span><button className="btn small" onClick={() => void load()}>Retry</button></div>}
       {data && <EchoLog lines={data.narrative} />}
+      <div className="atlas-navigation row" aria-label="Atlas navigation">
+        <label className="check">Select a memory <select className="input" style={{ width: 'auto', marginBottom: 0 }} value={selected ?? ''} onChange={e => setSelected(e.target.value || null)} aria-label="select atlas memory"><option value="">None selected</option>{data?.nodes.filter(n => visible.has(n.recording_id)).map(n => <option key={n.recording_id} value={n.recording_id}>{n.label ?? 'Unnamed'} · {n.recording_id.slice(0,8)}</option>)}</select></label>
+        <button className="btn small" aria-label="zoom in atlas" onClick={() => { view.current.k = Math.min(4, view.current.k * 1.2); draw(); }}>+</button>
+        <button className="btn small" aria-label="zoom out atlas" onClick={() => { view.current.k = Math.max(.4, view.current.k / 1.2); draw(); }}>−</button>
+        <span className="caption">Drag to explore · scroll or use + / − to zoom · arrow keys to pan</span>
+      </div>
       <div className="atlas-stage">
-        <canvas ref={canvasRef} className="atlas-canvas" role="img" aria-label={data ? `atlas with ${data.counts.nodes} memories and ${data.counts.edges} relationships` : 'atlas loading'} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={onWheel} />
+        <canvas ref={canvasRef} className="atlas-canvas" tabIndex={0} onKeyDown={e => { const move = { ArrowLeft: [40,0], ArrowRight: [-40,0], ArrowUp: [0,40], ArrowDown: [0,-40] }[e.key]; if (move) { e.preventDefault(); view.current.x += move[0]; view.current.y += move[1]; draw(); } }} role="img" aria-label={data ? `atlas with ${data.counts.nodes} memories and ${data.counts.edges} relationships` : 'atlas loading'} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={onWheel} />
         {data && data.nodes.length === 0 && <div className="atlas-empty">silence</div>}
         {sel && (
           <aside className="atlas-side" aria-label="selected memory">

@@ -1,3 +1,4 @@
+import { useAudioSource } from '../platform/useAudioSource';
 import { useState } from 'react';
 import { ApiError, api } from '../api/client';
 import type { RecordingSummary } from '../api/types';
@@ -11,6 +12,7 @@ interface Props {
 
 export function Archive({ items, selected, onSelect, onChanged }: Props) {
   const [playing, setPlaying] = useState<string | null>(null);
+  const audioSource = useAudioSource(playing ? api.audioUrl(playing) : null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,10 +44,11 @@ export function Archive({ items, selected, onSelect, onChanged }: Props) {
   return (
     <section className="panel" aria-labelledby="ar-h">
       <h2 id="ar-h">Archive</h2>
-      <p className="caption">{items.length} preserved signal{items.length === 1 ? '' : 's'} · stored locally in SQLite + files</p>
+      <p className="caption">{items.length} preserved signal{items.length === 1 ? '' : 's'} · preserved in the connected laboratory</p>
+      {audioSource.error && <p role="alert" className="caption">{audioSource.error}</p>}
       {error && <div className="error" role="alert"><span>{error}</span><button className="btn small" onClick={() => setError(null)}>Clear</button></div>}
       {items.length === 0 ? (
-        <p className="empty">Nothing preserved yet.</p>
+        <p className="empty">The archive is quiet. Bring a sound from outside to begin.</p>
       ) : (
         <div style={{ overflowX: 'auto' }}>
           <table className="archive">
@@ -66,7 +69,7 @@ export function Archive({ items, selected, onSelect, onChanged }: Props) {
                       {r.status === 'failed' && <button className="btn small" onClick={() => void retry(r.id)} disabled={busy === r.id}>Retry</button>}
                       <button className="btn small danger" onClick={() => void del(r.id)} disabled={busy === r.id} aria-label={`delete ${r.id}`}>Delete</button>
                     </div>
-                    {playing === r.id && <audio controls autoPlay src={api.audioUrl(r.id)} style={{ width: '100%', marginTop: 6 }} aria-label={`playback ${r.id}`} />}
+                    {playing === r.id && <audio controls autoPlay src={audioSource.src} style={{ width: '100%', marginTop: 6 }} aria-label={`playback ${r.id}`} />}
                   </td>
                 </tr>
               ))}
