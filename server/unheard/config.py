@@ -72,6 +72,24 @@ class Settings(BaseSettings):
     max_labels_per_annotation: int = 6
     max_descriptors: int = 10
 
+    # M5 narrative: local Gemma via Ollama (words only; state comes from the database)
+    narrative_gemma: bool = Field(
+        default=True, description="Allow Gemma narration (the player can also toggle it)"
+    )
+    narrative_runtime_url: str = "http://127.0.0.1:11434"
+    narrative_model: str = Field(
+        default="",
+        description="Ollama model tag. Empty = first installed of narrative_model_preference.",
+    )
+    narrative_model_preference: list[str] = Field(
+        default_factory=lambda: ["gemma3:4b", "gemma4:e4b-it-qat"]
+    )
+    narrative_timeout_s: float = 30.0  # per generation attempt (includes a cold model load)
+    narrative_max_output_tokens: int = 220
+    narrative_keep_alive: str = "2m"  # how long Ollama keeps the model in RAM after a call
+    narrative_num_ctx: int = 2048
+    narrative_temperature: float = 0.7
+
     # Processing
     worker_enabled: bool = True
     worker_poll_s: float = 0.25

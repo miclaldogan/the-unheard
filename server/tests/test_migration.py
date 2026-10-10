@@ -21,7 +21,9 @@ def test_m1_database_upgrades_in_place(tmp_path: Path, monkeypatch) -> None:  # 
         Path,
         "iterdir",
         lambda self: (
-            p for p in real_iterdir(self) if not p.name.startswith(("0002", "0003", "0004", "0005"))
+            p
+            for p in real_iterdir(self)
+            if not p.name.startswith(("0002", "0003", "0004", "0005", "0006"))
         ),
     )
     with TestClient(create_app(settings, web_dist=Path("/nonexistent"))) as c:
@@ -38,9 +40,9 @@ def test_m1_database_upgrades_in_place(tmp_path: Path, monkeypatch) -> None:  # 
     assert raw.execute("PRAGMA user_version").fetchone()[0] == 1
     assert raw.execute("SELECT name FROM sqlite_master WHERE name='embedding'").fetchone() is None
     raw.close()
-    # 2. reopen: migrations 0002 … 0005 apply, old recording still complete, no inference yet
+    # 2. reopen: migrations 0002 … 0006 apply, old recording still complete, no inference yet
     with TestClient(create_app(settings, web_dist=Path("/nonexistent"))) as c:
-        assert c.app.state.services.db.schema_version == 5  # type: ignore[attr-defined]
+        assert c.app.state.services.db.schema_version == 6  # type: ignore[attr-defined]
         d = c.get(f"/api/recordings/{rid}").json()
         assert d["status"] == "ready" and d["features"] is not None
         assert c.get(f"/api/recordings/{rid}/features").status_code == 200
