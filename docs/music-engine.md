@@ -177,3 +177,14 @@ after a successful render. The optional Gemma planner is **not implemented** (se
 * Pitch extraction is YIN on a 21 ms hop: bird chirps and car horns are sometimes tracked an octave or more off (e.g. a car horn reported near 100 Hz); the melody follows what was measured.
 * Resampling changes pitch and speed together; a 2-octave move makes a chirp four times longer and darker.
 * Mono sources only; no real-time engine; no time-stretch; byte-identity verified on one machine only.
+
+
+## M4.6 refinement pass (2026-10-10)
+
+* **Fragment ledger** (composer): groove hits, ghost notes and fills choose among a source's good attacks by use count, recent use and
+  quality, widen to all of the source's real attacks when the cap `max(8, bars/2)` is reached, and let weak positions rest rather than wear a
+  sample out. Details and measurements: `docs/M4-6-MUSICAL-REFINEMENT.md` §10A.
+* **Dynamic shape**: beds have their own section offsets (organic: quiet intro, receding convergence), the foreground has a crescendo
+  through the convergence and a decrescendo in the resolution, the organic lead enters one bar after the bed (§10B).
+* **Pitch**: glide notes join a source that already has reliable notes (tier 2); a *virtual* pitch (a two-tone horn tracked at its
+  sub-harmonic) is placed by its audible partials (`register_center_midi`) (§10C). Legacy analysis and planning are unchanged.

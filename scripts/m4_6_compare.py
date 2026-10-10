@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import resource
 import time
 from pathlib import Path
 
@@ -141,6 +142,7 @@ def main() -> None:
         )
         del res, ex, matched
         gc.collect()
+    report["peak_rss_mb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
     (out / "report.json").write_text(json.dumps(report, indent=1, default=str))
     print("wrote", out / "report.json")
 

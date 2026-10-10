@@ -311,7 +311,10 @@ def build_tonal_motif(
     picked = sorted(m.tonal[: spec.max_tonal_notes], key=lambda f: f.start_s)
     if len(picked) < 2:
         return None
-    octave_shift = register_octaves(center)
+    # the register follows where the motif is *heard* (virtual pitches such as two-tone horns sound near their partials)
+    octave_shift = register_octaves(
+        m.register_center_midi if m.register_center_midi is not None else center
+    )
     notes: list[Note] = []
     pos = 0.0
     for f in picked:
@@ -973,7 +976,24 @@ def compose_plan(
     micro_rng = rng_for(seed, "microtiming")
     layout_rng = rng_for(seed, "layout")
 
-    comp_sec_db = {"introduction": -5.0, "discovery": -2.5, "convergence": 1.0, "resolution": -5.0}
+    comp_sec_db = (
+        {"introduction": -5.0, "discovery": -2.5, "convergence": 1.0, "resolution": -5.0}
+        if mode == "composed"
+        else {"introduction": -6.5, "discovery": -3.0, "convergence": 3.5, "resolution": -6.5}
+    )
+
+    def ramp_scale(sec_name: str, pi: int, n_phr: int) -> float:
+        """Velocity scale across the phrases of a section: crescendo into/through the convergence,
+        decrescendo in the resolution (a gain shape, not a loudness boost)."""
+        u = pi / max(1, n_phr - 1)
+        lo, hi = {
+            "introduction": (0.9, 1.0),
+            "discovery": (0.82, 0.95),
+            "convergence": (0.85, 1.0),
+            "resolution": (0.95, 0.6),
+        }[sec_name]
+        return lo + (hi - lo) * u
+
     intens_db = (c["intensity"] - 0.5) * 5.0
 
     def level(src: str, hier: str, sec: str) -> float:
@@ -985,12 +1005,41 @@ def compose_plan(
             "gesture": -3.0,
             "bed": spec.bed_db,
         }[hier]
-        return (
-            base
-            + comp
-            + comp_sec_db[sec]
-            + (intens_db if sec == "convergence" else 0.4 * intens_db)
+        # beds follow their own section boosts (set where they are placed), so they can recede when the
+        # foreground enters instead of rising with it
+        sec_term = 0.0 if hier == "bed" else comp_sec_db[sec]
+        return base + comp + sec_term + (intens_db if sec == "convergence" else 0.4 * intens_db)
+
+    # ---- fragment ledger: how often each real fragment has sounded in this piece -------------------
+    usage: dict[str, int] = {}
+    recent: dict[str, list[str]] = {}
+    reuse_cap = max(8, int(round(total_bars * 0.5)))  # per fragment, per piece
+
+    def use_fragment(src: str, f: Fragment) -> None:
+        usage[f.id] = usage.get(f.id, 0) + 1
+        recent.setdefault(src, []).append(f.id)
+
+    def pick_attack(src: str, default: Fragment, weak: bool) -> Fragment | None:
+        pool = materials[src].attacks
+        if len(pool) < 3:
+            return default
+        best = pool[0].score
+        cands = [f for f in pool if f.score >= max(0.25, 0.6 * best)][: (7 if weak else 4)]
+        last = recent.get(src, [])[-5:]
+        cands.sort(
+            key=lambda f: (
+                usage.get(f.id, 0) + (3.0 if f.id in last else 0.0) - 2.0 * f.score,
+                f.id,
+            )
         )
+        pick = cands[0]
+        if usage.get(pick.id, 0) >= reuse_cap:
+            # widen to every real attack of this source (not only the best-scored), least used first
+            wide = sorted(pool, key=lambda f: (usage.get(f.id, 0), -f.score, f.id))
+            pick = wide[0]
+            if usage.get(pick.id, 0) >= reuse_cap and weak:
+                return None  # silence is better than wearing out one sample
+        return pick
 
     def place(
         mo: Motif,
@@ -1027,20 +1076,15 @@ def compose_plan(
                         np.clip(micro_rng.normal(0.0, spec.micro_ms / 1000.0), -0.014, 0.014)
                     )
                 frag = n.frag
-                pool = materials[mo.source].attacks
-                if (
-                    n.ghost and pool
-                ):  # ghost notes rotate through the source's real attacks (no single fragment is worn out)
-                    frag = pool[(int(sec["start_bar"] + bar0) * 5 + int(round(n.step))) % len(pool)]
-                elif hier == "foundation" and mo.kind == "rhythm" and len(pool) >= 3:
-                    gbar = int(sec["start_bar"] + bar0)
-                    if (
-                        _metric_weight(pos) < 0.9
-                    ):  # weak positions rotate through the source's best attacks
-                        top = pool[:4]
-                        frag = top[(gbar + int(round(pos))) % len(top)]
-                    else:  # accents alternate between the two best attacks every two bars
-                        frag = pool[:2][(gbar // 2) % 2]
+                weak = n.ghost or _metric_weight(pos) < 0.9
+                if hier == "foundation" and mo.kind == "rhythm":
+                    # diversify: choose among the source's good attacks, penalising heavy and recent use;
+                    # when every good candidate is worn out, weak/ghost positions rest instead
+                    picked = pick_attack(mo.source, frag, weak)
+                    if picked is None:
+                        continue
+                    frag = picked
+                use_fragment(mo.source, frag)
                 nn = replace(n, frag=frag, vel=float(np.clip(n.vel * vel_scale, 0.15, 1.0)))
                 e = _to_event(
                     nn,
@@ -1081,7 +1125,10 @@ def compose_plan(
         tid = track(src, "foundation", spec.foundation_db, -0.3, 0.1)
         base = (sec["start_bar"] + bar_idx) * bar_s
         for i, s in enumerate((12, 13, 14, 15)):
-            f = m.attacks[(i + 1 + bar_idx) % len(m.attacks)]
+            f = pick_attack(src, m.attacks[(i + 1 + bar_idx) % len(m.attacks)], True)
+            if f is None:
+                continue
+            use_fragment(src, f)
             nn = Note(float(s), f, 0.45 + 0.1 * i)
             e = _to_event(
                 nn,
@@ -1117,15 +1164,17 @@ def compose_plan(
             if A is not None and recipe.get("lead") in var:
                 if A.kind in ("tonal", "swell"):
                     lv = var[recipe["lead"]]
+                    # organic: the bed establishes itself for a bar before the lead enters
+                    delay = 1 if (mode == "organic" and name == "introduction" and plen >= 3) else 0
                     lead_events = place(
                         lv,
                         "lead",
                         sec,
                         pid,
-                        b,
-                        plen,
+                        b + delay,
+                        plen - delay,
                         lv.label if lv.label != "A" else None,
-                        vel_scale=1.0 if name != "resolution" else 0.85,
+                        vel_scale=ramp_scale(name, pi, len(lens)),
                     )
                     used.append(recipe["lead"])
                 else:  # rhythmic lead: one variant per bar (A A' B ...), the last bar of the phrase rests
@@ -1140,7 +1189,7 @@ def compose_plan(
                             b + bi,
                             1,
                             lv.label if lv.label != "A" else None,
-                            vel_scale=1.0 if name != "resolution" else 0.85,
+                            vel_scale=ramp_scale(name, pi, len(lens)),
                         )
                     used.append(" ".join(dict.fromkeys(seq[: max(1, plen - 1)])))
                 last_bar_start = (sec["start_bar"] + b + plen - 1) * bar_s
@@ -1169,7 +1218,8 @@ def compose_plan(
                         1,
                         fv.label if fv.label != "F" else None,
                         skip_steps=None,
-                        vel_scale=keep_density if mode == "organic" else 1.0,
+                        vel_scale=(keep_density if mode == "organic" else 1.0)
+                        * ramp_scale(name, pi, len(lens)),
                     )
                 if skip:
                     fe = [
@@ -1219,7 +1269,7 @@ def compose_plan(
                     "response",
                     step_offset=float(start),
                     skip_steps=occ,
-                    vel_scale=0.9,
+                    vel_scale=0.9 * ramp_scale(name, pi, len(lens)),
                 )
                 lead_id = A.id if A is not None else ""
                 for e in rsp:
@@ -1295,19 +1345,21 @@ def compose_plan(
                 start = (sec["start_bar"] + cb) * bar_s
                 dur = cl * bar_s
                 fade = min(1.2, dur * 0.35)
+                # absolute bed offsets per section (beds ignore the foreground section offsets): composed keeps its
+                # M4.6 effective values; organic has a quiet introduction and a bed that recedes in the convergence
                 boost = (
                     {
-                        "introduction": 1.0,
-                        "discovery": -1.0,
-                        "convergence": -3.0,
-                        "resolution": 0.0,
+                        "introduction": -4.0,
+                        "discovery": -3.5,
+                        "convergence": -2.0,
+                        "resolution": -5.0,
                     }[name]
                     if spec.name == "composed"
                     else {
-                        "introduction": 1.0,
-                        "discovery": 0.0,
-                        "convergence": -1.0,
-                        "resolution": 1.0,
+                        "introduction": -5.5,
+                        "discovery": -6.0,
+                        "convergence": -8.5,
+                        "resolution": -8.0,
                     }[name]
                 )
                 e = {
@@ -1320,7 +1372,9 @@ def compose_plan(
                     "rate": 1.0,
                     "crossfade_s": 0.9,
                     "fade_in_s": fade,
-                    "fade_out_s": fade,
+                    "fade_out_s": min(3.0, dur * 0.6)
+                    if name == "resolution" and cb == chunks[-1][0]
+                    else fade,
                     "gain_db": round(level(bk, "bed", name) + boost, 2),
                     "lowpass_hz": 4500.0 if name != "convergence" else 3000.0,
                     "hierarchy": "bed",

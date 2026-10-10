@@ -383,7 +383,10 @@ def test_organic_and_composed_are_measurably_different() -> None:
     assert o["groove"]["quantisation"] < c["groove"]["quantisation"]
     assert len({ph["bars"] for ph in c["phrases"]}) <= len({ph["bars"] for ph in o["phrases"]}) + 1
     bed = lambda p: np.mean([e["gain_db"] for e in p["events"] if e["hierarchy"] == "bed"])  # noqa: E731
-    assert bed(o) > bed(c)  # organic keeps the environment forward
+    # organic beds run through a section; composed beds breathe (a gap in every phrase's last bar)
+    bed_dur = lambda p: np.mean([e["dur"] for e in p["events"] if e["hierarchy"] == "bed"])  # noqa: E731
+    assert bed_dur(o) > bed_dur(c)
+    del bed
     assert o["ducking"]["depths"] != c["ducking"]["depths"]
     assert not o["conversation"] or len(c["conversation"]) >= 1
 

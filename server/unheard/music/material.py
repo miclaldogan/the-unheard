@@ -29,7 +29,7 @@ from unheard.music.analysis import SourceAnalysis
 TONAL_MIN_CONFIDENCE = 0.80
 TONAL_MIN_DURATION_S = 0.08
 TONAL_MAX_WOBBLE_ST = 1.0
-MAX_ATTACKS = 10
+MAX_ATTACKS = 14
 MAX_TONAL = 6
 
 
@@ -68,6 +68,9 @@ class Material:
     cycle: Fragment | None
     tonal_center_midi: float | None  # confidence-weighted median of usable runs
     tonal_reliable: bool  # at least 2 usable runs → a melody may be built
+    register_center_midi: float | None = (
+        None  # where the motif is *heard* (differs from the centre for virtual pitches)
+    )
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -81,6 +84,9 @@ class Material:
             if self.tonal_center_midi is None
             else round(self.tonal_center_midi, 2),
             "tonal_reliable": self.tonal_reliable,
+            "register_center_midi": None
+            if self.register_center_midi is None
+            else round(self.register_center_midi, 2),
         }
 
 
@@ -148,36 +154,95 @@ def _attack_fragments(a: SourceAnalysis, x: NDArray[np.float64], sr: int) -> lis
     return kept
 
 
-def _tonal_fragments(a: SourceAnalysis) -> list[Fragment]:
-    out: list[Fragment] = []
+def _audible_peak(
+    x: NDArray[np.float64], sr: int, lo_s: float, hi_s: float, f0: float
+) -> tuple[float, bool]:
+    """Strongest partial (Hz) of a run and whether the run's 'pitch' is virtual: a pitch with almost no energy at
+    f0 while a much higher partial dominates (a two-tone horn is heard near its partials, not at the common
+    sub-harmonic YIN reports). Used only for choosing the register, never to relabel the pitch."""
+    seg = x[int(lo_s * sr) : int(hi_s * sr)]
+    if seg.size < 256 or f0 <= 0:
+        return f0, False
+    mag = np.abs(np.fft.rfft(seg * np.hanning(seg.size)))
+    f = np.fft.rfftfreq(seg.size, 1.0 / sr)
+    band = (f >= 100.0) & (f <= 6000.0)
+    if not band.any():
+        return f0, False
+    peak_hz = float(f[band][int(np.argmax(mag[band]))])
+    near = (f >= f0 * 0.92) & (f <= f0 * 1.08)
+    e_f0 = float(mag[near].max()) if near.any() else 0.0
+    virtual = peak_hz > 2.6 * f0 and e_f0 < 0.2 * float(mag[band].max())
+    return peak_hz, virtual
+
+
+def _tonal_fragments(a: SourceAnalysis, x: NDArray[np.float64], sr: int) -> list[Fragment]:
+    """Tier 1: confidence >= 0.80, >= 80 ms, wobble <= 1 st. Tier 2 (only for a source that already has two
+    tier-1 runs): confidence >= 0.85, >= 60 ms, glide <= 3 st, within 14 semitones of the source's own centre,
+    so glissando notes (birds) can join without admitting unreliable tracks."""
+    tier1: list[Fragment] = []
+    cand2: list[tuple[int, Any, float, float, float]] = []
     for i, r in enumerate(a.voiced_runs):
         conf = float(r.meta.get("confidence", 0.0))
         wob = float(r.meta["stability_st"])
         dur = r.end_s - r.start_s
-        if conf < TONAL_MIN_CONFIDENCE or dur < TONAL_MIN_DURATION_S or wob > TONAL_MAX_WOBBLE_ST:
-            continue
-        score = (
-            0.5 * conf
-            + 0.3 * float(np.clip(1.0 - wob / TONAL_MAX_WOBBLE_ST, 0, 1))
-            + 0.2 * float(np.clip(dur / 0.5, 0, 1))
-        )
-        out.append(
-            Fragment(
-                f"{a.key[:8]}:tonal:{i}",
-                "tonal",
-                r.start_s,
-                r.end_s,
-                score,
-                {"midi": float(r.meta["midi"]), "confidence": conf, "wobble_st": wob},
-            )
-        )
+        if (
+            conf >= TONAL_MIN_CONFIDENCE
+            and dur >= TONAL_MIN_DURATION_S
+            and wob <= TONAL_MAX_WOBBLE_ST
+        ):
+            tier1.append(_tonal_fragment(a, x, sr, i, r, conf, wob, dur, tier=1))
+        elif conf >= 0.85 and dur >= 0.06 and wob <= 3.0:
+            cand2.append((i, r, conf, wob, dur))
+    out = list(tier1)
+    if len(tier1) >= 2:
+        centre = float(np.median([f.props["midi"] for f in tier1]))
+        for i, r, conf, wob, dur in cand2:
+            if abs(float(r.meta["midi"]) - centre) <= 14.0:
+                out.append(_tonal_fragment(a, x, sr, i, r, conf, wob, dur, tier=2))
     out.sort(key=lambda f: (-f.score, f.start_s))
     return out[:MAX_TONAL]
 
 
+def _tonal_fragment(
+    a: SourceAnalysis,
+    x: NDArray[np.float64],
+    sr: int,
+    i: int,
+    r: Any,
+    conf: float,
+    wob: float,
+    dur: float,
+    tier: int,
+) -> Fragment:
+    score = (
+        0.5 * conf
+        + 0.3 * float(np.clip(1.0 - wob / (TONAL_MAX_WOBBLE_ST if tier == 1 else 3.0), 0, 1))
+        + 0.2 * float(np.clip(dur / 0.5, 0, 1))
+    ) * (1.0 if tier == 1 else 0.9)
+    midi = float(r.meta["midi"])
+    f0 = 440.0 * 2.0 ** ((midi - 69.0) / 12.0)
+    peak_hz, virtual = _audible_peak(x, sr, r.start_s, r.end_s, f0)
+    audible = 69.0 + 12.0 * float(np.log2(max(peak_hz, 1.0) / 440.0)) if virtual else midi
+    return Fragment(
+        f"{a.key[:8]}:tonal:{i}",
+        "tonal",
+        r.start_s,
+        r.end_s,
+        score,
+        {
+            "midi": midi,
+            "confidence": conf,
+            "wobble_st": wob,
+            "tier": float(tier),
+            "virtual_pitch": 1.0 if virtual else 0.0,
+            "audible_midi": audible,
+        },
+    )
+
+
 def extract_material(a: SourceAnalysis, x: NDArray[np.float64], sr: int) -> Material:
     attacks = _attack_fragments(a, x, sr)
-    tonal = _tonal_fragments(a)
+    tonal = _tonal_fragments(a, x, sr)
 
     gesture: Fragment | None = None
     good = [f for f in attacks if f.score >= 0.45]
@@ -235,4 +300,13 @@ def extract_material(a: SourceAnalysis, x: NDArray[np.float64], sr: int) -> Mate
         order = np.argsort(m)
         cw = np.cumsum(w[order])
         center = float(m[order][int(np.searchsorted(cw, cw[-1] / 2))])
-    return Material(a.key, attacks, tonal, gesture, texture, bed, cycle, center, len(tonal) >= 2)
+    reg: float | None = None
+    if tonal:
+        w2 = np.array([f.props["confidence"] for f in tonal])
+        m2 = np.array([f.props["audible_midi"] for f in tonal])
+        o2 = np.argsort(m2)
+        c2 = np.cumsum(w2[o2])
+        reg = float(m2[o2][int(np.searchsorted(c2, c2[-1] / 2))])
+    return Material(
+        a.key, attacks, tonal, gesture, texture, bed, cycle, center, len(tonal) >= 2, reg
+    )
