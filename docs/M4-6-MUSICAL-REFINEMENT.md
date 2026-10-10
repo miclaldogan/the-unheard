@@ -149,7 +149,7 @@ Still **not** done: a real-browser run (see `M4-LISTENING-REVIEW.md` §3).
 
 ## 9. Pending human listening (nothing here is marked PASS)
 
-All files are under `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_6/` and are
+All files are under `server/data/m4_6/` and are
 git-ignored (ESC-50: CC BY-NC 3.0, local evaluation only; **do not publish or redistribute**).
 
 * `AB/<set>_<mode>.wav` — 25 s, **matched to −20 LUFS (integrated)**, convergence section + 8 s lead-in, for `A_natural`, `B_urban`, `C_hybrid` × `legacy` (= M4.5, bit-identical), `organic`, `composed` (9 files, 4.80 MB each).

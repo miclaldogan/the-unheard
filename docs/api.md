@@ -73,7 +73,7 @@ All under `/api`, same auth and error rules. Score semantics are stated in every
 | GET | `/api/recordings/{id}/neighbours?limit=5` | most similar other recordings by pooled-embedding cosine, with their labels |
 | GET | `/api/labels?q=` | source labels (vocabulary + user) with exemplar counts |
 | POST | `/api/labels` `{name}` | `201` creates (or returns the existing) user label; slug-normalised, 1–48 chars |
-| POST | `/api/recordings/{id}/annotations` | body below → `201 {annotation, memory_version, exemplars_added, exemplars_retracted, created_label_ids, rescored_changes, fused_top}` |
+| POST | `/api/recordings/{id}/annotations` | body below → `201 {annotation, memory_version, exemplars_added, exemplars_retracted, memory_pending, created_label_ids, rescored_changes, fused_top}`. `memory_pending: true` means the label is stored but the recording has no embedding yet, so memory has not changed; it is applied exactly once (event `AcousticMemoryUpdated` with `reason: annotation_backfill`) when inference completes. A later correction supersedes it, a deletion discards it. |
 | GET | `/api/recordings/{id}/annotations` | history, newest first (`status: active\|superseded`, `superseded_by`) |
 | GET | `/api/memory` | `{memory_version, exemplars, annotations, unknown_annotations, custom_labels, labels:[{name, origin, n_exemplars, recording_ids, prototype{n_eff,sigma}}]}` |
 | GET | `/api/recordings/{id}/echo` | ECHO-0 lines `[{template, text, tags:[model\|memory\|imagination], event_ids}]`, each derived from persisted events |

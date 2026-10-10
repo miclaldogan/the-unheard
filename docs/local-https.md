@@ -4,7 +4,7 @@
 `http://localhost` and `http://127.0.0.1` as secure, but **not** an ordinary LAN address such as
 `http://192.168.1.20:5173`. So desktop testing works over plain HTTP, phone testing does not.
 
-## Option A — mkcert (recommended, verified approach, not yet exercised on a phone in M1)
+## Option A — mkcert (recommended; not yet exercised on a phone)
 
 1. Install mkcert (`sudo pacman -S mkcert` on Arch, `brew install mkcert` on macOS).
 2. Run `scripts/mkcert.sh`. It creates `web/certs/dev.pem` + `dev-key.pem` for
@@ -22,11 +22,22 @@
 6. On the phone open `https://<lan-ip>:5173/?token=<the token>` once; the token is stored in
    `localStorage` and sent as `Authorization: Bearer` on every API call.
 
-## Production PWA and current validation
+## Production PWA over HTTPS (no extra proxy needed)
 
-Vite development does not register the service worker. For installation/offline testing, build `web/dist` and
-serve it with FastAPI behind a trusted local HTTPS reverse proxy. Keep `/api` on that same origin and require
-a bearer token. The backend can stay on loopback behind the proxy; it does not need a public address.
+Vite development does not register the service worker. For installation/offline testing, build `web/dist` and let
+the backend serve it with the same certificate, so the app and `/api` share one HTTPS origin:
+
+```bash
+cd web && npm run build
+cd ../server
+UNHEARD_API_TOKEN="$(openssl rand -hex 16)" uv run unheard serve --lan --port 8443 \
+  --ssl-certfile ../web/certs/dev.pem --ssl-keyfile ../web/certs/dev-key.pem
+```
+
+`--ssl-certfile` and `--ssl-keyfile` must be given together. Without `--lan` the server stays on loopback; with `--lan`
+the token is mandatory. Serving the shell, manifest, service worker and a token-protected API over HTTPS was verified with a
+self-signed certificate on loopback; mkcert and an actual phone were not exercised in development. The full phone procedure and
+a results checklist are in [`ANDROID-FIELD-TEST.md`](ANDROID-FIELD-TEST.md).
 Do not bypass secure-context checks or publish the laptop through a tunnel for validation.
 
 M5.5 verified actual laptop microphone capture and sandboxed desktop Chrome’s production PWA installation,

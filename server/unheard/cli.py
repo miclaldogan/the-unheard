@@ -17,6 +17,8 @@ def main(argv: list[str] | None = None) -> int:
     serve.add_argument(
         "--lan", action="store_true", help="bind 0.0.0.0 (requires UNHEARD_API_TOKEN)"
     )
+    serve.add_argument("--ssl-certfile", default=None, help="serve HTTPS (e.g. web/certs/dev.pem)")
+    serve.add_argument("--ssl-keyfile", default=None, help="private key for --ssl-certfile")
     serve.add_argument("--reload", action="store_true")
     serve.add_argument("--log-level", default="info")
     fetch = sub.add_parser(
@@ -50,12 +52,21 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 2
+        if bool(args.ssl_certfile) != bool(args.ssl_keyfile):
+            print("--ssl-certfile and --ssl-keyfile must be given together", file=sys.stderr)
+            return 2
         logging.basicConfig(
             level=args.log_level.upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s"
         )
         os.environ.setdefault("UNHEARD_HOST", host)
         uvicorn.run(
-            "unheard.app:app", host=host, port=port, reload=args.reload, log_level=args.log_level
+            "unheard.app:app",
+            host=host,
+            port=port,
+            reload=args.reload,
+            log_level=args.log_level,
+            ssl_certfile=args.ssl_certfile,
+            ssl_keyfile=args.ssl_keyfile,
         )
         return 0
     return 1

@@ -143,6 +143,32 @@ describe('HearingPanel', () => {
     expect(await screen.findByText('I hear something.', {}, { timeout: 5000 })).toBeInTheDocument();
     expect(calls).toBeGreaterThanOrEqual(3);
   });
+  it('does not claim a memory formed while the label is only stored (learning race)', async () => {
+    const result = (pending: boolean) => ({ annotation: { id: 'a1', action: 'create' }, memory_version: 1, exemplars_added: pending ? 0 : 1, exemplars_retracted: 0, memory_pending: pending, created_label_ids: ['n1'], rescored_changes: [], fused_top: [] });
+    for (const pending of [true, false]) {
+      vi.spyOn(globalThis, 'fetch').mockImplementation(async (url, init) => {
+        const u = String(url);
+        if (init?.method === 'POST') return json(result(pending), 201);
+        if (u.endsWith('/prediction')) return json(pending ? { ...ready, state: 'inference_failed', fused: null, base: null } : ready);
+        if (u.endsWith('/echo')) return json([]);
+        if (u.endsWith('/api/labels')) return json([]);
+        if (u.includes('/neighbours')) return json([]);
+        return json({});
+      });
+      const { unmount } = render(<HearingPanel recordingId={ready.recording_id} onMemoryChanged={vi.fn()} onNeighbours={vi.fn()} />);
+      fireEvent.change(await screen.findByLabelText('new label'), { target: { value: 'Gate' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Teach ECHO-0' }));
+      const banner = await screen.findByRole('status');
+      if (pending) {
+        expect(banner).toHaveTextContent(/memory has not changed/);
+        expect(banner).not.toHaveTextContent(/taken shape/);
+      } else {
+        expect(banner).toHaveTextContent(/A memory has taken shape/);
+      }
+      unmount();
+      vi.restoreAllMocks();
+    }
+  });
   it('surfaces a failed prediction request', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ type: 'x', title: 'Not Found', status: 404, detail: 'recording not found', code: 'NOT_FOUND' }, 404, 'application/problem+json'));
     render(<HearingPanel recordingId={ready.recording_id} onMemoryChanged={vi.fn()} onNeighbours={vi.fn()} />);

@@ -137,6 +137,16 @@ def facts_for(conn: sqlite3.Connection, snap: Snapshot, moment: dict[str, Any]) 
     elif kind in ("teaching", "correction"):
         a = snap.active[moment["recording_id"]]
         _ann_facts(fs, snap, a)
+        if a.label_ids and not a.is_unknown:
+            has_exemplar = conn.execute(
+                "SELECT 1 FROM exemplar WHERE annotation_id=? AND status='active' LIMIT 1", (a.id,)
+            ).fetchone()
+            if not has_exemplar:
+                fs.add(
+                    "The name is stored, but the ears have not analysed this recording yet, so memory is not updated.",
+                    "system",
+                    Ref("annotation", a.id, None, "system"),
+                )
         if kind == "correction":
             # the annotation's link to the prediction it saw is cleared when memory re-scores; the ears' own (base)
             # hypothesis persists, so it is the truthful "before"

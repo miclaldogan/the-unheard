@@ -1,4 +1,4 @@
-# M5.5 release checklist
+# Release checklist (M5.5, updated in M6)
 
 This is a local release candidate, not publication approval. See the integration report for measured evidence.
 
@@ -17,12 +17,22 @@ This is a local release candidate, not publication approval. See the integration
 - [x] Current tracked tree and reachable history audited for private audio, databases, weights and likely secrets.
 - [x] Existing original worktrees preserved; no push, main merge, deployment or APK.
 
+## M6 additions
+
+- [x] Learning race fixed: a name given before inference becomes exactly one exemplar when inference completes; verified with
+  the fake model (9 tests) and with real CLAP (same 0.837261 held-out similarity as teaching afterwards). The UI no longer says
+  memory formed while it is pending (frontend regression test).
+- [x] `unheard serve --ssl-certfile/--ssl-keyfile` (3 tests); HTTPS shell/API/token behaviour checked on loopback.
+- [x] Blind listening page and Gemma rating sheet with honest summaries (`scripts/m6_listening_page.py`, `scripts/m6_ratings.py`).
+- [x] Final gates re-run after the fixes; see `M6-FINAL-REPORT.md` for exact counts.
+- [ ] Owner actions: Android test, listening ratings, Gemma ratings, demo recording, publish. See `FINAL-PUBLICATION-CHECKLIST.md`.
+
 ## Human/device release gates — open
 
 - [ ] Android: trusted HTTPS, real microphone, install/uninstall, safe areas, outdoor touch/contrast and reconnect.
 - [ ] Screen lock/background interruption: verify honest stop/save behavior; never promise continuous capture.
 - [ ] Physical headphone/speaker listening: check clipping, volume, source identity, groove, sections and ending.
-- [ ] Gemma blind A/B human rating: `eval/m5/human_rating.csv` remains unedited and unrated.
+- [ ] Gemma blind A/B human rating: `eval/m6/gemma_human_rating.csv` (six criteria) is blank; `eval/m5/human_rating.csv` remains unrated.
 - [ ] Keyboard/screen reader and Safari/Firefox manual checks; large-library and mobile battery/thermal checks.
 - [ ] Owner reviews current screenshots, interaction walkthrough, public-source audit and final diff.
 - [ ] Use personally captured/explicitly cleared audio for the public video; no unlicensed evaluation clips.
@@ -31,19 +41,17 @@ This is a local release candidate, not publication approval. See the integration
 
 ## Local musical review prepared
 
-Twelve existing matched excerpts are linked from `/tmp/unheard-m55-listening/index.html` (no audio copied to Git).
-Serve only on loopback:
+Regenerate the matched A/B excerpts and the blind listening page (nothing is copied to Git; `server/data/` is ignored):
 
 ```bash
-python3 -m http.server 8025 --bind 127.0.0.1 --directory /tmp/unheard-m55-listening
+cd server
+uv run python ../scripts/m4_6_compare.py --out data/m4_6
+uv run python ../scripts/m6_listening_page.py --root data/m4_6    # then open data/m4_6/listening/index.html
 ```
 
-Open `http://127.0.0.1:8025`. A/B sets: natural, urban, hybrid × legacy / Organic / Composed, plus three urban
-groove variants. Sources remain in the original worktree’s ignored `server/data/m4_6/AB` directory.
-Use the rubric in `docs/M4-6-MUSICAL-REFINEMENT.md` §9; record actual preference and shortcomings.
-These are ESC-50-derived **local evaluation** excerpts. Individual source licenses have not been cleared for a public demo.
-If `/tmp` is cleared, follow the source document to recreate the comparison material locally.
-No human listening or rating is claimed by M5.5.
+Natural, Urban and Hybrid sets x Legacy / Organic / Composed, matched to -20.0 LUFS, shuffled labels, six-criterion rubric,
+CSV export. Instructions and rubric: `docs/HUMAN-REVIEW.md`. These are ESC-50-derived local evaluation excerpts whose
+individual source licences are not cleared for publication. No human listening or rating is claimed.
 
 ## Five experience questions
 

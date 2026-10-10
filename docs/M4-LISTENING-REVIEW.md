@@ -20,17 +20,17 @@ Full pieces (16-bit, 48 kHz stereo):
 
 | Set | Path | Length | Size |
 |---|---|---|---|
-| A natural | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/A_natural_master.wav` | 42.8 s | 8.22 MB |
-| B urban | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/B_urban_master.wav` | 43.1 s | 8.27 MB |
-| C hybrid | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/C_hybrid_master.wav` | 43.4 s | 8.34 MB |
+| A natural | `server/data/m4_demo/A_natural_master.wav` | 42.8 s | 8.22 MB |
+| B urban | `server/data/m4_demo/B_urban_master.wav` | 43.1 s | 8.27 MB |
+| C hybrid | `server/data/m4_demo/C_hybrid_master.wav` | 43.4 s | 8.34 MB |
 
 25 s excerpts (the convergence section plus 8 s of lead-in, 50 ms fades):
 
 | Set | Path | Length | Size |
 |---|---|---|---|
-| A | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/excerpts/A_natural_excerpt.wav` | 25.0 s | 4.80 MB |
-| B | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/excerpts/B_urban_excerpt.wav` | 25.0 s | 4.80 MB |
-| C | `/home/misa/projects/dev-challanges/the-unheard/server/data/m4_demo/excerpts/C_hybrid_excerpt.wav` | 25.0 s | 4.80 MB |
+| A | `server/data/m4_demo/excerpts/A_natural_excerpt.wav` | 25.0 s | 4.80 MB |
+| B | `server/data/m4_demo/excerpts/B_urban_excerpt.wav` | 25.0 s | 4.80 MB |
+| C | `server/data/m4_demo/excerpts/C_hybrid_excerpt.wav` | 25.0 s | 4.80 MB |
 
 Stems (same folder; each stem is the same length as its master and they sum to it):
 

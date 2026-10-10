@@ -108,3 +108,33 @@ def test_real_clap_end_to_end_with_learning(tmp_path: Path) -> None:
         assert pb["candidates"][0]["slug"] == "church_bells"
         nb = c.get(f"/api/recordings/{ids[held_out]}/neighbours").json()
         assert nb[0]["labels"] == ["Roof gutter"]
+
+
+def test_real_clap_label_given_before_inference_becomes_an_exemplar(tmp_path: Path) -> None:
+    """M6 learning race with the real model: teach while inference is still pending, then let it finish."""
+    settings = make_settings(tmp_path, model_name="laion/clap-htsat-unfused")
+    rain = clips("rain", 3)
+    if len(rain) < 3:
+        pytest.skip("need 3 distinct-source rain clips")
+    with TestClient(create_app(settings, web_dist=Path("/nonexistent"))) as c:
+        assert c.post("/api/model/load").json()["status"] == "ready"
+        ids = [upload(c, p) for p in rain]
+        for rid in ids[:2]:  # annotate before the worker has run: no embedding exists yet
+            r = c.post(f"/api/recordings/{rid}/annotations", json={"new_labels": ["Roof gutter"]})
+            assert r.status_code == 201 and r.json()["memory_pending"] is True, r.text
+            assert r.json()["exemplars_added"] == 0
+        assert c.get("/api/memory").json()["exemplars"] == 0
+        run_jobs(c)  # DSP, then real CLAP inference, then the backfill
+        assert c.get("/api/memory").json()["exemplars"] == 2
+        for _ in range(2):  # idempotent: re-running inference must not duplicate exemplars
+            for rid in ids[:2]:
+                assert c.post(f"/api/recordings/{rid}/infer").status_code == 202
+            run_jobs(c)
+        assert c.get("/api/memory").json()["exemplars"] == 2
+        after = c.get(f"/api/recordings/{ids[2]}/prediction").json()["fused"]["candidates"]
+        gutter = next(x for x in after if x["name"] == "Roof gutter")
+        assert gutter["n_exemplars"] == 2 and gutter["memory_similarity"] is not None
+        print(
+            "\nheld-out rain, taught-before-inference memory similarity:",
+            gutter["memory_similarity"],
+        )

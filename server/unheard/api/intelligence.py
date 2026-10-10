@@ -363,6 +363,7 @@ def submit_annotation(
         memory_version=result["memory_version"],
         exemplars_added=result["exemplars_added"],
         exemplars_retracted=result["exemplars_retracted"],
+        memory_pending=result["memory_pending"],
         created_label_ids=result["created_label_ids"],
         rescored_changes=result["rescored_changes"],
         fused_top=[c for c in fused.results[:5]] if fused else [],

@@ -8,12 +8,15 @@ A local-first React PWA, FastAPI, SQLite, CPU LAION-CLAP and local Gemma through
 
 ## Release candidate
 
-M5.5 integrates the completed M5 backend and cinematic UI on `feat/release-integration`.
+M5.5 integrates the completed M5 backend and cinematic UI on `feat/release-integration`; M6 adds final validation
+(the pre-inference teaching race is fixed, HTTPS can be served by the backend itself, review tooling and submission drafts;
+see [`docs/M6-FINAL-REPORT.md`](docs/M6-FINAL-REPORT.md)).
 The six scenes are **Chamber → Field → Hearing → Specimen → Atlas → Orchestra**.
 Recording, classification, annotation, retrieval memory, measured visual artifacts, composition,
 playback and grounded narration operate together. See the [integration report](docs/M5-5-INTEGRATION-REPORT.md),
 [release checklist](docs/RELEASE-CHECKLIST.md) and [demo plan](docs/DEMO-RECORDING-PLAN.md).
-This is a local release candidate; physical Android/outdoor and human musical/narrative review remain open.
+This is a local release candidate; physical Android/outdoor testing and human musical/narrative review remain open
+([Android checklist](docs/ANDROID-FIELD-TEST.md), [human review](docs/HUMAN-REVIEW.md)).
 
 ## Install
 
@@ -74,8 +77,8 @@ For a non-default development backend, set `UNHEARD_BACKEND=http://127.0.0.1:<po
 ## Mobile Field Mode and privacy
 
 Phone microphone access needs trusted **HTTPS**. Follow [local HTTPS](docs/local-https.md): trust your
-local CA on the phone, configure `UNHEARD_API_TOKEN`, and use Vite’s HTTPS proxy or a trusted local
-production reverse proxy. Pair once with `?token=...`; treat that URL as private. Do not expose the
+local CA on the phone, configure `UNHEARD_API_TOKEN`, and either use Vite’s HTTPS proxy (development) or serve the
+production build directly with `unheard serve --lan --ssl-certfile … --ssl-keyfile …`. Pair once with `?token=...`; treat that URL as private. Do not expose the
 laptop or recordings publicly to obtain HTTPS. The phone uses the same backend; it is not a cloud app.
 
 Field capture saves original bytes in IndexedDB before upload, bounded to **64 MiB / 100 recordings**.

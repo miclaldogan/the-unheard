@@ -274,6 +274,8 @@ export interface AnnotationResult {
   memory_version: number;
   exemplars_added: number;
   exemplars_retracted: number;
+  /** true while the label is stored but the recording has no embedding yet, so memory has not changed */
+  memory_pending?: boolean;
   created_label_ids: string[];
   rescored_changes: { recording_id: string; from: string | null; to: string }[];
   fused_top: FusedCandidate[];

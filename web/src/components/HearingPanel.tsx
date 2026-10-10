@@ -26,6 +26,7 @@ export function HearingPanel({
   const [echo, setEcho] = useState<EchoLine[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [formation, setFormation] = useState<number | null>(null);
+  const [memoryPending, setMemoryPending] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(
@@ -86,6 +87,7 @@ export function HearingPanel({
   };
 
   const onSaved = async (res: AnnotationResult) => {
+    setMemoryPending(res.memory_pending === true);
     setFormation(res.memory_version);
     if (recordingId) await load(recordingId, false);
     onMemoryChanged();
@@ -96,8 +98,9 @@ export function HearingPanel({
     <>
       {formation !== null && (
         <div key={formation} className="memory-formation" role="status">
-          A memory has taken shape. Your interpretation was saved · memory
-          revision {formation}.
+          {memoryPending
+            ? "Your interpretation was saved. ECHO-0 has not heard this recording yet, so its memory has not changed; it will update when listening finishes."
+            : `A memory has taken shape. Your interpretation was saved · memory revision ${formation}.`}
         </div>
       )}
       {error && (
