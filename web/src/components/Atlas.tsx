@@ -300,8 +300,14 @@ export function Atlas({ version, onOpenSpecimen, onBack, selection = NO_SELECTIO
       </header>
       {error && <div className="error" role="alert"><span>{error}</span><button className="btn small" onClick={() => void load()}>Retry</button></div>}
       {data && <EchoLog lines={data.narrative} />}
+      <div className="atlas-navigation row" aria-label="Atlas navigation">
+        <label className="check">Select a memory <select className="input" style={{ width: 'auto', marginBottom: 0 }} value={selected ?? ''} onChange={e => setSelected(e.target.value || null)} aria-label="select atlas memory"><option value="">None selected</option>{data?.nodes.filter(n => visible.has(n.recording_id)).map(n => <option key={n.recording_id} value={n.recording_id}>{n.label ?? 'Unnamed'} · {n.recording_id.slice(0,8)}</option>)}</select></label>
+        <button className="btn small" aria-label="zoom in atlas" onClick={() => { view.current.k = Math.min(4, view.current.k * 1.2); draw(); }}>+</button>
+        <button className="btn small" aria-label="zoom out atlas" onClick={() => { view.current.k = Math.max(.4, view.current.k / 1.2); draw(); }}>−</button>
+        <span className="caption">Drag to explore · scroll or use + / − to zoom · arrow keys to pan</span>
+      </div>
       <div className="atlas-stage">
-        <canvas ref={canvasRef} className="atlas-canvas" role="img" aria-label={data ? `atlas with ${data.counts.nodes} memories and ${data.counts.edges} relationships` : 'atlas loading'} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={onWheel} />
+        <canvas ref={canvasRef} className="atlas-canvas" tabIndex={0} onKeyDown={e => { const move = { ArrowLeft: [40,0], ArrowRight: [-40,0], ArrowUp: [0,40], ArrowDown: [0,-40] }[e.key]; if (move) { e.preventDefault(); view.current.x += move[0]; view.current.y += move[1]; draw(); } }} role="img" aria-label={data ? `atlas with ${data.counts.nodes} memories and ${data.counts.edges} relationships` : 'atlas loading'} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onWheel={onWheel} />
         {data && data.nodes.length === 0 && <div className="atlas-empty">silence</div>}
         {sel && (
           <aside className="atlas-side" aria-label="selected memory">

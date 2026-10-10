@@ -1,3 +1,4 @@
+import { useAudioSource } from '../platform/useAudioSource';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api } from '../api/client';
 import type { Features, Neighbour, Prediction, RecordingDetail, Visual } from '../api/types';
@@ -22,6 +23,7 @@ const STATE_TEXT: Record<Visual['params']['semantic']['state'], string> = {
 };
 
 export function Specimen({ recordingId, onTeach, onOpenAtlas, onSelect }: Props) {
+  const audioSource = useAudioSource(api.audioUrl(recordingId));
   const [visual, setVisual] = useState<Visual | null>(null);
   const [detail, setDetail] = useState<RecordingDetail | null>(null);
   const [prediction, setPrediction] = useState<Prediction | null>(null);
@@ -89,7 +91,8 @@ export function Specimen({ recordingId, onTeach, onOpenAtlas, onSelect }: Props)
       <div className="specimen-grid">
         <div className="specimen-art">
           <SignatureCanvas params={visual.params} audio={audioEl} className="signature large" ariaLabel={`acoustic signature of ${s.label ?? 'an unnamed sound'}; outline from the RMS envelope, ${g.symmetry_order}-fold symmetry, ${g.ticks.length} onset ticks`} />
-          <audio ref={audioRef} controls src={api.audioUrl(recordingId)} aria-label="original recording" style={{ width: '100%', marginTop: 8 }} />
+          {audioSource.error && <p role="alert" className="caption">{audioSource.error}</p>}
+          <audio ref={audioRef} controls src={audioSource.src} aria-label="original recording" style={{ width: '100%', marginTop: 8 }} />
           <div className="row" style={{ marginTop: 8 }}>
             <button className="btn small" onClick={exportPng}>Export PNG</button>
             <a className="btn small" href={svgHref} download={`specimen-${recordingId.slice(0, 8)}.svg`}>Export SVG</a>

@@ -100,7 +100,7 @@ export function reducer(s: RecordingState, a: Action): RecordingState {
       return { ...s, phase: 'error', error: { code: a.code, message: a.message } };
     case 'CLEAR_ERROR':
       if (s.phase !== 'error') return s;
-      return { ...s, phase: s.permission === 'granted' ? 'armed' : 'idle', error: null };
+      return { ...s, phase: s.preview ? 'recorded' : s.permission === 'granted' ? 'armed' : 'idle', error: null };
     case 'RESET':
       return { ...initialState, permission: s.permission };
     default:

@@ -1,0 +1,24 @@
+{
+  "browser": "148.0.7778.215",
+  "installability": {
+    "installabilityErrors": []
+  },
+  "offlineReload": true,
+  "offlineMicrophoneCapture": true,
+  "authenticatedUpload": true,
+  "authenticatedSpecimenPlayback": true,
+  "cachedPaths": [
+    "/icon.svg",
+    "/icon-192.png",
+    "/icon-512.png",
+    "/manifest.webmanifest",
+    "/assets/index-DRNel3jj.js",
+    "/assets/index-CMZNc4JV.css",
+    "/index.html"
+  ],
+  "load": {
+    "domContentLoaded": 66.30000000074506,
+    "heap": 4196738
+  },
+  "errors": []
+}

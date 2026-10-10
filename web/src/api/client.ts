@@ -55,7 +55,7 @@ export function getToken(): string | null {
   }
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   const token = getToken();
   if (token) headers.set('Authorization', `Bearer ${token}`);
@@ -119,12 +119,12 @@ export const api = {
   deleteComposition: (id: string) => request<void>(`/api/compositions/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   compositionEvents: (id: string) => request<CompositionEvent[]>(`/api/compositions/${encodeURIComponent(id)}/events`),
   trace: (id: string, seq: number) => request<CompositionTrace>(`/api/compositions/${encodeURIComponent(id)}/trace/${seq}`),
-  upload: (blob: Blob, filename: string, deviceInfo: Record<string, unknown>) => {
+  upload: (blob: Blob, filename: string, deviceInfo: Record<string, unknown>, capturedAt = new Date().toISOString(), signal?: AbortSignal) => {
     const form = new FormData();
     form.append('file', blob, filename);
-    form.append('captured_at', new Date().toISOString());
+    form.append('captured_at', capturedAt);
     form.append('device_info', JSON.stringify(deviceInfo));
-    return request<UploadAccepted>('/api/recordings', { method: 'POST', body: form });
+    return request<UploadAccepted>('/api/recordings', { method: 'POST', body: form, signal });
   },
 };
 
