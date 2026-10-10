@@ -1,4 +1,4 @@
-const CACHE = "unheard-shell-v1";
+const CACHE = "unheard-shell-v2";
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {

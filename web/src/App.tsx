@@ -93,6 +93,7 @@ export default function App() {
   }, [items, refresh]);
 
   const onDeletedOrChanged = useCallback(() => {
+    setVersion((v) => v + 1);
     void refresh();
   }, [refresh]);
 
@@ -119,7 +120,9 @@ export default function App() {
     };
   }, [refresh]);
   const limits = health?.limits ?? DEFAULT_LIMITS;
-  const narrative = useNarrative(version + items.length);
+  const narrative = useNarrative(
+    `${version}:${memory?.memory_version ?? 0}:${items.map((r) => `${r.id}:${r.status}`).join(",")}`,
+  );
   const [captureActive, setCaptureActive] = useState(false);
   const [fieldOpened, setFieldOpened] = useState(false);
   const field = () => {

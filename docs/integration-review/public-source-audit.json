@@ -1,0 +1,15 @@
+{
+  "scope": "tracked files plus release artifacts, and forbidden path extensions in all reachable commit objects",
+  "forbiddenTrackedPaths": [],
+  "forbiddenReachableHistoryPaths": [],
+  "likelyCredentialPatternFiles": [],
+  "audioCommitted": false,
+  "weightsCommitted": false,
+  "databaseCommitted": false,
+  "checksAreHeuristic": true,
+  "restrictedEvaluationAudio": "local only; individual publication rights not cleared",
+  "assetProvenance": "existing icon rasterizations and original CSS/SVG; no third-party fonts or generated artwork",
+  "credentialScanIncludesReachableAndStagedBlobs": true,
+  "blobObjectsScanned": 408,
+  "historicalCredentialMatchesObjects": []
+}

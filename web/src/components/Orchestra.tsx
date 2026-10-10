@@ -772,6 +772,7 @@ export function Orchestra({
                 <button
                   className="btn primary"
                   onClick={() => void togglePlay()}
+                  disabled={!!busy}
                 >
                   {playing ? "Pause" : "Play"}
                 </button>

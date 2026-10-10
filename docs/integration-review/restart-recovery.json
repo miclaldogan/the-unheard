@@ -1,0 +1,390 @@
+{
+  "sameDatabaseRestart": true,
+  "recordingCount": 2,
+  "realCPUClapRecovered": true,
+  "states": [
+    "remembered",
+    "remembered"
+  ],
+  "memory": {
+    "memory_version": 3,
+    "model_version_id": "01a125d2-c0ba-7000-91bb-05a310f84767",
+    "exemplars": 0,
+    "annotations": 2,
+    "unknown_annotations": 0,
+    "custom_labels": 1,
+    "labels": [
+      {
+        "label_id": "01a125cf-da31-7000-b588-847d370bd702",
+        "slug": "recovered_field_signal",
+        "name": "Recovered field signal",
+        "origin": "user",
+        "n_exemplars": 0,
+        "hue_seed": 95,
+        "recording_ids": [],
+        "prototype": null
+      }
+    ],
+    "label_names": {
+      "01a125ce-e497-700e-889c-ed6d2a020963": "Airplane",
+      "01a125ce-e498-7001-bfee-5aa94785abd1": "Bicycle",
+      "01a125ce-e497-7001-bc62-31e6b7bd08b5": "Birds",
+      "01a125ce-e497-700a-b553-14fec5b488dc": "Car engine",
+      "01a125ce-e497-700c-b2e8-8b9fcccbb1fa": "Car horn",
+      "01a125ce-e497-7004-bc6b-5ca2f4bc6187": "Cat",
+      "01a125ce-e498-7007-98fc-df09e24445c7": "Chainsaw",
+      "01a125ce-e497-7008-ae33-67e419774a30": "Children playing",
+      "01a125ce-e498-7002-8e9b-c44b78abfe3e": "Church bells",
+      "01a125ce-e498-700f-83b3-28682c915e58": "Clock ticking",
+      "01a125ce-e498-7003-9ae3-4219201bee5a": "Construction",
+      "01a125ce-e497-7002-86a9-6815f5073057": "Crow",
+      "01a125ce-e497-7003-bd5c-b832c009784b": "Dog",
+      "01a125ce-e498-7008-bbf8-f3ead5b9c590": "Door",
+      "01a125ce-e498-7004-a365-5be3c9b60375": "Drilling",
+      "01a125ce-e498-700b-8f67-f6900ceb7d23": "Fire crackling",
+      "01a125ce-e497-7006-9294-838f3e1c1a87": "Footsteps",
+      "01a125ce-e48d-7000-9b08-b3bff6c2965c": "Fountain",
+      "01a125ce-e498-7005-8ea5-429f2f073135": "Hammering",
+      "01a125ce-e498-700c-9f9f-b01f7d377df5": "Helicopter",
+      "01a125ce-e497-7007-9729-34857d34698c": "Human speech",
+      "01a125ce-e497-7005-8f5f-3151b50bd495": "Insects",
+      "01a125ce-e498-7009-b65b-9bf274fdbfa2": "Keyboard typing",
+      "01a125ce-e497-7009-8424-c0e672da98f8": "Laughter",
+      "01a125ce-e498-7006-be5a-9ab0b9b10dd4": "Lawn mower",
+      "01a125ce-e497-700d-96f8-d9819ca3bd06": "Motorcycle",
+      "01a125ce-e498-700a-98ed-ee713885083c": "Music",
+      "01a125ce-e485-7000-93a1-0456bc7839e9": "Rain",
+      "01a125ce-e498-7010-8a02-7adac630f606": "Room tone",
+      "01a125ce-e486-7000-908c-e60c21c033b4": "Running water",
+      "01a125ce-e496-7000-ae12-7e9564e67fd3": "Rustling leaves",
+      "01a125ce-e487-7000-aa74-5d69e949a34e": "Sea waves",
+      "01a125ce-e498-7000-bad2-57f25034657c": "Siren",
+      "01a125ce-e497-7000-9335-377ab90dba69": "Thunder",
+      "01a125ce-e497-700b-a64d-1186501fbe21": "Traffic",
+      "01a125ce-e497-700f-ac59-e5147c15f874": "Train",
+      "01a125ce-e498-700d-949e-a34d1a6a375e": "Ventilation hum",
+      "01a125ce-e495-7000-bbf0-dc9c23567e11": "Wind",
+      "01a125ce-e498-700e-9a4c-26ac2a35d888": "Wind chimes",
+      "01a125cf-da31-7000-b588-847d370bd702": "Recovered field signal"
+    }
+  },
+  "progress": {
+    "contract_version": "m5.1",
+    "derived_at": "2026-10-10T12:39:28.663Z",
+    "act": "act_2",
+    "phase": "teaching",
+    "ending_unlocked": false,
+    "acts": [
+      {
+        "id": "prologue",
+        "title": "Silence",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_recording",
+            "text": "A first recording finishes processing.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125ce-e240-7000-9f71-ec07f7c2c4a6",
+                "label": null,
+                "provenance": "system"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_1",
+        "title": "The First Sound",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_hearing",
+            "text": "The first recording was processed and heard.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125d0-392c-7000-a6df-e120e4049e35",
+                "label": null,
+                "provenance": "model"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_2",
+        "title": "Teach the Machine",
+        "status": "active",
+        "progress": {
+          "current": 2,
+          "target": 3
+        },
+        "criteria": [
+          {
+            "id": "third_teaching",
+            "text": "Teach ECHO-0 three sounds.",
+            "met": false,
+            "evidence": []
+          }
+        ]
+      },
+      {
+        "id": "act_3",
+        "title": "The World Remembered",
+        "status": "locked",
+        "progress": {
+          "current": 0,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "orchestra_of_three",
+            "text": "Compose an orchestra from three taught sounds.",
+            "met": false,
+            "evidence": []
+          }
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "first_recording",
+        "title": "A first recording",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:34:37.761+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125ce-e240-7000-9f71-ec07f7c2c4a6",
+            "label": null,
+            "provenance": "system"
+          }
+        ]
+      },
+      {
+        "id": "first_hearing",
+        "title": "First hearing",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:38:51.952+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125d0-392c-7000-a6df-e120e4049e35",
+            "label": null,
+            "provenance": "model"
+          }
+        ]
+      },
+      {
+        "id": "first_teaching",
+        "title": "A first teaching",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:35:41.234+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cf-da32-7001-8437-2fb41e66b7ba",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "third_teaching",
+        "title": "Three sounds taught",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "first_memory_influence",
+        "title": "Memory consulted",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "first_correction",
+        "title": "A first correction",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:36:09.923+00:00",
+        "optional": true,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125d0-4a43-7000-88cc-aea19c1f6727",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "unknown_met",
+        "title": "A sound without a name",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "unknown_resolved",
+        "title": "A nameless sound named",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "first_composition",
+        "title": "A first composition",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:36:38.080+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125d0-b518-7000-828b-55503940cee7",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "orchestra_of_three",
+        "title": "An orchestra of three",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "ending_reached",
+        "title": "The world remembered",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": false,
+        "evidence": []
+      }
+    ],
+    "counts": {
+      "recordings": 2,
+      "heard": 2,
+      "taught": 2,
+      "labels_confirmed": 1,
+      "corrections": 2,
+      "unknown": 0,
+      "compositions": 1,
+      "memory_version": 3
+    },
+    "gemma": {
+      "status": "ready",
+      "model": "gemma3:4b",
+      "enabled": true
+    }
+  },
+  "model": {
+    "status": "ready",
+    "model_id": "laion/clap-htsat-unfused",
+    "revision": "8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a",
+    "device": "cpu",
+    "embedding_dim": 512,
+    "preprocessing_version": 1,
+    "load_seconds": 2.5311511890004113,
+    "error": null,
+    "inference": "local",
+    "known_versions": [
+      {
+        "id": "01a125d2-c0ba-7000-91bb-05a310f84767",
+        "name": "laion/clap-htsat-unfused",
+        "revision": "8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a",
+        "preprocessing_version": 1
+      }
+    ]
+  },
+  "exemplarsBeforeResubmittingTeaching": 0,
+  "memoryAfterResubmittingTeaching": {
+    "memory_version": 5,
+    "model_version_id": "01a125d2-c0ba-7000-91bb-05a310f84767",
+    "exemplars": 2,
+    "annotations": 2,
+    "unknown_annotations": 0,
+    "custom_labels": 1,
+    "labels": [
+      {
+        "label_id": "01a125cf-da31-7000-b588-847d370bd702",
+        "slug": "recovered_field_signal",
+        "name": "Recovered field signal",
+        "origin": "user",
+        "n_exemplars": 2,
+        "hue_seed": 95,
+        "recording_ids": [
+          "01a125ce-e240-7000-9f71-ec07f7c2c4a6",
+          "01a125d0-392c-7000-a6df-e120e4049e35"
+        ],
+        "prototype": {
+          "n_eff": 2.0,
+          "sigma": 0.0075
+        }
+      }
+    ],
+    "label_names": {
+      "01a125ce-e497-700e-889c-ed6d2a020963": "Airplane",
+      "01a125ce-e498-7001-bfee-5aa94785abd1": "Bicycle",
+      "01a125ce-e497-7001-bc62-31e6b7bd08b5": "Birds",
+      "01a125ce-e497-700a-b553-14fec5b488dc": "Car engine",
+      "01a125ce-e497-700c-b2e8-8b9fcccbb1fa": "Car horn",
+      "01a125ce-e497-7004-bc6b-5ca2f4bc6187": "Cat",
+      "01a125ce-e498-7007-98fc-df09e24445c7": "Chainsaw",
+      "01a125ce-e497-7008-ae33-67e419774a30": "Children playing",
+      "01a125ce-e498-7002-8e9b-c44b78abfe3e": "Church bells",
+      "01a125ce-e498-700f-83b3-28682c915e58": "Clock ticking",
+      "01a125ce-e498-7003-9ae3-4219201bee5a": "Construction",
+      "01a125ce-e497-7002-86a9-6815f5073057": "Crow",
+      "01a125ce-e497-7003-bd5c-b832c009784b": "Dog",
+      "01a125ce-e498-7008-bbf8-f3ead5b9c590": "Door",
+      "01a125ce-e498-7004-a365-5be3c9b60375": "Drilling",
+      "01a125ce-e498-700b-8f67-f6900ceb7d23": "Fire crackling",
+      "01a125ce-e497-7006-9294-838f3e1c1a87": "Footsteps",
+      "01a125ce-e48d-7000-9b08-b3bff6c2965c": "Fountain",
+      "01a125ce-e498-7005-8ea5-429f2f073135": "Hammering",
+      "01a125ce-e498-700c-9f9f-b01f7d377df5": "Helicopter",
+      "01a125ce-e497-7007-9729-34857d34698c": "Human speech",
+      "01a125ce-e497-7005-8f5f-3151b50bd495": "Insects",
+      "01a125ce-e498-7009-b65b-9bf274fdbfa2": "Keyboard typing",
+      "01a125ce-e497-7009-8424-c0e672da98f8": "Laughter",
+      "01a125ce-e498-7006-be5a-9ab0b9b10dd4": "Lawn mower",
+      "01a125ce-e497-700d-96f8-d9819ca3bd06": "Motorcycle",
+      "01a125ce-e498-700a-98ed-ee713885083c": "Music",
+      "01a125ce-e485-7000-93a1-0456bc7839e9": "Rain",
+      "01a125ce-e498-7010-8a02-7adac630f606": "Room tone",
+      "01a125ce-e486-7000-908c-e60c21c033b4": "Running water",
+      "01a125ce-e496-7000-ae12-7e9564e67fd3": "Rustling leaves",
+      "01a125ce-e487-7000-aa74-5d69e949a34e": "Sea waves",
+      "01a125ce-e498-7000-bad2-57f25034657c": "Siren",
+      "01a125ce-e497-7000-9335-377ab90dba69": "Thunder",
+      "01a125ce-e497-700b-a64d-1186501fbe21": "Traffic",
+      "01a125ce-e497-700f-ac59-e5147c15f874": "Train",
+      "01a125ce-e498-700d-949e-a34d1a6a375e": "Ventilation hum",
+      "01a125ce-e495-7000-bbf0-dc9c23567e11": "Wind",
+      "01a125ce-e498-700e-9a4c-26ac2a35d888": "Wind chimes",
+      "01a125cf-da31-7000-b588-847d370bd702": "Recovered field signal"
+    }
+  }
+}

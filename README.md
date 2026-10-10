@@ -2,187 +2,143 @@
 
 *An orchestra made of a world you almost forgot to hear.*
 
-An open-source, local-first experience for the Hacktoberfest 2026 Open-Source AI Challenge
-(Week 1, *Touch Grass*). You teach an amnesiac machine, ECHO-0, to hear by recording the real
-world; its memory, atlas, artwork and music are built from your recordings.
+ECHO-0 knows the world’s names but has lost its acoustic memory. Go outside, collect a sound,
+return to the laboratory, teach it what you heard, and listen as your memories become a composition.
+A local-first React PWA, FastAPI, SQLite, CPU LAION-CLAP and local Gemma through Ollama power the experience.
 
-## Status
+## Release candidate
 
-**M4.6 (musical refinement, in progress on `feat/m4-6-musical-refinement`):** the orchestra can now be composed in two modes — **Composed** (motifs → phrases → sections, a clear foreground, call-and-response, swing and ghost notes) or **Organic** (source-timed, sparse and atmospheric) — in addition to the unchanged M4/M4.5 planner (`legacy`). Structure improved on objective measures; **nobody has listened to it yet**. See [`docs/M4-6-MUSICAL-REFINEMENT.md`](docs/M4-6-MUSICAL-REFINEMENT.md).
+M5.5 integrates the completed M5 backend and cinematic UI on `feat/release-integration`.
+The six scenes are **Chamber → Field → Hearing → Specimen → Atlas → Orchestra**.
+Recording, classification, annotation, retrieval memory, measured visual artifacts, composition,
+playback and grounded narration operate together. See the [integration report](docs/M5-5-INTEGRATION-REPORT.md),
+[release checklist](docs/RELEASE-CHECKLIST.md) and [demo plan](docs/DEMO-RECORDING-PLAN.md).
+This is a local release candidate; physical Android/outdoor and human musical/narrative review remain open.
 
-**M4 — the Impossible Orchestra: implemented (engineering PARTIAL, musical quality NEEDS
-REVIEW).** Pick several sound memories (in the list or in the atlas), press Compose, and a
-deterministic planner turns their *measured* acoustics into sections, layers, rhythm and (when
-something is genuinely pitched) a melody; an offline renderer cuts, resamples, filters and mixes
-the actual recordings into a 48 kHz stereo piece with per-layer stems. You can solo/mute layers,
-compare original ↔ transformed layer ↔ full piece, click any event to trace it back to the exact
-second of the recording it came from, regenerate with a new seed, save, reopen after a restart
-and export the WAV. Specimens and atlas nodes react while their recordings sound. See
-[`docs/M4-REPORT.md`](docs/M4-REPORT.md) and [`docs/music-engine.md`](docs/music-engine.md).
+## Install
 
-Honest about M4: nobody has listened to it yet (it was checked with measurements and
-spectrograms), the Orchestra UI was not run in a real browser in this session, and the optional
-Gemma planner is not implemented.
-
-Earlier milestones: M1 real audio foundation ([`docs/M1-REPORT.md`](docs/M1-REPORT.md)), M2
-real hearing (LAION-CLAP) and personal memory ([`docs/M2-REPORT.md`](docs/M2-REPORT.md)), M3
-specimens and atlas ([`docs/M3-REPORT.md`](docs/M3-REPORT.md)).
-
-Still not there: free narration (ECHO-0 lines are templates bound to events), fine-tuning, and
-anything real-time (the music engine renders offline).
-
-## Architecture summary
-
-Modular monolith (docs/architecture/02): one FastAPI process with internal packages
-`ingest → dsp → models (CLAP adapter) → memory (kNN + fusion) → visual (specimen params) → atlas (graph + layout) → music (analysis → roles → planner → renderer) → storage/events/jobs → api`,
-SQLite (WAL) + content-addressed files under `data/`, and a Vite/React PWA. Processing is
-durability-first: the raw upload and the recording row are committed before any processing;
-the `dsp` and `infer` stages run on an in-process worker thread polling a `job` table;
-failures leave the recording inspectable and retryable. Full design:
-[`docs/architecture/README.md`](docs/architecture/README.md); decisions in
-[`14-ARCHITECTURE-DECISIONS.md`](docs/architecture/14-ARCHITECTURE-DECISIONS.md) (ADR-013…016 for M2, ADR-017…019 for M3, ADR-020…022 for M4).
-
-```
-the-unheard/
-  server/unheard/   api/ ingest/ dsp/ models/ memory/ visual/ atlas/ music/ jobs/ events/ storage/  (+ app.py, cli.py, config.py)
-  server/tests/     DSP, ingest, API, memory/fusion, migration, e2e, real-model tests + fixtures
-  web/src/          api/ audio/ state/ visual/ components/  (React + TS)
-  eval/             run_eval.py, reports/
-  scripts/          mkcert.sh, verify_env.py, bench_models.py, m4_demo.py, m4_bench.py
-  docs/             api.md, model-setup.md, visual-grammar.md, local-https.md, smoke-test.md, M1…M4-REPORT.md, music-engine.md, architecture/
-  data/             (gitignored) unheard.sqlite3, audio/, artifacts/, eval/
-```
-
-## Prerequisites
-
-| Tool | Why | Verified version |
-|---|---|---|
-| [uv](https://docs.astral.sh/uv/) | Python 3.12 venv + locked deps (ADR-012; system 3.14 is not used) | 0.12.7 |
-| Python 3.12 | installed automatically by `uv sync` | 3.12.13 |
-| Node ≥ 20 + npm | frontend | Node 26.8.1 / npm 12 |
-| **ffmpeg + ffprobe** | decoding browser codecs (webm/opus, mp4/aac, ogg, mp3). Without it only WAV/FLAC/OGG uploads decode (libsndfile fallback) and `/api/health` reports `ffmpeg_available: false` | 9.0.1 |
-| mkcert (optional) | HTTPS on the LAN for phone testing, see [`docs/local-https.md`](docs/local-https.md) | — |
-| torch + transformers (optional, `uv sync --extra ml`) | ECHO-0's ears (LAION-CLAP, ~600 MB weights, CPU) — see [`docs/model-setup.md`](docs/model-setup.md) | torch 2.14+cpu, transformers 4.x |
-
-FFmpeg licensing: the project only *invokes* the `ffmpeg` binary found on `PATH` (LGPL/GPL
-depending on your build); nothing from FFmpeg is linked or redistributed here. If `ffmpeg`
-is missing, uploads in a container it cannot decode fail with `503 DECODER_UNAVAILABLE`.
-
-## Setup
+Requirements: Python **3.12** through [uv](https://docs.astral.sh/uv/), Node **22.13+ on 22.x or 24+**,
+npm, FFmpeg/FFprobe, and optionally [Ollama](https://ollama.com) and mkcert.
+On a shared 15 GB laptop, use CPU CLAP, `gemma3:4b`, and one backend process; avoid unnecessary model residency.
 
 ```bash
-git clone https://github.com/miclaldogan/the-unheard && cd the-unheard
-python3 scripts/verify_env.py          # prints python/ffmpeg/node status
-(cd server && uv sync --extra ml)      # creates server/.venv with Python 3.12 (+ torch/transformers)
-(cd server && uv run unheard fetch-model)   # one-time ~600 MB download of the CLAP weights
-(cd web && npm install)
+git clone https://github.com/miclaldogan/the-unheard
+cd the-unheard
+# Once this release branch is available remotely, select it; do not assume main contains it.
+python3 scripts/verify_env.py
+cd server
+uv sync --extra ml
+uv run unheard fetch-model       # explicit one-time CLAP weight download
+cd ../web
+npm ci
 ```
+
+CLAP is `laion/clap-htsat-unfused`, a 512-dimensional embedding model. Its real cosine similarities
+and personalized retrieval scores are shown as scores, not probabilities. Runtime downloads are off;
+[model setup](docs/model-setup.md) explains preprocessing, cached weights and model limitations.
+Personal learning is retrieval over your annotations; neither model is fine-tuned.
+
+For the optional local narrator, start Ollama using your platform’s normal service setup and run:
+
+```bash
+ollama pull gemma3:4b             # about 3.3 GB, subject to Gemma Terms of Use
+ollama list
+```
+
+Gemma receives short factual packets. The backend computes progression and missions, checks every
+line, and serves a deterministic template immediately while generation runs. Unavailable, timed-out
+or rejected generation falls back to those facts. [Narrative design](docs/gemma-narrative-engine.md)
+and [contract m5.1](docs/contracts/M5-NARRATIVE-API.md) describe this boundary.
 
 ## Run
 
 ```bash
-# terminal 1 — API on http://127.0.0.1:8000 (data in server/data/)
-cd server && uv run unheard serve
-# terminal 2 — UI on http://localhost:5173 (proxies /api to the backend)
-cd web && npm run dev
+# Terminal 1: loopback API, persistent data in server/data/
+cd server
+UNHEARD_DEVICE=cpu UNHEARD_TORCH_THREADS=2 UNHEARD_NARRATIVE_MODEL=gemma3:4b uv run unheard serve
+# Terminal 2: UI with same-origin /api proxy
+cd web
+npm run dev
 ```
 
-Open <http://localhost:5173>. Interactive API docs: <http://127.0.0.1:8000/api/docs>.
+Open `http://localhost:5173`. API documentation is `http://127.0.0.1:8000/api/docs`.
+For the production PWA: `cd web && npm run build`, then run `unheard serve` from `server/`;
+FastAPI serves `web/dist` at `http://127.0.0.1:8000`. The service worker is production-only.
 
-Single-process mode: `cd web && npm run build` then `uv run unheard serve` serves `web/dist`
-at `http://127.0.0.1:8000/`.
+Useful settings: `UNHEARD_DATA_DIR` for a separate profile, `UNHEARD_API_TOKEN` for bearer authentication,
+`UNHEARD_MODEL_NAME=none` for DSP-only operation, `UNHEARD_NARRATIVE_GEMMA=false` for template-only
+narration, and `UNHEARD_NARRATIVE_RUNTIME_URL` for your local Ollama URL. Full settings are in
+[config.py](server/unheard/config.py). The CLI reads `UNHEARD_MODEL_NAME`, not `UNHEARD_MODEL`.
+For a non-default development backend, set `UNHEARD_BACKEND=http://127.0.0.1:<port>` when starting Vite.
 
-Configuration is via `UNHEARD_*` environment variables (see `server/unheard/config.py`):
-`UNHEARD_DATA_DIR`, `UNHEARD_PORT`, `UNHEARD_API_TOKEN`, `UNHEARD_MAX_DURATION_S`, …
+## Mobile Field Mode and privacy
 
-## Recording, hearing, teaching
+Phone microphone access needs trusted **HTTPS**. Follow [local HTTPS](docs/local-https.md): trust your
+local CA on the phone, configure `UNHEARD_API_TOKEN`, and use Vite’s HTTPS proxy or a trusted local
+production reverse proxy. Pair once with `?token=...`; treat that URL as private. Do not expose the
+laptop or recordings publicly to obtain HTTPS. The phone uses the same backend; it is not a cloud app.
 
-1. Press **Record**, allow the microphone, press **Stop** (auto-stops at 30 s), listen to the
-   preview, **Submit for analysis**.
-2. The server validates and decodes the upload, extracts DSP features (`ready`), then queues
-   inference: CLAP embeds the canonical audio in 10 s windows and scores every source label by
-   cosine similarity to its text prompt. The **Hearing** panel shows the ranked hypotheses with
-   their real score semantics (ears cosine, memory cosine, fused rank score) — never percentages.
-3. ECHO-0 speaks only from persisted events: *"I hear something. My strongest hypothesis is …"*,
-   *"I can hear it. I cannot name it yet."* when the novelty gate fires, *"This resembles
-   something you taught me before"* when a remembered recording is close.
-4. **Teach**: confirm or reject hypotheses, pick another known source, name a new one, or mark
-   it unknown; optionally add descriptors (how it sounds), place and feeling — these three are
-   stored separately and never used for recognition. Submitting stores the annotation and, if
-   the recording has an embedding, one exemplar per source label in memory; previous
-   annotations are superseded and their exemplars retracted; every other recording is
-   re-scored and the response lists what changed.
-5. **Acoustic memory** shows exemplar counts per name, learned names, memory version and the
-   recordings most similar to the selected one. Deleting a recording removes its embeddings,
-   predictions, annotations and exemplars and re-scores the rest.
+Field capture saves original bytes in IndexedDB before upload, bounded to **64 MiB / 100 recordings**.
+Upload is explicit; requested uploads retry while the app is open after reconnection, with bounded
+backoff and manual recovery. A lost acknowledgement reuses the backend’s content deduplication.
+Local copies remain until you delete them. Download important originals: browser storage can be cleared
+or evicted. Storage failure leaves a downloadable in-memory preview; leaving the page can lose it.
 
-Recordings made before M2 (or while the model was disabled) show *Not yet heard* with a
-*Listen with ECHO-0's ears* button that queues inference.
+The PWA caches its shell, **not private API responses or audio**. Offline capture is supported;
+AI inference and composition need the connected laptop. Recording is explicit and visible.
+Keep the screen awake: browsers can suspend recording on lock or backgrounding. No guaranteed
+background recording or Background Sync is claimed. Close all app tabs after stopping capture/playback
+to let a waiting shell update activate. No Android APK is supplied.
 
-6. **Specimen** (nav tab, or *Open visual memory*): the acoustic signature as the centrepiece —
-   outline from the RMS envelope, fold symmetry from tonality, crispness from the centroid,
-   gaps from spectral flux, one tick per onset, hue from the label. Play the original: the body
-   breathes with the recorded envelope and onsets glow, synced to the audio position. Export
-   PNG/SVG; toggle the waveform/spectrogram and numbers underneath.
-7. **Atlas**: pan (drag), zoom (wheel), click a node for its relationships, filter by name or
-   uncertainty, show your "feelings" as a separate subjective layer, open a specimen. The
-   state line (first observation → emerging relationships → learned categories → new concept)
-   is derived from real edges and anchors, not from counts.
+## Play the journey
 
-### Supported formats and limits
+1. **Chamber:** meet ECHO-0 and see its real progression and grounded voice.
+2. **Field:** Record, Stop, preview, save locally, then Submit for analysis when connected.
+3. **Hearing:** inspect the waveform/spectrogram and CLAP hypotheses. Confirm, correct, name or mark
+   a sound unknown; annotations and correction history persist. Subjective notes stay separate from labels.
+4. **Specimen:** play the original and explore/export its deterministic measured acoustic signature.
+5. **Atlas:** explore real embedding similarities and label anchors with pan, zoom, filters and selection.
+6. **Orchestra:** select sounds, choose **Organic** (source-timed atmospheric structure) or **Composed**
+   (motifs, phrases, sections and call-and-response), render, play, seek, mute/solo, compare sources and export WAV.
+   Playback continues between compatible scenes; specimens react to actual timeline activity.
 
-Containers: WAV, WebM (opus/vorbis), MP4/M4A (aac), OGG, FLAC, MP3 — anything ffmpeg decodes
-within those containers. Limits (configurable): 25 MiB, 3–30 s, source rate 8–192 kHz,
-rejection below −60 dBFS RMS, clipping (> 0.5 % samples ≥ 0.99) flagged but accepted.
+The ending requires a ready composition made from at least three annotated recordings. It comes from
+persisted backend state. Human listening has not established whether the refined compositions are better.
+Available local comparisons and the Gemma evaluation sheet are described in the release checklist.
 
-### DSP features (`dsp_version = 1`)
-
-Computed on the canonical signal without gain changes; definitions with formulas are in
-`server/unheard/dsp/features.py`. Scalar summary: duration, sample rate, peak/RMS (linear and
-dBFS), clipping ratio, zero-crossing rate, spectral centroid / bandwidth / 85 % rolloff /
-flatness / flux (mean, median, std, min, max over active frames; STFT 2048/512 Hann), onset
-count and density (from a log-mel novelty curve), dominant mel band. Arrays (`.npz`): per-frame
-series, RMS envelope, 64-band log-mel (25 ms / 10 ms), pooled STFT view, waveform buckets.
-Same input + version ⇒ byte-identical output (tested).
-
-## API
-
-See [`docs/api.md`](docs/api.md). M1 endpoints unchanged; M2 adds `GET /api/model`,
-`POST /api/model/load`, `GET /api/recordings/{id}/prediction`, `POST …/infer`,
-`GET …/neighbours`, `GET/POST /api/labels`, `GET/POST …/annotations`, `GET /api/memory`,
-`GET …/echo`. M3 adds `GET /api/recordings/{id}/visual`, `GET /api/atlas`,
-`POST /api/atlas/rebuild`. Errors are RFC 7807 problem documents with stable codes.
-
-## Tests
+## Reproducible tests
 
 ```bash
-cd server && uv run pytest                      # fast suite (fake model), ~10 s
-cd server && uv run pytest -m real_model -s     # real CLAP + ESC-50 integration test (needs weights + eval data)
-cd server && uv run ruff check . && uv run mypy unheard
-cd web && npm test && npm run typecheck && npm run build
-cd server && uv run python ../scripts/bench_models.py   # model gate numbers
-cd server && uv run python ../eval/run_eval.py          # before/after personalization (eval/README.md)
+cd server
+uv run pytest
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy unheard
+uv run python ../scripts/m5_export_schemas.py --check
+# Sequential real-model checks; require cached CLAP / local ESC-50 evaluation clips and Ollama:
+UNHEARD_TORCH_THREADS=2 uv run --extra ml pytest -m real_model tests/test_real_model.py -s
+uv run pytest -m real_gemma tests/test_narrative_real_gemma.py -s
+cd ../web
+npm run lint
+npm run typecheck
+npm test
+npm run format:check
+npm run build
 ```
 
-Manual browser checklist: [`docs/smoke-test.md`](docs/smoke-test.md).
+The default backend suite uses isolated model doubles; the real-model commands are separate gates.
+[Browser review scripts](web/scripts/) need Playwright Core and sandbox-capable Chrome; use only a disposable
+backend profile because they create recordings and compositions. [Manual checks](docs/UI-MANUAL-TEST-CHECKLIST.md)
+cover physical devices and artistic review. Actual integrated results and screenshots are in the M5.5 report.
 
-## Current limitations
+## Limits and licensing
 
-- No music, atlas or free narration (M3+). ECHO-0 lines are templates bound to events.
-- Personal memory is retrieval only (kNN over CLAP embeddings); the model is never fine-tuned.
-- Unknown detection is a thresholded heuristic measured on ESC-50 (`eval/reports`), not a
-  calibrated detector; fused scores are rank scores, not probabilities.
-- The specimen grammar is an artistic mapping of measured quantities, documented per
-  parameter; the atlas is a 2-D PCA view of a 512-d space (explained variance shown in the UI).
-- CPU inference only was measured; CUDA is possible but untested here.
-- Phone capture over LAN HTTPS is wired but still untested on a physical phone; no offline queue.
-- Hard delete (no tombstones); single worker; Linux + Chrome/Firefox only.
+The backend is a single-process local monolith with SQLite WAL and an in-process job worker.
+The archive currently requests the first 100 records; deep links and large-library stress validation remain open.
+Novelty detection is a heuristic, not a calibrated guarantee. Visual geometry maps measured acoustics artistically;
+Atlas is a stable 2-D view of a high-dimensional space. No location is collected by Field Mode.
 
-## Next milestone — M4
-
-The symphony engine consumes what M1–M3 persist: canonical audio (`audio_asset`), DSP
-summaries and arrays (`feature_set` + `.npz`: RMS envelope, onsets, centroid/flux series,
-log-mel), embeddings and neighbours, confirmed/annotated sources, and the specimen's
-precomputed animation timelines (`visual_artifact.params.animation`) for audio-visual sync.
-
-License: MIT.
+Project code: [MIT](LICENSE). CLAP’s model card lists Apache-2.0; Gemma has its own Terms of Use.
+Weights are downloaded locally and never redistributed here. ESC-50 clips used for local evaluation are
+**not demonstration assets**: individual source licensing must be checked before any publication.
+No personal recordings, model weights, database files or credentials belong in Git.

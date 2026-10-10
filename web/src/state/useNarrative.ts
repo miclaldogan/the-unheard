@@ -5,10 +5,14 @@ import {
   type NarrativeSnapshot,
 } from "../api/narrative";
 export function useNarrative(
-  version: number,
+  version: number | string,
   adapter: NarrativeAdapter = narrativeApi,
 ) {
-  const [snapshot, setSnapshot] = useState<NarrativeSnapshot | null>(null);
+  const [result, setResult] = useState<{
+    snapshot: NarrativeSnapshot | null;
+    version: number | string;
+    revision: number;
+  } | null>(null);
   const [status, setStatus] = useState<
     "loading" | "ready" | "unavailable" | "error"
   >("loading");
@@ -28,12 +32,12 @@ export function useNarrative(
         const s = await adapter.read(controller.signal);
         if (controller.signal.aborted) return;
         previous = s;
-        setSnapshot(s);
+        setResult({ snapshot: s, version, revision });
         setStatus(s ? "ready" : "unavailable");
         setError(null);
       } catch (e) {
         if (controller.signal.aborted) return;
-        setSnapshot(null);
+        setResult({ snapshot: null, version, revision });
         setStatus("error");
         setError(e instanceof Error ? e.message : String(e));
       }
@@ -50,5 +54,11 @@ export function useNarrative(
       window.clearTimeout(timer);
     };
   }, [adapter, version, revision]);
-  return { snapshot, status, error, reload };
+  const current = result?.version === version && result?.revision === revision;
+  return {
+    snapshot: current ? result.snapshot : null,
+    status: current ? status : ("loading" as const),
+    error: current ? error : null,
+    reload,
+  };
 }

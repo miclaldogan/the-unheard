@@ -20,6 +20,9 @@ fs.mkdirSync(out, { recursive: true });
     reducedMotion: "reduce",
     permissions: ["microphone"],
     acceptDownloads: true,
+    extraHTTPHeaders: process.env.UNHEARD_REVIEW_TOKEN
+      ? { Authorization: `Bearer ${process.env.UNHEARD_REVIEW_TOKEN}` }
+      : {},
   });
   if (process.env.UNHEARD_REVIEW_TOKEN)
     await context.addInitScript(
@@ -90,7 +93,10 @@ fs.mkdirSync(out, { recursive: true });
   await rec.getByRole("button", { name: "Submit for analysis" }).click();
   await rec.getByText(/Synchronized and measured/).waitFor({ timeout: 60000 });
   await page.getByRole("button", { name: "Open in laboratory" }).click();
-  await page.getByLabel("new label").waitFor({ timeout: 15000 });
+  const correction = page.getByRole("button", { name: "Correct this", exact: true });
+  await page.getByLabel("new label").or(correction).waitFor({ timeout: 60000 });
+  if (await correction.isVisible()) await correction.click();
+  await page.getByLabel("new label").waitFor();
   await page.getByLabel("new label").fill("Browser test signal");
   await page.getByRole("button", { name: "Teach ECHO-0", exact: true }).click();
   await page.getByText(/A memory has taken shape/).waitFor();
@@ -162,6 +168,7 @@ fs.mkdirSync(out, { recursive: true });
   if (await download.failure()) throw Error("WAV export failed");
   await page.getByRole("button", { name: "Composed", exact: true }).click();
   const picks = page.locator(".pick input[type=checkbox]");
+  for (let i = 0; i < await picks.count(); i++) await picks.nth(i).uncheck();
   const sourceCount = Math.min(3, await picks.count());
   for (let i = 0; i < sourceCount; i++) await picks.nth(i).check();
   await page

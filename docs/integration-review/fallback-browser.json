@@ -1,0 +1,73 @@
+{
+  "actualUnavailableRuntime": true,
+  "template": {
+    "id": "nar_b81a885f1c08d509",
+    "revision": 9,
+    "moment": {
+      "kind": "correction",
+      "key": "annotation:01a125d0-b50e-7000-82d1-b746a000a9d6",
+      "act": "act_1",
+      "occurred_at": "2026-10-10T12:36:37.262+00:00"
+    },
+    "lines": [
+      {
+        "text": "You named it 'Recovered field signal'. I will keep that.",
+        "kind": "grounded",
+        "provenance": [
+          "user_confirmed"
+        ],
+        "cites": [
+          "F2"
+        ]
+      },
+      {
+        "text": "A word is a small shelter for a sound.",
+        "kind": "imagination",
+        "provenance": [
+          "imagination"
+        ],
+        "cites": []
+      }
+    ],
+    "facts": [
+      {
+        "handle": "F1",
+        "statement": "The recording is 4 seconds long.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "recording",
+          "id": "01a125d0-392c-7000-a6df-e120e4049e35",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F2",
+        "statement": "The player corrected the ears to 'Recovered field signal' for this recording.",
+        "provenance": "user_confirmed",
+        "ref": {
+          "type": "annotation",
+          "id": "01a125d0-b50e-7000-82d1-b746a000a9d6",
+          "label": "Recovered field signal",
+          "provenance": "user_confirmed"
+        }
+      },
+      {
+        "handle": "F3",
+        "statement": "2 of the player's recordings are taught so far; 3 are needed to compose.",
+        "provenance": "system",
+        "ref": null
+      }
+    ],
+    "source": "template",
+    "model": null,
+    "generation": {
+      "status": "fallback",
+      "latency_ms": null,
+      "attempts": 0,
+      "fallback_reason": "unavailable"
+    },
+    "created_at": "2026-10-10T12:36:37.268Z"
+  },
+  "backendOfflineStillField": true
+}

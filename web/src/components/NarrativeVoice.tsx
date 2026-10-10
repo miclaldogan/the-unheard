@@ -43,6 +43,13 @@ export function NarrativeVoice({
             ? " · wording is still being refined"
             : ""}
         </p>
+        {utterance.generation.status === "fallback" && (
+          <p className="caption">
+            Preserved facts are speaking ·{" "}
+            {utterance.generation.fallback_reason?.replaceAll("_", " ") ??
+              "template fallback"}
+          </p>
+        )}
       </details>
     </div>
   );

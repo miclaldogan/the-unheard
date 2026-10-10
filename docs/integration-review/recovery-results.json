@@ -1,0 +1,203 @@
+{
+  "recording_id": "01a125d0-392c-7000-a6df-e120e4049e35",
+  "clapUnavailable": {
+    "recording_id": "01a125d0-392c-7000-a6df-e120e4049e35",
+    "state": "inference_failed",
+    "model_status": "failed",
+    "model": null,
+    "job": {
+      "status": "failed",
+      "error": "ModelUnavailable: model load failed: OSError",
+      "attempts": 3,
+      "updated_at": "2026-10-10T12:36:37.223+00:00"
+    },
+    "base": null,
+    "fused": null,
+    "annotation": {
+      "id": "01a125d0-4a43-7000-88cc-aea19c1f6727",
+      "recording_id": "01a125d0-392c-7000-a6df-e120e4049e35",
+      "action": "correct",
+      "status": "active",
+      "labels": [
+        {
+          "label_id": "01a125cf-da31-7000-b588-847d370bd702",
+          "slug": "recovered_field_signal",
+          "name": "Recovered field signal"
+        }
+      ],
+      "rejected_label_ids": [],
+      "is_unknown": false,
+      "descriptors": [],
+      "environment": null,
+      "mood": null,
+      "note": null,
+      "prediction_id": null,
+      "superseded_by": null,
+      "created_at": "2026-10-10T12:36:09.923+00:00"
+    }
+  },
+  "gemmaUnavailable": {
+    "contract_version": "m5.1",
+    "utterance": {
+      "id": "nar_b81a885f1c08d509",
+      "revision": 9,
+      "moment": {
+        "kind": "correction",
+        "key": "annotation:01a125d0-b50e-7000-82d1-b746a000a9d6",
+        "act": "act_1",
+        "occurred_at": "2026-10-10T12:36:37.262+00:00"
+      },
+      "lines": [
+        {
+          "text": "You named it 'Recovered field signal'. I will keep that.",
+          "kind": "grounded",
+          "provenance": [
+            "user_confirmed"
+          ],
+          "cites": [
+            "F2"
+          ]
+        },
+        {
+          "text": "A word is a small shelter for a sound.",
+          "kind": "imagination",
+          "provenance": [
+            "imagination"
+          ],
+          "cites": []
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "The recording is 4 seconds long.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "recording",
+            "id": "01a125d0-392c-7000-a6df-e120e4049e35",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F2",
+          "statement": "The player corrected the ears to 'Recovered field signal' for this recording.",
+          "provenance": "user_confirmed",
+          "ref": {
+            "type": "annotation",
+            "id": "01a125d0-b50e-7000-82d1-b746a000a9d6",
+            "label": "Recovered field signal",
+            "provenance": "user_confirmed"
+          }
+        },
+        {
+          "handle": "F3",
+          "statement": "2 of the player's recordings are taught so far; 3 are needed to compose.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "fallback",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": "unavailable"
+      },
+      "created_at": "2026-10-10T12:36:37.268Z"
+    },
+    "available_actions": [
+      "record",
+      "teach",
+      "open_atlas",
+      "open_orchestra"
+    ]
+  },
+  "modelStatus": {
+    "contract_version": "m5.1",
+    "runtime": "ollama",
+    "base_url": "http://127.0.0.1:9",
+    "enabled": true,
+    "available": false,
+    "status": "unavailable",
+    "model": null,
+    "installed": [],
+    "license": null,
+    "limits": {
+      "timeout_s": 30.0,
+      "max_concurrent": 1,
+      "max_output_tokens": 220
+    },
+    "stats": {
+      "requests": 3,
+      "valid": 0,
+      "fallbacks": 3,
+      "valid_rate": 0.0,
+      "fallback_rate": 1.0,
+      "latency_ms": {
+        "cold_first": null,
+        "p50": null,
+        "p95": null
+      },
+      "fallback_reasons": {
+        "unavailable": 3
+      }
+    }
+  },
+  "failedRender": {
+    "id": "01a125d0-b518-7000-828b-55503940cee7",
+    "parent_id": null,
+    "name": "Untitled orchestra",
+    "saved": false,
+    "mode": "organic",
+    "status": "failed",
+    "error": "LibsndfileError: Error opening '/tmp/unheard-m55-pwa/audio/01/01a125d0-392c-7000-a6df-e120e4049e35/canonical.wav': System error.",
+    "seed": 991,
+    "controls": {
+      "density": 0.5,
+      "structure": 0.5,
+      "intensity": 0.5
+    },
+    "target_duration_s": 24.0,
+    "duration_s": null,
+    "tempo_bpm": null,
+    "planner_version": 2,
+    "render_version": 1,
+    "analysis_version": 2,
+    "dsp_version": 1,
+    "plan_hash": null,
+    "master_sha256": null,
+    "master_url": null,
+    "export_url": null,
+    "metrics": null,
+    "sections": [],
+    "form": null,
+    "conversation": [],
+    "groove": null,
+    "hierarchy": null,
+    "key": null,
+    "tempo_source": null,
+    "sources": [
+      {
+        "position": 0,
+        "recording_id": "01a125d0-392c-7000-a6df-e120e4049e35",
+        "content_hash": "6587f3d19a39e59b3f77ef7ec44f900715b562999296fb03fc46d3672ec91883",
+        "exists": true,
+        "label": "Recovered field signal",
+        "role": null,
+        "secondary_role": null,
+        "decision": null,
+        "analysis": null
+      }
+    ],
+    "tracks": [],
+    "echo": [],
+    "created_at": "2026-10-10T12:36:37.273+00:00",
+    "updated_at": "2026-10-10T12:36:37.276+00:00",
+    "rendered_at": null,
+    "created": null
+  },
+  "renderRetry": "ready",
+  "rawRetained": true
+}

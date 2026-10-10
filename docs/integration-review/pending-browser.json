@@ -1,0 +1,280 @@
+{
+  "seen": [
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 1,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing yet. Bring me a sound.",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "template",
+      "model": null,
+      "generation": {
+        "status": "pending",
+        "latency_ms": null,
+        "attempts": 0,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    },
+    {
+      "id": "nar_81ea368d6723039b",
+      "revision": 2,
+      "moment": {
+        "kind": "awaiting_sound",
+        "key": "awaiting_sound",
+        "act": "prologue",
+        "occurred_at": "2026-10-10T12:34:12.026Z"
+      },
+      "lines": [
+        {
+          "text": "I detect nothing. I await processing",
+          "kind": "grounded",
+          "provenance": [
+            "system"
+          ],
+          "cites": [
+            "F1"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "No recording has been processed yet.",
+          "provenance": "system",
+          "ref": null
+        }
+      ],
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 7676.222725999651,
+        "attempts": 1,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:34:12.107Z"
+    }
+  ],
+  "reloadDuringPending": true,
+  "actualGemma": true,
+  "clapDisabledForThisCheck": true
+}

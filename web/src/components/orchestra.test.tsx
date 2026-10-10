@@ -79,6 +79,19 @@ const setup = (over: Record<string, () => Response> = {}) => {
 };
 
 describe('Orchestra view', () => {
+  it('keeps playback unavailable until authenticated stems finish loading', async () => {
+    const { p } = setup({ 'POST /api/compositions': () => json(comp('ready')) });
+    let finish!: () => void;
+    const gate = new Promise<void>(resolve => { finish = resolve; });
+    const load = p.load.bind(p);
+    vi.spyOn(p, 'load').mockImplementation(async (...args) => { await gate; await load(...args); });
+    await screen.findByText('Rain');
+    fireEvent.click(screen.getByRole('button', { name: 'Compose from 3 sounds' }));
+    expect(await screen.findByRole('button', { name: 'Play' })).toBeDisabled();
+    finish();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Play' })).toBeEnabled());
+  });
+
   it('lists the ready recordings with names from the atlas and composes the chosen sources', async () => {
     const { calls } = setup();
     expect(await screen.findByText('Rain')).toBeInTheDocument();

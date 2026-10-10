@@ -1,0 +1,49 @@
+{
+  "browser": "148.0.7778.215",
+  "fakeMicrophone": true,
+  "physicalDevice": false,
+  "errors": [],
+  "offlineCapture": [
+    {
+      "id": "ebe01b92-4d06-4ef9-8116-f9e92b373365",
+      "bytes": 57475,
+      "serverId": null
+    }
+  ],
+  "landscape": {
+    "width": 844,
+    "scroll": 844
+  },
+  "narrative": {
+    "act": "ending",
+    "phase": "remembered",
+    "counts": {
+      "recordings": 8,
+      "heard": 8,
+      "taught": 7,
+      "labels_confirmed": 3,
+      "corrections": 2,
+      "unknown": 1,
+      "compositions": 3,
+      "memory_version": 7
+    }
+  },
+  "checks": [
+    "M5 first-use",
+    "microphone workflow",
+    "navigation locked during capture",
+    "real IndexedDB bytes",
+    "offline upload retains capture",
+    "manual retry",
+    "real DSP processing",
+    "backend annotation",
+    "specimen playback",
+    "atlas selection and zoom",
+    "Organic composition",
+    "playback continuity to Atlas",
+    "mute and solo",
+    "seek",
+    "WAV export",
+    "Composed composition"
+  ]
+}

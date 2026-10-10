@@ -1,0 +1,10 @@
+{
+  "atlasDrawMs": 9.3,
+  "nodes": 5,
+  "realClapGraph": true,
+  "viewport": {
+    "width": 1366,
+    "scroll": 1366
+  },
+  "measurement": "existing single-draw timer; not sustained FPS or large-library profiling"
+}

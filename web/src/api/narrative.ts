@@ -202,6 +202,7 @@ export function narrativePresence(
   utterance: Utterance,
 ): NarrativePresence {
   if (state.phase === "awaiting_sound") return "dormant";
+  if (state.phase === "remembered") return "remembering";
   if (
     state.phase === "composing" ||
     utterance.moment.kind === "composition" ||

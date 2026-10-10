@@ -1,0 +1,2437 @@
+{
+  "actual_clap": true,
+  "device": "cpu",
+  "model": {
+    "status": "ready",
+    "model_id": "laion/clap-htsat-unfused",
+    "revision": "8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a",
+    "device": "cpu",
+    "embedding_dim": 512,
+    "preprocessing_version": 1,
+    "load_seconds": 7.380735241999901,
+    "error": null,
+    "inference": "local",
+    "known_versions": []
+  },
+  "records": [
+    {
+      "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+      "category": "rain",
+      "file": "1-17367-A-10.wav",
+      "processing_ms": 405.1594679995105,
+      "prediction_wait_ms": 816.7059269999299,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "similarity": 0.50982
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 2,
+            "similarity": 0.421067
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "similarity": 0.261497
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 4,
+            "similarity": 0.18857
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 5,
+            "similarity": 0.175821
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 6,
+            "similarity": 0.170764
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 7,
+            "similarity": 0.141404
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 8,
+            "similarity": 0.136378
+          },
+          {
+            "label_id": "01a125cb-b001-7010-88f3-9de9a854174e",
+            "slug": "traffic",
+            "name": "Traffic",
+            "rank": 9,
+            "similarity": 0.132959
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 10,
+            "similarity": 0.109127
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+                "name": "Rain",
+                "similarity": 0.50982
+              },
+              {
+                "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+                "name": "Thunder",
+                "similarity": 0.421067
+              },
+              {
+                "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+                "name": "Running water",
+                "similarity": 0.261497
+              }
+            ]
+          }
+        ],
+        "inference_ms": 241.34572700040735,
+        "created_at": "2026-10-10T12:31:09.088+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "fused_score": 0.844149,
+            "base_similarity": 0.50982,
+            "base_score": 0.844149,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 2,
+            "fused_score": 0.143059,
+            "base_similarity": 0.421067,
+            "base_score": 0.143059,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "fused_score": 0.005882,
+            "base_similarity": 0.261497,
+            "base_score": 0.005882,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 4,
+            "fused_score": 0.001368,
+            "base_similarity": 0.18857,
+            "base_score": 0.001368,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 5,
+            "fused_score": 0.00106,
+            "base_similarity": 0.175821,
+            "base_score": 0.00106,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 6,
+            "fused_score": 0.000958,
+            "base_similarity": 0.170764,
+            "base_score": 0.000958,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 7,
+            "fused_score": 0.000533,
+            "base_similarity": 0.141404,
+            "base_score": 0.000533,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 8,
+            "fused_score": 0.000482,
+            "base_similarity": 0.136378,
+            "base_score": 0.000482,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7010-88f3-9de9a854174e",
+            "slug": "traffic",
+            "name": "Traffic",
+            "rank": 9,
+            "fused_score": 0.00045,
+            "base_similarity": 0.132959,
+            "base_score": 0.00045,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 10,
+            "fused_score": 0.000279,
+            "base_similarity": 0.109127,
+            "base_score": 0.000279,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.7010897461505068,
+          "base_entropy_normalised": 0.13761440219780788,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b000-7002-a516-b552a1529787",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:09.089+00:00"
+      }
+    },
+    {
+      "id": "01a125cb-b46a-7000-8c17-da54a9e30c3e",
+      "category": "rain",
+      "file": "1-21189-A-10.wav",
+      "processing_ms": 406.3719299992954,
+      "prediction_wait_ms": 406.80439799962187,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "similarity": 0.481764
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 2,
+            "similarity": 0.232958
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "similarity": 0.203198
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 4,
+            "similarity": 0.15632
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 5,
+            "similarity": 0.145359
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 6,
+            "similarity": 0.144182
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 7,
+            "similarity": 0.114625
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 8,
+            "similarity": 0.080738
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 9,
+            "similarity": 0.063861
+          },
+          {
+            "label_id": "01a125cb-b001-7001-8eb0-5b3cc1a935d3",
+            "slug": "sea_waves",
+            "name": "Sea waves",
+            "rank": 10,
+            "similarity": 0.051431
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+                "name": "Rain",
+                "similarity": 0.481764
+              },
+              {
+                "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+                "name": "Thunder",
+                "similarity": 0.232958
+              },
+              {
+                "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+                "name": "Running water",
+                "similarity": 0.203198
+              }
+            ]
+          }
+        ],
+        "inference_ms": 248.21809000059147,
+        "created_at": "2026-10-10T12:31:09.939+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "fused_score": 0.983139,
+            "base_similarity": 0.481764,
+            "base_score": 0.983139,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 2,
+            "fused_score": 0.006784,
+            "base_similarity": 0.232958,
+            "base_score": 0.006784,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "fused_score": 0.003741,
+            "base_similarity": 0.203198,
+            "base_score": 0.003741,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 4,
+            "fused_score": 0.001465,
+            "base_similarity": 0.15632,
+            "base_score": 0.001465,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 5,
+            "fused_score": 0.001177,
+            "base_similarity": 0.145359,
+            "base_score": 0.001177,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 6,
+            "fused_score": 0.001149,
+            "base_similarity": 0.144182,
+            "base_score": 0.001149,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 7,
+            "fused_score": 0.000636,
+            "base_similarity": 0.114625,
+            "base_score": 0.000636,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 8,
+            "fused_score": 0.000323,
+            "base_similarity": 0.080738,
+            "base_score": 0.000323,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 9,
+            "fused_score": 0.000231,
+            "base_similarity": 0.063861,
+            "base_score": 0.000231,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7001-8eb0-5b3cc1a935d3",
+            "slug": "sea_waves",
+            "name": "Sea waves",
+            "rank": 10,
+            "fused_score": 0.00018,
+            "base_similarity": 0.051431,
+            "base_score": 0.00018,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.9763547978795694,
+          "base_entropy_normalised": 0.032422884772169036,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b000-7002-a516-b552a1529787",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:09.940+00:00"
+      }
+    },
+    {
+      "id": "01a125cb-b808-7000-ba24-5ea4a1bb728d",
+      "category": "rain",
+      "file": "1-26222-A-10.wav",
+      "processing_ms": 406.13990899964847,
+      "prediction_wait_ms": 524.6543849998488,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "similarity": 0.481172
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 2,
+            "similarity": 0.335214
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "similarity": 0.327221
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 4,
+            "similarity": 0.225613
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 5,
+            "similarity": 0.15753
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 6,
+            "similarity": 0.154491
+          },
+          {
+            "label_id": "01a125cb-b001-701b-a748-260b43e81e46",
+            "slug": "lawn_mower",
+            "name": "Lawn mower",
+            "rank": 7,
+            "similarity": 0.120996
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 8,
+            "similarity": 0.110161
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 9,
+            "similarity": 0.075633
+          },
+          {
+            "label_id": "01a125cb-b001-700f-87f4-7b7fa863983f",
+            "slug": "car_engine",
+            "name": "Car engine",
+            "rank": 10,
+            "similarity": 0.061315
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+                "name": "Rain",
+                "similarity": 0.481172
+              },
+              {
+                "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+                "name": "Fountain",
+                "similarity": 0.335214
+              },
+              {
+                "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+                "name": "Running water",
+                "similarity": 0.327221
+              }
+            ]
+          }
+        ],
+        "inference_ms": 259.2121629995745,
+        "created_at": "2026-10-10T12:31:10.848+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b000-7002-a516-b552a1529787",
+            "slug": "rain",
+            "name": "Rain",
+            "rank": 1,
+            "fused_score": 0.898286,
+            "base_similarity": 0.481172,
+            "base_score": 0.898286,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7002-8483-299126c3a2d9",
+            "slug": "fountain",
+            "name": "Fountain",
+            "rank": 2,
+            "fused_score": 0.048489,
+            "base_similarity": 0.335214,
+            "base_score": 0.048489,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7000-8b52-47392f9fd34a",
+            "slug": "running_water",
+            "name": "Running water",
+            "rank": 3,
+            "fused_score": 0.041325,
+            "base_similarity": 0.327221,
+            "base_score": 0.041325,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7005-a76e-f89929f58e34",
+            "slug": "thunder",
+            "name": "Thunder",
+            "rank": 4,
+            "fused_score": 0.005416,
+            "base_similarity": 0.225613,
+            "base_score": 0.005416,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 5,
+            "fused_score": 0.001388,
+            "base_similarity": 0.15753,
+            "base_score": 0.001388,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7004-a2f3-29aebe205542",
+            "slug": "rustling_leaves",
+            "name": "Rustling leaves",
+            "rank": 6,
+            "fused_score": 0.001306,
+            "base_similarity": 0.154491,
+            "base_score": 0.001306,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701b-a748-260b43e81e46",
+            "slug": "lawn_mower",
+            "name": "Lawn mower",
+            "rank": 7,
+            "fused_score": 0.000668,
+            "base_similarity": 0.120996,
+            "base_score": 0.000668,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 8,
+            "fused_score": 0.000538,
+            "base_similarity": 0.110161,
+            "base_score": 0.000538,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 9,
+            "fused_score": 0.00027,
+            "base_similarity": 0.075633,
+            "base_score": 0.00027,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700f-87f4-7b7fa863983f",
+            "slug": "car_engine",
+            "name": "Car engine",
+            "rank": 10,
+            "fused_score": 0.000203,
+            "base_similarity": 0.061315,
+            "base_score": 0.000203,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.8497969063033832,
+          "base_entropy_normalised": 0.12365376706201012,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b000-7002-a516-b552a1529787",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:10.848+00:00"
+      }
+    },
+    {
+      "id": "01a125cb-bc2d-7000-b475-eccded04467f",
+      "category": "church_bells",
+      "file": "1-13571-A-46.wav",
+      "processing_ms": 414.10379500030103,
+      "prediction_wait_ms": 410.5447470001309,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "similarity": 0.512103
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 2,
+            "similarity": 0.135955
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 3,
+            "similarity": 0.131611
+          },
+          {
+            "label_id": "01a125cb-b001-701c-afe0-2ad29bd60ffc",
+            "slug": "chainsaw",
+            "name": "Chainsaw",
+            "rank": 4,
+            "similarity": -0.010429
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 5,
+            "similarity": -0.025765
+          },
+          {
+            "label_id": "01a125cb-b001-7007-ad72-26f7a69b0f64",
+            "slug": "crow",
+            "name": "Crow",
+            "rank": 6,
+            "similarity": -0.031392
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 7,
+            "similarity": -0.054618
+          },
+          {
+            "label_id": "01a125cb-b002-7003-a1ea-cf4408fed4f2",
+            "slug": "silence",
+            "name": "Room tone",
+            "rank": 8,
+            "similarity": -0.055353
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 9,
+            "similarity": -0.060661
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 10,
+            "similarity": -0.062203
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+                "name": "Church bells",
+                "similarity": 0.512103
+              },
+              {
+                "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+                "name": "Footsteps",
+                "similarity": 0.135955
+              },
+              {
+                "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+                "name": "Wind chimes",
+                "similarity": 0.131611
+              }
+            ]
+          }
+        ],
+        "inference_ms": 283.60865299964644,
+        "created_at": "2026-10-10T12:31:12.128+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "fused_score": 0.998773,
+            "base_similarity": 0.512103,
+            "base_score": 0.998773,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 2,
+            "fused_score": 0.00054,
+            "base_similarity": 0.135955,
+            "base_score": 0.00054,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 3,
+            "fused_score": 0.000495,
+            "base_similarity": 0.131611,
+            "base_score": 0.000495,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701c-afe0-2ad29bd60ffc",
+            "slug": "chainsaw",
+            "name": "Chainsaw",
+            "rank": 4,
+            "fused_score": 2.9e-05,
+            "base_similarity": -0.010429,
+            "base_score": 2.9e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 5,
+            "fused_score": 2.1e-05,
+            "base_similarity": -0.025765,
+            "base_score": 2.1e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7007-ad72-26f7a69b0f64",
+            "slug": "crow",
+            "name": "Crow",
+            "rank": 6,
+            "fused_score": 1.9e-05,
+            "base_similarity": -0.031392,
+            "base_score": 1.9e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7020-915f-eb58fa07c159",
+            "slug": "fire",
+            "name": "Fire crackling",
+            "rank": 7,
+            "fused_score": 1.2e-05,
+            "base_similarity": -0.054618,
+            "base_score": 1.2e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7003-a1ea-cf4408fed4f2",
+            "slug": "silence",
+            "name": "Room tone",
+            "rank": 8,
+            "fused_score": 1.2e-05,
+            "base_similarity": -0.055353,
+            "base_score": 1.2e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 9,
+            "fused_score": 1.1e-05,
+            "base_similarity": -0.060661,
+            "base_score": 1.1e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 10,
+            "fused_score": 1e-05,
+            "base_similarity": -0.062203,
+            "base_score": 1e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.9982333529624113,
+          "base_entropy_normalised": 0.0030753337138391167,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:12.129+00:00"
+      }
+    },
+    {
+      "id": "01a125cb-bfe7-7000-ba56-b208493f215e",
+      "category": "church_bells",
+      "file": "1-13572-A-46.wav",
+      "processing_ms": 405.8415950003109,
+      "prediction_wait_ms": 4.1278720000264,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "similarity": 0.516156
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 2,
+            "similarity": 0.180629
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 3,
+            "similarity": 0.128988
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 4,
+            "similarity": 0.055525
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 5,
+            "similarity": 0.053579
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 6,
+            "similarity": 0.014492
+          },
+          {
+            "label_id": "01a125cb-b002-7003-a1ea-cf4408fed4f2",
+            "slug": "silence",
+            "name": "Room tone",
+            "rank": 7,
+            "similarity": 0.004951
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 8,
+            "similarity": -0.004765
+          },
+          {
+            "label_id": "01a125cb-b001-700d-8b67-c5c2e18f66c4",
+            "slug": "children",
+            "name": "Children playing",
+            "rank": 9,
+            "similarity": -0.01168
+          },
+          {
+            "label_id": "01a125cb-b001-7007-ad72-26f7a69b0f64",
+            "slug": "crow",
+            "name": "Crow",
+            "rank": 10,
+            "similarity": -0.02217
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+                "name": "Church bells",
+                "similarity": 0.516156
+              },
+              {
+                "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+                "name": "Wind chimes",
+                "similarity": 0.180629
+              },
+              {
+                "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+                "name": "Human speech",
+                "similarity": 0.128988
+              }
+            ]
+          }
+        ],
+        "inference_ms": 260.72764600030496,
+        "created_at": "2026-10-10T12:31:12.753+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "fused_score": 0.997911,
+            "base_similarity": 0.516156,
+            "base_score": 0.997911,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 2,
+            "fused_score": 0.001215,
+            "base_similarity": 0.180629,
+            "base_score": 0.001215,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 3,
+            "fused_score": 0.000433,
+            "base_similarity": 0.128988,
+            "base_score": 0.000433,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 4,
+            "fused_score": 0.0001,
+            "base_similarity": 0.055525,
+            "base_score": 0.0001,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 5,
+            "fused_score": 9.6e-05,
+            "base_similarity": 0.053579,
+            "base_score": 9.6e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 6,
+            "fused_score": 4.4e-05,
+            "base_similarity": 0.014492,
+            "base_score": 4.4e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7003-a1ea-cf4408fed4f2",
+            "slug": "silence",
+            "name": "Room tone",
+            "rank": 7,
+            "fused_score": 3.6e-05,
+            "base_similarity": 0.004951,
+            "base_score": 3.6e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 8,
+            "fused_score": 3e-05,
+            "base_similarity": -0.004765,
+            "base_score": 3e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700d-8b67-c5c2e18f66c4",
+            "slug": "children",
+            "name": "Children playing",
+            "rank": 9,
+            "fused_score": 2.6e-05,
+            "base_similarity": -0.01168,
+            "base_score": 2.6e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7007-ad72-26f7a69b0f64",
+            "slug": "crow",
+            "name": "Crow",
+            "rank": 10,
+            "fused_score": 2.1e-05,
+            "base_similarity": -0.02217,
+            "base_score": 2.1e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.9966950479613276,
+          "base_entropy_normalised": 0.004943949842542219,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:12.754+00:00"
+      }
+    },
+    {
+      "id": "01a125cb-c1ea-7000-a87b-15ec6e972790",
+      "category": "church_bells",
+      "file": "1-21421-A-46.wav",
+      "processing_ms": 404.988461999892,
+      "prediction_wait_ms": 408.9289010007633,
+      "base": {
+        "score_kind": "cosine similarity between CLAP audio and text embeddings (max over windows); not a probability",
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "similarity": 0.521913
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 2,
+            "similarity": 0.150335
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 3,
+            "similarity": 0.097891
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 4,
+            "similarity": 0.073172
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 5,
+            "similarity": 0.029058
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 6,
+            "similarity": 0.028638
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 7,
+            "similarity": 0.027741
+          },
+          {
+            "label_id": "01a125cb-b001-701c-afe0-2ad29bd60ffc",
+            "slug": "chainsaw",
+            "name": "Chainsaw",
+            "rank": 8,
+            "similarity": 0.018977
+          },
+          {
+            "label_id": "01a125cb-b001-7018-b90b-e841c09a040c",
+            "slug": "construction",
+            "name": "Construction",
+            "rank": 9,
+            "similarity": 0.011547
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 10,
+            "similarity": -0.021694
+          }
+        ],
+        "windows": [
+          {
+            "idx": 0,
+            "start_s": 0.0,
+            "end_s": 5.0,
+            "top": [
+              {
+                "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+                "name": "Church bells",
+                "similarity": 0.521913
+              },
+              {
+                "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+                "name": "Wind chimes",
+                "similarity": 0.150335
+              },
+              {
+                "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+                "name": "Train",
+                "similarity": 0.097891
+              }
+            ]
+          }
+        ],
+        "inference_ms": 233.62425100003748,
+        "created_at": "2026-10-10T12:31:13.347+00:00"
+      },
+      "fused": {
+        "score_kind": "fused: log-linear(base softmax(cos/t_base), kernel-kNN memory); base_similarity is cosine",
+        "memory_version": 0,
+        "candidates": [
+          {
+            "label_id": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+            "slug": "church_bells",
+            "name": "Church bells",
+            "rank": 1,
+            "fused_score": 0.998703,
+            "base_similarity": 0.521913,
+            "base_score": 0.998703,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b002-7001-bc86-6a5a09d35c54",
+            "slug": "wind_chimes",
+            "name": "Wind chimes",
+            "rank": 2,
+            "fused_score": 0.000591,
+            "base_similarity": 0.150335,
+            "base_score": 0.000591,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7014-9887-00d88bf4a32b",
+            "slug": "train",
+            "name": "Train",
+            "rank": 3,
+            "fused_score": 0.000207,
+            "base_similarity": 0.097891,
+            "base_score": 0.000207,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700b-83cc-047b06ff7336",
+            "slug": "footsteps",
+            "name": "Footsteps",
+            "rank": 4,
+            "fused_score": 0.000126,
+            "base_similarity": 0.073172,
+            "base_score": 0.000126,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7015-83ec-51946967c018",
+            "slug": "siren",
+            "name": "Siren",
+            "rank": 5,
+            "fused_score": 5.2e-05,
+            "base_similarity": 0.029058,
+            "base_score": 5.2e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700c-bea9-4a0834509d86",
+            "slug": "speech",
+            "name": "Human speech",
+            "rank": 6,
+            "fused_score": 5.2e-05,
+            "base_similarity": 0.028638,
+            "base_score": 5.2e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701f-80d9-b164e942d174",
+            "slug": "music",
+            "name": "Music",
+            "rank": 7,
+            "fused_score": 5.1e-05,
+            "base_similarity": 0.027741,
+            "base_score": 5.1e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-701c-afe0-2ad29bd60ffc",
+            "slug": "chainsaw",
+            "name": "Chainsaw",
+            "rank": 8,
+            "fused_score": 4.3e-05,
+            "base_similarity": 0.018977,
+            "base_score": 4.3e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-7018-b90b-e841c09a040c",
+            "slug": "construction",
+            "name": "Construction",
+            "rank": 9,
+            "fused_score": 3.7e-05,
+            "base_similarity": 0.011547,
+            "base_score": 3.7e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          },
+          {
+            "label_id": "01a125cb-b001-700a-b2a5-11326861bc1c",
+            "slug": "insects",
+            "name": "Insects",
+            "rank": 10,
+            "fused_score": 1.9e-05,
+            "base_similarity": -0.021694,
+            "base_score": 1.9e-05,
+            "memory_similarity": null,
+            "memory_score": null,
+            "n_exemplars": 0,
+            "lambda": 0.0,
+            "evidence": "ears"
+          }
+        ],
+        "novelty": {
+          "novel": false,
+          "nearest_exemplar_similarity": null,
+          "fused_margin": 0.9981113934516006,
+          "base_entropy_normalised": 0.003423656653399672,
+          "memory_size": 0,
+          "relevant_exemplars": 0.0,
+          "lambda": 0.0,
+          "nothing_similar_remembered": true,
+          "disagreement": false,
+          "ears_top": "01a125cb-b001-7017-8a15-5984dd41c1f0",
+          "memory_top": null,
+          "thresholds": {
+            "tau_novel": 0.55,
+            "tau_margin": 0.6,
+            "tau_entropy": 0.25,
+            "tau_memory_strong": 0.75
+          },
+          "neighbours": []
+        },
+        "created_at": "2026-10-10T12:31:13.348+00:00"
+      }
+    }
+  ],
+  "learning": {
+    "before": [
+      "Rain",
+      "Fountain",
+      "Running water"
+    ],
+    "after": [
+      "Rain",
+      "Roof gutter",
+      "Fountain"
+    ],
+    "exemplar": {
+      "label_id": "01a125cb-c521-7000-92c3-7061ab4a16ff",
+      "slug": "roof_gutter",
+      "name": "Roof gutter",
+      "rank": 2,
+      "fused_score": 0.238978,
+      "base_similarity": 0.224747,
+      "base_score": 0.005295,
+      "memory_similarity": 0.837261,
+      "memory_score": 0.9025,
+      "n_exemplars": 2,
+      "lambda": 0.4,
+      "evidence": "memory"
+    }
+  },
+  "mission": {
+    "id": "msn_ea347b7f1e4b",
+    "type": "resolve_unknown",
+    "title": "A sound without a name",
+    "objective": "Give a name to a recording ECHO-0 could not name.",
+    "reason": "1 recording(s) are still unnamed.",
+    "evidence": [
+      {
+        "type": "recording",
+        "id": "01a125cb-bba9-7000-ad28-794fe6b73d09",
+        "label": null,
+        "provenance": "system"
+      }
+    ],
+    "completion": {
+      "predicate": "target_annotated",
+      "description": "One of those recordings gets a name from you."
+    },
+    "safe_fallback": "If nothing like that is within easy reach, skip this mission; it will wait.",
+    "safety": "Stay on public paths. Keep your distance from animals. Do not record people without their consent.",
+    "status": "active",
+    "wording": {
+      "text": "Give a name to a recording ECHO-0 could not name.",
+      "source": "template"
+    },
+    "activated_at": "2026-10-10T12:31:14.017Z",
+    "completed_at": null,
+    "progress": null
+  },
+  "composition": {
+    "id": "01a125cb-c665-7000-8172-18d877da05ff",
+    "render_ms": 1217.1948089999205,
+    "status": "ready"
+  },
+  "immediate_narrative": {
+    "id": "nar_98e1844c690853d6",
+    "revision": 7,
+    "moment": {
+      "kind": "ending",
+      "key": "ending:01a125cb-c665-7000-8172-18d877da05ff",
+      "act": "ending",
+      "occurred_at": "2026-10-10T12:31:14.916+00:00"
+    },
+    "lines": [
+      {
+        "text": "I knew what these sounds were called. You showed me what they meant together.",
+        "kind": "grounded",
+        "provenance": [
+          "measurement"
+        ],
+        "cites": [
+          "F1"
+        ]
+      },
+      {
+        "text": "There are sounds I have never met.",
+        "kind": "imagination",
+        "provenance": [
+          "imagination"
+        ],
+        "cites": []
+      }
+    ],
+    "facts": [
+      {
+        "handle": "F1",
+        "statement": "The composition uses 3 of the player's recordings.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F2",
+        "statement": "It is in composed mode, about 120 beats per minute, 24 seconds long.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F3",
+        "statement": "'Bells' carries the lead.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F4",
+        "statement": "'Bells' keeps the groove.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F5",
+        "statement": "The atmosphere comes from 'Bells'.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F6",
+        "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.73).",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F7",
+        "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a125cb-c665-7000-8172-18d877da05ff",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F8",
+        "statement": "The player taught 6 recordings.",
+        "provenance": "system",
+        "ref": null
+      },
+      {
+        "handle": "F9",
+        "statement": "Their names included 'Bells', 'Roof gutter'.",
+        "provenance": "user_confirmed",
+        "ref": null
+      }
+    ],
+    "source": "template",
+    "model": null,
+    "generation": {
+      "status": "pending",
+      "latency_ms": null,
+      "attempts": 0,
+      "fallback_reason": null
+    },
+    "created_at": "2026-10-10T12:31:15.245Z"
+  },
+  "settled_narrative": {
+    "contract_version": "m5.1",
+    "utterance": {
+      "id": "nar_98e1844c690853d6",
+      "revision": 13,
+      "moment": {
+        "kind": "ending",
+        "key": "ending:01a125cb-c665-7000-8172-18d877da05ff",
+        "act": "ending",
+        "occurred_at": "2026-10-10T12:31:14.916+00:00"
+      },
+      "lines": [
+        {
+          "text": "The composition employs three recordings, with \u2018Bells\u2019 maintaining the lead and its variations. There are sounds I have not met.",
+          "kind": "grounded",
+          "provenance": [
+            "measurement"
+          ],
+          "cites": [
+            "F1",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F7"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "The composition uses 3 of the player's recordings.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F2",
+          "statement": "It is in composed mode, about 120 beats per minute, 24 seconds long.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F3",
+          "statement": "'Bells' carries the lead.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F4",
+          "statement": "'Bells' keeps the groove.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F5",
+          "statement": "The atmosphere comes from 'Bells'.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F6",
+          "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.73).",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F7",
+          "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F8",
+          "statement": "The player taught 6 recordings.",
+          "provenance": "system",
+          "ref": null
+        },
+        {
+          "handle": "F9",
+          "statement": "Their names included 'Bells', 'Roof gutter'.",
+          "provenance": "user_confirmed",
+          "ref": null
+        }
+      ],
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 1606.957978000537,
+        "attempts": 2,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:31:15.245Z"
+    },
+    "available_actions": [
+      "record",
+      "teach",
+      "open_atlas",
+      "open_orchestra",
+      "compose"
+    ]
+  },
+  "generation_wait_ms": 14998.050723000233,
+  "state": {
+    "contract_version": "m5.1",
+    "derived_at": "2026-10-10T12:31:30.252Z",
+    "act": "ending",
+    "phase": "remembered",
+    "ending_unlocked": true,
+    "acts": [
+      {
+        "id": "prologue",
+        "title": "Silence",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_recording",
+            "text": "A first recording finishes processing.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+                "label": null,
+                "provenance": "system"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_1",
+        "title": "The First Sound",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_hearing",
+            "text": "The first recording was processed and heard.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+                "label": null,
+                "provenance": "model"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_2",
+        "title": "Teach the Machine",
+        "status": "complete",
+        "progress": {
+          "current": 3,
+          "target": 3
+        },
+        "criteria": [
+          {
+            "id": "third_teaching",
+            "text": "Teach ECHO-0 three sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "annotation",
+                "id": "01a125cb-c590-7000-8ae9-a2c010a4f943",
+                "label": null,
+                "provenance": "user_confirmed"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_3",
+        "title": "The World Remembered",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "orchestra_of_three",
+            "text": "Compose an orchestra from three taught sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "composition",
+                "id": "01a125cb-c665-7000-8172-18d877da05ff",
+                "label": null,
+                "provenance": "measurement"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "first_recording",
+        "title": "A first recording",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:08.049+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+            "label": null,
+            "provenance": "system"
+          }
+        ]
+      },
+      {
+        "id": "first_hearing",
+        "title": "First hearing",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:09.088+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a125cb-af10-7000-8670-0b8c2925f505",
+            "label": null,
+            "provenance": "model"
+          }
+        ]
+      },
+      {
+        "id": "first_teaching",
+        "title": "A first teaching",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.698+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c522-7000-8bb8-5eec13dc6003",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "third_teaching",
+        "title": "Three sounds taught",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.808+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c590-7000-8ae9-a2c010a4f943",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "first_memory_influence",
+        "title": "Memory consulted",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.887+00:00",
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "first_correction",
+        "title": "A first correction",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.792+00:00",
+        "optional": true,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a125cb-c580-7000-907c-1da5b04cb8a8",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "unknown_met",
+        "title": "A sound without a name",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:13.890+00:00",
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "unknown_resolved",
+        "title": "A nameless sound named",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "first_composition",
+        "title": "A first composition",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "orchestra_of_three",
+        "title": "An orchestra of three",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "ending_reached",
+        "title": "The world remembered",
+        "achieved": true,
+        "achieved_at": "2026-10-10T12:31:14.916+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      }
+    ],
+    "counts": {
+      "recordings": 7,
+      "heard": 7,
+      "taught": 6,
+      "labels_confirmed": 2,
+      "corrections": 2,
+      "unknown": 1,
+      "compositions": 1,
+      "memory_version": 6
+    },
+    "gemma": {
+      "status": "ready",
+      "model": "gemma3:4b",
+      "enabled": true
+    }
+  },
+  "composition_commentary": {
+    "contract_version": "m5.1",
+    "utterance": {
+      "id": "nar_98e1844c690853d6",
+      "revision": 13,
+      "moment": {
+        "kind": "ending",
+        "key": "ending:01a125cb-c665-7000-8172-18d877da05ff",
+        "act": "ending",
+        "occurred_at": "2026-10-10T12:31:14.916+00:00"
+      },
+      "lines": [
+        {
+          "text": "The composition employs three recordings, with \u2018Bells\u2019 maintaining the lead and its variations. There are sounds I have not met.",
+          "kind": "grounded",
+          "provenance": [
+            "measurement"
+          ],
+          "cites": [
+            "F1",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F7"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "The composition uses 3 of the player's recordings.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F2",
+          "statement": "It is in composed mode, about 120 beats per minute, 24 seconds long.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F3",
+          "statement": "'Bells' carries the lead.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F4",
+          "statement": "'Bells' keeps the groove.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F5",
+          "statement": "The atmosphere comes from 'Bells'.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F6",
+          "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.73).",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F7",
+          "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a125cb-c665-7000-8172-18d877da05ff",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F8",
+          "statement": "The player taught 6 recordings.",
+          "provenance": "system",
+          "ref": null
+        },
+        {
+          "handle": "F9",
+          "statement": "Their names included 'Bells', 'Roof gutter'.",
+          "provenance": "user_confirmed",
+          "ref": null
+        }
+      ],
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 1606.957978000537,
+        "attempts": 2,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-10T12:31:15.245Z"
+    },
+    "available_actions": [
+      "record",
+      "teach",
+      "open_atlas",
+      "open_orchestra",
+      "compose"
+    ]
+  },
+  "model_status": {
+    "contract_version": "m5.1",
+    "runtime": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "enabled": true,
+    "available": true,
+    "status": "ready",
+    "model": "gemma3:4b",
+    "installed": [
+      "gemma3:12b",
+      "gemma3:4b",
+      "gemma4:e4b-it-qat"
+    ],
+    "license": "Gemma Terms of Use",
+    "limits": {
+      "timeout_s": 30.0,
+      "max_concurrent": 1,
+      "max_output_tokens": 220
+    },
+    "stats": {
+      "requests": 8,
+      "valid": 7,
+      "fallbacks": 1,
+      "valid_rate": 0.875,
+      "fallback_rate": 0.125,
+      "latency_ms": {
+        "cold_first": 6210.8,
+        "p50": 1751.3,
+        "p95": 7675.6
+      },
+      "fallback_reasons": {
+        "invalid_output": 1
+      }
+    }
+  },
+  "atlas_nodes": 7,
+  "total_s": 29.744248494000203,
+  "audio_provenance": "existing local ESC-50 evaluation clips, not for publication"
+}
