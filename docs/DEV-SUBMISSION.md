@@ -18,7 +18,7 @@ BEFORE YOU PUBLISH (owner):
 title: The Unheard: I taught a machine what rain sounds like, and it taught me to listen
 published: false
 tags: hf26challenge, gemma, opensource, ai
-cover_image: [[OWNER: 1000x420 cover, e.g. the Atlas screenshot; alt text in the body]]
+cover_image: https://raw.githubusercontent.com/miclaldogan/the-unheard/main/docs/m7-review/cover-1000x420.png
 description: A local-first game where you record real sounds, teach an AI their names, and hear them become a composition. Local CLAP, personalised memory, and a Gemma narrator that is not allowed to lie.
 ai_disclosure_level: some_ai
 ---
@@ -48,7 +48,7 @@ THE UNHEARD is a local-first web app (a React PWA backed by a FastAPI server on 
 The ending is not scripted. It unlocks when a real composition exists, built from at least three recordings you annotated. If
 you have only taught it two sounds, there is no ending to see.
 
-![[[OWNER: screenshot of the Atlas with real labelled recordings; describe what is visible]]]([[OWNER: image url]])
+![The Acoustic Atlas: two clusters drawn from a 2-D projection of the 512-dimensional CLAP space that keeps 94 % of the spread. Three recordings I named "Roof gutter" sit together on the left, three I named "Bells" on the right, far apart. ECHO-0's line underneath reads: "'Bells' is a word you gave me. It now has a place in my world." The footer counts 6 memories, 12 relationships and 2 names I invented.](https://raw.githubusercontent.com/miclaldogan/the-unheard/main/docs/m7-review/09-atlas-desktop.png)
 
 ## Demo
 
