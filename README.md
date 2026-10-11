@@ -6,16 +6,18 @@ ECHO-0 knows the world’s names but has lost its acoustic memory. Go outside, c
 return to the laboratory, teach it what you heard, and listen as your memories become a composition.
 A local-first React PWA, FastAPI, SQLite, CPU LAION-CLAP and local Gemma through Ollama power the experience.
 
-## Release candidate
+## Release
 
-M5.5 integrates the completed M5 backend and cinematic UI on `feat/release-integration`; M6 adds final validation
-(the pre-inference teaching race is fixed, HTTPS can be served by the backend itself, review tooling and submission drafts;
-see [`docs/M6-FINAL-REPORT.md`](docs/M6-FINAL-REPORT.md)).
+`main` contains the complete project: the M5 narrative backend, the cinematic UI, the M5.5 integration and the M6
+final validation (the pre-inference teaching race is fixed, HTTPS can be served by the backend itself, review
+tooling and submission drafts; see [`docs/M6-FINAL-REPORT.md`](docs/M6-FINAL-REPORT.md)). M7 adds a publishable
+synthetic audio set so the project can demonstrate itself without ESC-50
+([`docs/M7-SYNTHETIC-AUDIO.md`](docs/M7-SYNTHETIC-AUDIO.md)).
 The six scenes are **Chamber → Field → Hearing → Specimen → Atlas → Orchestra**.
 Recording, classification, annotation, retrieval memory, measured visual artifacts, composition,
 playback and grounded narration operate together. See the [integration report](docs/M5-5-INTEGRATION-REPORT.md),
 [release checklist](docs/RELEASE-CHECKLIST.md) and [demo plan](docs/DEMO-RECORDING-PLAN.md).
-This is a local release candidate; physical Android/outdoor testing and human musical/narrative review remain open
+Physical Android/outdoor testing and human musical/narrative review remain open
 ([Android checklist](docs/ANDROID-FIELD-TEST.md), [human review](docs/HUMAN-REVIEW.md)).
 
 ## Install
@@ -27,7 +29,6 @@ On a shared 15 GB laptop, use CPU CLAP, `gemma3:4b`, and one backend process; av
 ```bash
 git clone https://github.com/miclaldogan/the-unheard
 cd the-unheard
-# Once this release branch is available remotely, select it; do not assume main contains it.
 python3 scripts/verify_env.py
 cd server
 uv sync --extra ml
@@ -109,6 +110,31 @@ The ending requires a ready composition made from at least three annotated recor
 persisted backend state. Human listening has not established whether the refined compositions are better.
 Available local comparisons and the Gemma evaluation sheet are described in the release checklist.
 
+## Demo audio without ESC-50
+
+ESC-50 is private evaluation material and must not appear in a public demo or in Git, which left nothing the
+project was allowed to show. `scripts/m7_synthetic_sounds.py` synthesises a six-clip set from scratch — rain in a
+metal gutter and a tolling bell, three takes each — so the audio carries this repository's own licence and is free
+to publish. The clips are not committed; the generator is seeded, so any clone reproduces identical files.
+
+```bash
+python scripts/m7_synthetic_sounds.py generate    # six WAVs + manifest into server/data/m7_synthetic/
+python scripts/m7_synthetic_sounds.py verify      # through the backend's own sniffer, decoder and validator
+python scripts/m7_synthetic_sounds.py describe    # what each clip is for
+
+# full journey on a disposable profile
+rm -rf /tmp/unheard-m7
+UNHEARD_DATA_DIR=/tmp/unheard-m7 uv run --extra ml unheard serve --port 8011
+UNHEARD_REVIEW_URL=http://127.0.0.1:8011 python scripts/m7_synthetic_journey.py
+```
+
+The journey teaches two gutter clips a name CLAP has never heard and holds the third out. On the held-out clip the
+taught label moves from absent to **rank 1** with two exemplars and `evidence: memory`, which is the retrieval
+mechanism working end to end; the three bells then supply the Composed renderer with its three taught sources and
+the ending unlocks. These are synthesised signals, **not field recordings**, and every upload is stamped
+`synthetic: true` so it stays distinguishable in the database. Measurements, the droplet-density finding and the
+claim limits are in [`docs/M7-SYNTHETIC-AUDIO.md`](docs/M7-SYNTHETIC-AUDIO.md).
+
 ## Reproducible tests
 
 ```bash
@@ -143,5 +169,6 @@ Atlas is a stable 2-D view of a high-dimensional space. No location is collected
 
 Project code: [MIT](LICENSE). CLAP’s model card lists Apache-2.0; Gemma has its own Terms of Use.
 Weights are downloaded locally and never redistributed here. ESC-50 clips used for local evaluation are
-**not demonstration assets**: individual source licensing must be checked before any publication.
+**not demonstration assets**: individual source licensing must be checked before any publication. Use the
+synthetic M7 set for anything public.
 No personal recordings, model weights, database files or credentials belong in Git.
