@@ -1,0 +1,11 @@
+{
+  "name": "the-unheard-demo-video",
+  "private": true,
+  "type": "module",
+  "description": "50-second submission video for THE UNHEARD, built with Remotion. node_modules is shared with a local Remotion project via symlink and is not committed.",
+  "scripts": {
+    "studio": "remotion studio",
+    "still": "remotion still src/index.ts Demo out/still.png",
+    "render": "remotion render src/index.ts Demo out/the-unheard-demo.mp4 --codec h264 --crf 18"
+  }
+}
