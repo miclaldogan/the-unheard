@@ -120,15 +120,13 @@ not to write handles, and in that run it wrote *more* of them (14 rejections aga
 shows its template line immediately and swaps in Gemma's when it arrives, so nothing ever waits on the model.
 
 What I have **not** measured: the end-to-end fallback rate after the single retry, and whether people actually prefer
-Gemma's lines to the templates. I built a blind rating sheet for that. [[OWNER: if you have rated it, report the real numbers
-here; otherwise keep this sentence as it is.]] The templates are not a fallback of shame. They are the baseline the model has
+Gemma's lines to the templates. I built a blind rating sheet for that. As of writing, nobody has rated it, so I make no claim that Gemma's lines are better than the templates. The templates are not a fallback of shame. They are the baseline the model has
 to be worth having beside.
 
 ### Tests
 
-282 backend tests, 78 frontend tests, a real-CLAP test, a real-Gemma test, and a scripted browser walkthrough in sandboxed
-Chrome 148 with a simulated microphone. *The phone is the thing I cannot claim.* [[OWNER: after the Android test, state
-exactly what you did and saw, or write that it is still untested.]]
+283 backend tests, 78 frontend tests, plus gated real-CLAP (2) and real-Gemma (1) tests, and a scripted browser walkthrough in sandboxed
+Chrome 148 with a simulated microphone. *The phone is the thing I cannot claim.* As of writing it has not been run on a physical Android phone; the scripted run only simulates the microphone.
 
 ## Taking it outside
 
