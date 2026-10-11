@@ -27,6 +27,7 @@ bytes.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -38,7 +39,7 @@ from numpy.typing import NDArray
 from scipy.signal import butter, lfilter, sosfilt
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "server" / "data" / "m7_synthetic"
+OUT = Path(os.environ.get("UNHEARD_SET_DIR", str(ROOT / "server" / "data" / "m7_synthetic")))
 
 SR = 48_000  # the backend's canonical rate; generating here avoids a resample on ingest
 DURATION_S = 10.0  # inside the 3-30 s ingest window with margin at both ends

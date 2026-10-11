@@ -223,7 +223,7 @@ assert atlas.get("nodes"), atlas
 # ---------------------------------------------------------------- report
 
 report = {
-    "audio_provenance": "deterministic synthetic signals from scripts/m7_synthetic_sounds.py; licensed with this repository; NOT field recordings",
+    "audio_provenance": os.environ.get("UNHEARD_AUDIO_PROVENANCE", "deterministic synthetic signals from scripts/m7_synthetic_sounds.py; licensed with this repository; NOT field recordings"),
     "esc50_used": False,
     "publishable": True,
     "device": model["device"],
