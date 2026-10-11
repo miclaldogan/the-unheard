@@ -1,7 +1,7 @@
 # ruff: noqa: E501
 """M8: the demo sound set generated with the ElevenLabs sound-effects API instead of NumPy.
 
-    ELEVENLABS_API_KEY=... python scripts/m8_elevenlabs_sounds.py generate [--only NAME] [--force]
+    ELEVENLABS_API_KEY=... python scripts/m8_elevenlabs_sounds.py generate [--pack] [--only NAME] [--force]
     python scripts/m8_elevenlabs_sounds.py normalise        # re-level existing clips without calling the API
     python scripts/m8_elevenlabs_sounds.py describe
 
@@ -49,6 +49,86 @@ PROMPTS: dict[str, str] = {
 }
 
 
+# The demo pack: five families, three different takes each, no human voices. Names follow ``<group>-<take>``.
+PACK: list[tuple[str, str, str]] = [
+    (
+        "wind",
+        "wind-leaves",
+        "Wind moving through leaves of tall trees in a park, gentle gusts, outdoors, no music",
+    ),
+    (
+        "wind",
+        "wind-grass",
+        "Steady breeze across an open grass field, low soft whoosh, distant, outdoors, no music",
+    ),
+    (
+        "wind",
+        "wind-gusty",
+        "Strong gusts of wind rushing past a microphone then dying down, outdoors, no music",
+    ),
+    (
+        "steps",
+        "steps-gravel",
+        "Slow footsteps walking on a gravel path, crunching stones, outdoors, no talking, no music",
+    ),
+    (
+        "steps",
+        "steps-leaves",
+        "Footsteps walking through dry autumn leaves, crunchy, steady pace, outdoors, no talking, no music",
+    ),
+    (
+        "steps",
+        "steps-pavement",
+        "Footsteps of one person walking on a quiet paved sidewalk, hard soles, echoing slightly, no talking, no music",
+    ),
+    (
+        "birds",
+        "birds-morning",
+        "Several small songbirds singing in trees at early morning, outdoors, field recording, no music",
+    ),
+    (
+        "birds",
+        "birds-crow",
+        "A crow cawing a few times in a quiet park with faint wind, outdoors, no music",
+    ),
+    (
+        "birds",
+        "birds-pigeons",
+        "Pigeons cooing and flapping wings on a rooftop, close, outdoors, no music",
+    ),
+    (
+        "water",
+        "water-stream",
+        "A small stream flowing over stones in a forest, bubbling, outdoors, field recording, no music",
+    ),
+    (
+        "water",
+        "water-fountain",
+        "A city fountain splashing steadily into a stone basin, outdoors, no music",
+    ),
+    (
+        "water",
+        "water-waves",
+        "Gentle sea waves washing onto a pebble beach, rolling and receding, outdoors, no music",
+    ),
+    (
+        "machine",
+        "machine-bicycle",
+        "A bicycle freewheel ticking and a bell ringing twice while riding past on a road, outdoors, no music",
+    ),
+    (
+        "machine",
+        "machine-engine",
+        "A diesel engine idling steadily with a low rumble, close recording, no music",
+    ),
+    (
+        "machine",
+        "machine-fan",
+        "An electric fan humming and whirring at a constant speed in a quiet room, no music",
+    ),
+]
+
+
 def _generate(prompt: str, key: str) -> bytes:
     body = json.dumps(
         {
@@ -92,26 +172,28 @@ def normalise(path: Path) -> None:
     sf.write(path, x, sr, subtype="PCM_16")
 
 
-def generate(only: str | None, force: bool) -> None:
+def generate(only: str | None, force: bool, pack: bool = False) -> None:
     key = os.environ.get("ELEVENLABS_API_KEY", "")
     if not key:
         raise SystemExit("set ELEVENLABS_API_KEY in the environment")
     OUT.mkdir(parents=True, exist_ok=True)
     manifest_path = OUT / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
-    for spec in SPECIMENS:
-        if only and spec.name != only:
+    items = [(sp.group, sp.name, PROMPTS[sp.name], sp.teach_as) for sp in SPECIMENS]
+    if pack:
+        items = [(g, n, p, None) for g, n, p in PACK]
+    for group, name, prompt, teach_as in items:
+        if only and name != only:
             continue
-        dest = OUT / spec.filename
+        dest = OUT / f"{name}.wav"
         if dest.exists() and not force:
-            print(f"skip {spec.filename} (exists; --force to regenerate)")
+            print(f"skip {dest.name} (exists; --force to regenerate)")
             continue
-        prompt = PROMPTS[spec.name]
-        print(f"generating {spec.filename} ...", flush=True)
+        print(f"generating {dest.name} ...", flush=True)
         _to_wav(_generate(prompt, key), dest)
-        manifest[spec.filename] = {
-            "group": spec.group,
-            "teach_as": spec.teach_as,
+        manifest[dest.name] = {
+            "group": group,
+            "teach_as": teach_as,
             "prompt": prompt,
             "model": MODEL,
             "duration_requested_s": DURATION_S,
@@ -140,7 +222,12 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["generate", "describe", "normalise"])
     ap.add_argument("--only")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument(
+        "--pack",
+        action="store_true",
+        help="generate the 15-clip demo pack instead of the 6-clip journey set",
+    )
     a = ap.parse_args()
     {"describe": describe, "normalise": renormalise_all}.get(
-        a.cmd, lambda: generate(a.only, a.force)
+        a.cmd, lambda: generate(a.only, a.force, a.pack)
     )()
