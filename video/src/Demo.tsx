@@ -154,8 +154,14 @@ const End: React.FC = () => {
         <div style={{fontFamily: F.sans, fontWeight: 500, fontSize: 32, color: C.dim, marginTop: 34}}>
           Local-first · MIT · retrieval memory, nothing fine-tuned · Gemma 3 4B via Ollama
         </div>
-        <div style={{fontFamily: F.sans, fontWeight: 700, fontSize: 52, color: C.amber, marginTop: 40}}>
-          github.com/miclaldogan/the-unheard
+        <div style={{fontFamily: F.sans, fontWeight: 500, fontSize: 24, letterSpacing: 6, color: C.dim, marginTop: 52, textTransform: 'uppercase'}}>
+          Built by
+        </div>
+        <div style={{fontFamily: F.serif, fontSize: 84, color: C.amber, marginTop: 6}}>
+          İclal Doğan · Melike Zaman
+        </div>
+        <div style={{fontFamily: F.sans, fontWeight: 500, fontSize: 28, color: C.dim, marginTop: 14}}>
+          Open source on GitHub · link in the post
         </div>
       </div>
       <div style={{position: 'absolute', bottom: 190, left: 0, right: 0, textAlign: 'center', fontFamily: F.sans, fontWeight: 500, fontSize: 24, color: C.dim, lineHeight: 1.5}}>
