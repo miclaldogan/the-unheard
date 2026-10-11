@@ -22,6 +22,7 @@ outdoors, and the audio is synthesised, not recorded in the field.
 | [09 Atlas, desktop](09-atlas-desktop.png) · [10 mobile](10-atlas-mobile.png) | real embedding similarities, two labelled clusters |
 | [11 Orchestra, desktop](11-orchestra-desktop.png) · [12 mobile](12-orchestra-mobile.png) | the Composed render, its layers, sections and transport |
 | [13 Field, landscape](13-field-landscape.png) | 844 x 390 layout |
+| [cover 1000 x 420](cover-1000x420.png) | the prediction table cropped to DEV's cover ratio |
 
 ## Frame 05 is the one that carries the project
 
