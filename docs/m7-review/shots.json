@@ -1,0 +1,58 @@
+{
+  "browser": "150.0.7871.128",
+  "audio": "synthetic set from scripts/m7_synthetic_sounds.py; not field recordings",
+  "seededBy": "scripts/m7_synthetic_journey.py",
+  "physicalDevice": false,
+  "note": "mobile frames are emulated viewports in desktop Chrome, not a physical phone",
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "height": 1000
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "landscape": {
+      "width": 844,
+      "height": 390
+    }
+  },
+  "deviceScaleFactor": 2,
+  "taught": {
+    "recordings": 6,
+    "heard": 6,
+    "taught": 6,
+    "labels_confirmed": 2,
+    "corrections": 2,
+    "unknown": 0,
+    "compositions": 2,
+    "memory_version": 6
+  },
+  "phase": "remembered",
+  "endingUnlocked": true,
+  "atlasNodes": 6,
+  "pageErrors": [],
+  "log": [
+    "Chamber",
+    "  01-chamber-desktop.png  1440x1000  2007 KB",
+    "  02-chamber-mobile.png  390x844  1055 KB",
+    "Field",
+    "  03-field-desktop.png  1440x1000  1736 KB",
+    "  04-field-mobile.png  390x844  687 KB",
+    "Hearing",
+    "  05-hearing-desktop.png  1440x1000  3498 KB",
+    "  06-hearing-mobile.png  390x844  2396 KB",
+    "Specimen",
+    "  07-specimen-desktop.png  1440x1000  1066 KB",
+    "  08-specimen-mobile.png  390x844  735 KB",
+    "Atlas",
+    "  09-atlas-desktop.png  1440x1000  1152 KB",
+    "  10-atlas-mobile.png  390x844  810 KB",
+    "Orchestra",
+    "  11-orchestra-desktop.png  1440x1000  1689 KB",
+    "  12-orchestra-mobile.png  390x844  1286 KB",
+    "Field, landscape",
+    "  13-field-landscape.png  844x390  911 KB"
+  ]
+}

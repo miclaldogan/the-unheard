@@ -20,6 +20,25 @@ playback and grounded narration operate together. See the [integration report](d
 Physical Android/outdoor testing and human musical/narrative review remain open
 ([Android checklist](docs/ANDROID-FIELD-TEST.md), [human review](docs/HUMAN-REVIEW.md)).
 
+## What it looks like
+
+[![The Hearing Room: the taught label ranked first by memory](docs/m7-review/05-hearing-desktop.png)](docs/m7-review/05-hearing-desktop.png)
+
+*The Hearing Room on a clip that was never taught. CLAP's own ears rank "Rain" above "Roof gutter" (cosine 0.320
+against 0.141), yet the taught name comes first, because two remembered exemplars sit at cosine 0.965. Scores,
+not probabilities.*
+
+| | |
+|---|---|
+| [![Chamber](docs/m7-review/01-chamber-desktop.png)](docs/m7-review/01-chamber-desktop.png) | [![Orchestra](docs/m7-review/11-orchestra-desktop.png)](docs/m7-review/11-orchestra-desktop.png) |
+| **Chamber** — ECHO-0's entrance | **Orchestra** — a Composed render from three taught sources |
+| [![Atlas](docs/m7-review/09-atlas-desktop.png)](docs/m7-review/09-atlas-desktop.png) | [![Specimen](docs/m7-review/07-specimen-desktop.png)](docs/m7-review/07-specimen-desktop.png) |
+| **Atlas** — real embedding similarities | **Specimen** — the measured acoustic signature |
+
+Mobile Field Mode at 390 x 844, and the full set of thirteen frames with what to look at in each, are in
+[`docs/m7-review/`](docs/m7-review/). Those are **emulated viewports, not a physical phone**, and the audio is the
+synthetic set, not field recordings.
+
 ## Install
 
 Requirements: Python **3.12** through [uv](https://docs.astral.sh/uv/), Node **22.13+ on 22.x or 24+**,
