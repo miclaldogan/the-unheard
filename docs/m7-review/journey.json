@@ -1,0 +1,837 @@
+{
+  "audio_provenance": "deterministic synthetic signals from scripts/m7_synthetic_sounds.py; licensed with this repository; NOT field recordings",
+  "esc50_used": false,
+  "publishable": true,
+  "device": "cpu",
+  "model": {
+    "model_id": "laion/clap-htsat-unfused",
+    "revision": "8fa0f1c6d0433df6e97c127f64b2a1d6c0dcda8a",
+    "device": "cpu",
+    "embedding_dim": 512,
+    "preprocessing_version": 1
+  },
+  "records": {
+    "gutter-light.wav": {
+      "id": "01a12cd8-681b-7000-905c-ca0b275ca7fe",
+      "group": "gutter",
+      "teach_as": "Roof gutter",
+      "role": "taught exemplar 1",
+      "quality_flags": [],
+      "ready_ms": 405,
+      "inference_ms": 1212,
+      "top_base": [
+        "Rain",
+        "Wind chimes",
+        "Rustling leaves"
+      ]
+    },
+    "gutter-steady.wav": {
+      "id": "01a12cd8-6ecf-7000-ab6a-febdcf350c69",
+      "group": "gutter",
+      "teach_as": "Roof gutter",
+      "role": "taught exemplar 2",
+      "quality_flags": [],
+      "ready_ms": 406,
+      "inference_ms": 405,
+      "top_base": [
+        "Rain",
+        "Insects",
+        "Helicopter"
+      ]
+    },
+    "gutter-windy.wav": {
+      "id": "01a12cd8-72a7-7000-aa01-b89bf4430370",
+      "group": "gutter",
+      "teach_as": null,
+      "role": "HELD OUT - the memory proof",
+      "quality_flags": [],
+      "ready_ms": 404,
+      "inference_ms": 2,
+      "top_base": [
+        "Rain",
+        "Wind chimes",
+        "Rustling leaves"
+      ]
+    },
+    "bells-distant.wav": {
+      "id": "01a12cd8-749f-7000-b713-214d0b04b546",
+      "group": "bells",
+      "teach_as": "Bells",
+      "role": "taught + composition source 1",
+      "quality_flags": [],
+      "ready_ms": 405,
+      "inference_ms": 2,
+      "top_base": [
+        "Music",
+        "Church bells",
+        "Running water"
+      ]
+    },
+    "bells-near.wav": {
+      "id": "01a12cd8-769c-7000-98db-e15e28f54119",
+      "group": "bells",
+      "teach_as": "Bells",
+      "role": "taught + composition source 2",
+      "quality_flags": [],
+      "ready_ms": 405,
+      "inference_ms": 406,
+      "top_base": [
+        "Music",
+        "Running water",
+        "Church bells"
+      ]
+    },
+    "bells-resonant.wav": {
+      "id": "01a12cd8-7a33-7000-8fc0-98a9290b76e8",
+      "group": "bells",
+      "teach_as": "Bells",
+      "role": "taught + composition source 3",
+      "quality_flags": [],
+      "ready_ms": 404,
+      "inference_ms": 2,
+      "top_base": [
+        "Music",
+        "Running water",
+        "Church bells"
+      ]
+    }
+  },
+  "memory_proof": {
+    "label": "Roof gutter",
+    "held_out": "gutter-windy.wav",
+    "taught": [
+      "gutter-light.wav",
+      "gutter-steady.wav"
+    ],
+    "before_top3": [
+      "Rain",
+      "Wind chimes",
+      "Rustling leaves"
+    ],
+    "after_top3": [
+      "Roof gutter",
+      "Rain",
+      "Wind chimes"
+    ],
+    "match": {
+      "label_id": "01a12cd8-7bce-7000-bbe6-01e44923ed17",
+      "slug": "roof_gutter",
+      "name": "Roof gutter",
+      "rank": 1,
+      "fused_score": 0.212759,
+      "base_similarity": 0.141124,
+      "base_score": 0.010522,
+      "memory_similarity": 0.965306,
+      "memory_score": 0.9025,
+      "n_exemplars": 2,
+      "lambda": 0.4,
+      "evidence": "memory"
+    }
+  },
+  "mission": {
+    "id": "msn_138e0c7683b0",
+    "type": "novel_sound",
+    "title": "Something unlike the rest",
+    "objective": "Record a sound that is unlike anything you have taught ECHO-0 so far.",
+    "reason": "6 recording(s) are taught; a very different one would widen the memory.",
+    "evidence": [
+      {
+        "type": "measurement",
+        "id": "memory:novelty",
+        "label": null,
+        "provenance": "measurement"
+      }
+    ],
+    "completion": {
+      "predicate": "new_recording_novel",
+      "description": "A new recording whose closest taught sound is far away (similarity at most 0.75)."
+    },
+    "safe_fallback": "If nothing like that is within easy reach, skip this mission; it will wait.",
+    "safety": "Stay on public paths. Keep your distance from animals. Do not record people without their consent.",
+    "status": "active",
+    "wording": {
+      "text": "Record a sound that is unlike anything you have taught ECHO-0 so far.",
+      "source": "template"
+    },
+    "activated_at": "2026-10-11T21:22:27.854Z",
+    "completed_at": null,
+    "progress": null
+  },
+  "composition": {
+    "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+    "status": "ready",
+    "render_ms": 1216
+  },
+  "immediate_narrative": {
+    "id": "nar_9e72894107320ce0",
+    "revision": 2,
+    "moment": {
+      "kind": "ending",
+      "key": "ending:01a12cd8-7d98-7000-824f-be493bad97be",
+      "act": "ending",
+      "occurred_at": "2026-10-11T21:22:29.070+00:00"
+    },
+    "lines": [
+      {
+        "text": "I knew what these sounds were called. You showed me what they meant together.",
+        "kind": "grounded",
+        "provenance": [
+          "measurement"
+        ],
+        "cites": [
+          "F1"
+        ]
+      },
+      {
+        "text": "There are sounds I have never met.",
+        "kind": "imagination",
+        "provenance": [
+          "imagination"
+        ],
+        "cites": []
+      }
+    ],
+    "facts": [
+      {
+        "handle": "F1",
+        "statement": "The composition uses 3 of the player's recordings.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F2",
+        "statement": "It is in composed mode, about 73 beats per minute, 26 seconds long.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F3",
+        "statement": "'Bells' carries the lead.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F4",
+        "statement": "'Bells' keeps the groove.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F5",
+        "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.84).",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": "Bells",
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F6",
+        "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde, shift.",
+        "provenance": "measurement",
+        "ref": {
+          "type": "composition",
+          "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+          "label": null,
+          "provenance": "measurement"
+        }
+      },
+      {
+        "handle": "F7",
+        "statement": "The player taught 6 recordings.",
+        "provenance": "system",
+        "ref": null
+      },
+      {
+        "handle": "F8",
+        "statement": "Their names included 'Bells', 'Roof gutter'.",
+        "provenance": "user_confirmed",
+        "ref": null
+      }
+    ],
+    "source": "template",
+    "model": null,
+    "generation": {
+      "status": "pending",
+      "latency_ms": null,
+      "attempts": 0,
+      "fallback_reason": null
+    },
+    "created_at": "2026-10-11T21:22:29.084Z"
+  },
+  "settled_narrative": {
+    "contract_version": "m5.1",
+    "utterance": {
+      "id": "nar_9e72894107320ce0",
+      "revision": 4,
+      "moment": {
+        "kind": "ending",
+        "key": "ending:01a12cd8-7d98-7000-824f-be493bad97be",
+        "act": "ending",
+        "occurred_at": "2026-10-11T21:22:29.070+00:00"
+      },
+      "lines": [
+        {
+          "text": "The composition includes three recordings, with 'Bells' maintaining a central role and a correlation of 0.84. There are sounds I have not met.",
+          "kind": "grounded",
+          "provenance": [
+            "measurement"
+          ],
+          "cites": [
+            "F1",
+            "F3",
+            "F4",
+            "F5",
+            "F6"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "The composition uses 3 of the player's recordings.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F2",
+          "statement": "It is in composed mode, about 73 beats per minute, 26 seconds long.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F3",
+          "statement": "'Bells' carries the lead.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F4",
+          "statement": "'Bells' keeps the groove.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F5",
+          "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.84).",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F6",
+          "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde, shift.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F7",
+          "statement": "The player taught 6 recordings.",
+          "provenance": "system",
+          "ref": null
+        },
+        {
+          "handle": "F8",
+          "statement": "Their names included 'Bells', 'Roof gutter'.",
+          "provenance": "user_confirmed",
+          "ref": null
+        }
+      ],
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 2945.812901001773,
+        "attempts": 2,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-11T21:22:29.084Z"
+    },
+    "available_actions": [
+      "record",
+      "teach",
+      "open_atlas",
+      "open_orchestra",
+      "compose"
+    ]
+  },
+  "narrative_wait_ms": 13920,
+  "state": {
+    "contract_version": "m5.1",
+    "derived_at": "2026-10-11T21:22:43.006Z",
+    "act": "ending",
+    "phase": "remembered",
+    "ending_unlocked": true,
+    "acts": [
+      {
+        "id": "prologue",
+        "title": "Silence",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_recording",
+            "text": "A first recording finishes processing.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a12cd8-681b-7000-905c-ca0b275ca7fe",
+                "label": null,
+                "provenance": "system"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_1",
+        "title": "The First Sound",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "first_hearing",
+            "text": "The first recording was processed and heard.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "recording",
+                "id": "01a12cd8-681b-7000-905c-ca0b275ca7fe",
+                "label": null,
+                "provenance": "model"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_2",
+        "title": "Teach the Machine",
+        "status": "complete",
+        "progress": {
+          "current": 3,
+          "target": 3
+        },
+        "criteria": [
+          {
+            "id": "third_teaching",
+            "text": "Teach ECHO-0 three sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "annotation",
+                "id": "01a12cd8-7c0a-7000-af11-1343bcdd3ce0",
+                "label": null,
+                "provenance": "user_confirmed"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "act_3",
+        "title": "The World Remembered",
+        "status": "complete",
+        "progress": {
+          "current": 1,
+          "target": 1
+        },
+        "criteria": [
+          {
+            "id": "orchestra_of_three",
+            "text": "Compose an orchestra from three taught sounds.",
+            "met": true,
+            "evidence": [
+              {
+                "type": "composition",
+                "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+                "label": null,
+                "provenance": "measurement"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "id": "first_recording",
+        "title": "A first recording",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:22.364+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a12cd8-681b-7000-905c-ca0b275ca7fe",
+            "label": null,
+            "provenance": "system"
+          }
+        ]
+      },
+      {
+        "id": "first_hearing",
+        "title": "First hearing",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:23.700+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "recording",
+            "id": "01a12cd8-681b-7000-905c-ca0b275ca7fe",
+            "label": null,
+            "provenance": "model"
+          }
+        ]
+      },
+      {
+        "id": "first_teaching",
+        "title": "A first teaching",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:27.407+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a12cd8-7bcf-7001-85b7-786db5c3c2ed",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "third_teaching",
+        "title": "Three sounds taught",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:27.466+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a12cd8-7c0a-7000-af11-1343bcdd3ce0",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "first_memory_influence",
+        "title": "Memory consulted",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:27.543+00:00",
+        "optional": false,
+        "evidence": []
+      },
+      {
+        "id": "first_correction",
+        "title": "A first correction",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:27.451+00:00",
+        "optional": true,
+        "evidence": [
+          {
+            "type": "annotation",
+            "id": "01a12cd8-7bfb-7000-a9e8-8bd7228104bc",
+            "label": null,
+            "provenance": "user_confirmed"
+          }
+        ]
+      },
+      {
+        "id": "unknown_met",
+        "title": "A sound without a name",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "unknown_resolved",
+        "title": "A nameless sound named",
+        "achieved": false,
+        "achieved_at": null,
+        "optional": true,
+        "evidence": []
+      },
+      {
+        "id": "first_composition",
+        "title": "A first composition",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:29.070+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "orchestra_of_three",
+        "title": "An orchestra of three",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:29.070+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      },
+      {
+        "id": "ending_reached",
+        "title": "The world remembered",
+        "achieved": true,
+        "achieved_at": "2026-10-11T21:22:29.070+00:00",
+        "optional": false,
+        "evidence": [
+          {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        ]
+      }
+    ],
+    "counts": {
+      "recordings": 6,
+      "heard": 6,
+      "taught": 6,
+      "labels_confirmed": 2,
+      "corrections": 2,
+      "unknown": 0,
+      "compositions": 1,
+      "memory_version": 6
+    },
+    "gemma": {
+      "status": "ready",
+      "model": "gemma3:4b",
+      "enabled": true
+    }
+  },
+  "composition_commentary": {
+    "contract_version": "m5.1",
+    "utterance": {
+      "id": "nar_9e72894107320ce0",
+      "revision": 4,
+      "moment": {
+        "kind": "ending",
+        "key": "ending:01a12cd8-7d98-7000-824f-be493bad97be",
+        "act": "ending",
+        "occurred_at": "2026-10-11T21:22:29.070+00:00"
+      },
+      "lines": [
+        {
+          "text": "The composition includes three recordings, with 'Bells' maintaining a central role and a correlation of 0.84. There are sounds I have not met.",
+          "kind": "grounded",
+          "provenance": [
+            "measurement"
+          ],
+          "cites": [
+            "F1",
+            "F3",
+            "F4",
+            "F5",
+            "F6"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "handle": "F1",
+          "statement": "The composition uses 3 of the player's recordings.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F2",
+          "statement": "It is in composed mode, about 73 beats per minute, 26 seconds long.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F3",
+          "statement": "'Bells' carries the lead.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F4",
+          "statement": "'Bells' keeps the groove.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F5",
+          "statement": "'Bells' answers 'Bells' in the silence between its notes (fit 0.84).",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": "Bells",
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F6",
+          "statement": "The lead idea comes back transformed: answer, density, fragment, register, retrograde, shift.",
+          "provenance": "measurement",
+          "ref": {
+            "type": "composition",
+            "id": "01a12cd8-7d98-7000-824f-be493bad97be",
+            "label": null,
+            "provenance": "measurement"
+          }
+        },
+        {
+          "handle": "F7",
+          "statement": "The player taught 6 recordings.",
+          "provenance": "system",
+          "ref": null
+        },
+        {
+          "handle": "F8",
+          "statement": "Their names included 'Bells', 'Roof gutter'.",
+          "provenance": "user_confirmed",
+          "ref": null
+        }
+      ],
+      "source": "gemma",
+      "model": "gemma3:4b",
+      "generation": {
+        "status": "ready",
+        "latency_ms": 2945.812901001773,
+        "attempts": 2,
+        "fallback_reason": null
+      },
+      "created_at": "2026-10-11T21:22:29.084Z"
+    },
+    "available_actions": [
+      "record",
+      "teach",
+      "open_atlas",
+      "open_orchestra",
+      "compose"
+    ]
+  },
+  "model_status": {
+    "contract_version": "m5.1",
+    "runtime": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "enabled": true,
+    "available": true,
+    "status": "ready",
+    "model": "gemma3:4b",
+    "installed": [
+      "gemma3:4b",
+      "gemma2:2b"
+    ],
+    "license": "Gemma Terms of Use",
+    "limits": {
+      "timeout_s": 30.0,
+      "max_concurrent": 1,
+      "max_output_tokens": 220
+    },
+    "stats": {
+      "requests": 2,
+      "valid": 1,
+      "fallbacks": 1,
+      "valid_rate": 0.5,
+      "fallback_rate": 0.5,
+      "latency_ms": {
+        "cold_first": 9155.0,
+        "p50": 2945.8,
+        "p95": 9155.0
+      },
+      "fallback_reasons": {
+        "invalid_output": 1
+      }
+    }
+  },
+  "atlas_nodes": 6,
+  "total_s": 24.1
+}
