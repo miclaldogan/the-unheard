@@ -20,6 +20,16 @@ playback and grounded narration operate together. See the [integration report](d
 Physical Android/outdoor testing and human musical/narrative review remain open
 ([Android checklist](docs/ANDROID-FIELD-TEST.md), [human review](docs/HUMAN-REVIEW.md)).
 
+## Submission timeline
+
+Hacktoberfest Open-Source AI Challenge, Week 1 ("Touch Grass"). Submissions were due **October 11, 2026, 11:59 PM PDT**
+(October 12, 06:59 UTC). Every commit up to that moment is part of the submission. Any commit dated after it is a
+later change and is listed here, as the challenge rules ask.
+
+| Commit date (UTC) | Change |
+| --- | --- |
+| 2026-10-18 | This note. Documentation only; no code, model or audio changes. |
+
 ## What it looks like
 
 [![The Hearing Room: the taught label ranked first by memory](docs/m7-review/05-hearing-desktop.png)](docs/m7-review/05-hearing-desktop.png)
